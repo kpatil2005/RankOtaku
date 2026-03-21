@@ -77,7 +77,13 @@ Make sure the first 5 have "difficulty": "easy", next 5 have "difficulty": "inte
 // Submit quiz answers (secure)
 router.post('/submit-quiz', async (req, res) => {
   try {
-    const token = req.cookies.token;
+    const authHeader = req.headers.authorization;
+    let token = authHeader && authHeader.split(' ')[1];
+    
+    if (!token) {
+      token = req.cookies.token;
+    }
+    
     if (!token) {
       return res.status(401).json({ error: 'No token provided' });
     }

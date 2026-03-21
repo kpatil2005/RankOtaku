@@ -10,7 +10,15 @@ const { sendPasswordResetEmail } = require('../utils/emailService');
 
 // Authentication middleware
 const authenticateToken = (req, res, next) => {
-    const token = req.cookies.token;
+    // Check Authorization header first (for localStorage)
+    const authHeader = req.headers.authorization;
+    let token = authHeader && authHeader.split(' ')[1];
+    
+    // Fallback to cookie (for backward compatibility)
+    if (!token) {
+        token = req.cookies.token;
+    }
+    
     if (!token) {
         return res.status(401).json({ error: 'No token provided' });
     }
@@ -70,15 +78,8 @@ router.post('/signup', signupValidation, async (req, res) => {
         
         const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET || 'your-secret-key', { expiresIn: '7d' });
         
-        // Set HTTP-only cookie
-        res.cookie('token', token, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'strict',
-            maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
-        });
-        
         res.json({ 
+            token,
             user: { 
                 id: user._id, 
                 username: user.username, 
@@ -113,15 +114,8 @@ router.post('/login', authLimiter, loginValidation, async (req, res) => {
         
         const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET || 'your-secret-key', { expiresIn: '7d' });
         
-        // Set HTTP-only cookie
-        res.cookie('token', token, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'strict',
-            maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
-        });
-        
         res.json({ 
+            token,
             user: { 
                 id: user._id, 
                 username: user.username, 
@@ -209,7 +203,13 @@ router.post('/submit-quiz', async (req, res) => {
 // Verify token
 router.get('/me', async (req, res) => {
     try {
-        const token = req.cookies.token;
+        const authHeader = req.headers.authorization;
+        let token = authHeader && authHeader.split(' ')[1];
+        
+        if (!token) {
+            token = req.cookies.token;
+        }
+        
         if (!token) {
             return res.status(401).json({ error: 'No token provided' });
         }

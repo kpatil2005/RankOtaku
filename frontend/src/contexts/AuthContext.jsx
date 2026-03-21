@@ -17,9 +17,19 @@ export const AuthProvider = ({ children }) => {
 
     useEffect(() => {
         const verifyToken = async () => {
+            const storedToken = localStorage.getItem('token')
+            
+            if (!storedToken) {
+                setUser(null)
+                setLoading(false)
+                return
+            }
+
             try {
                 const res = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/me`, {
-                    credentials: 'include'
+                    headers: {
+                        'Authorization': `Bearer ${storedToken}`
+                    }
                 })
 
                 const data = await res.json()
@@ -27,10 +37,12 @@ export const AuthProvider = ({ children }) => {
                 if (res.ok) {
                     setUser(data.user)
                 } else {
+                    localStorage.removeItem('token')
                     setUser(null)
                 }
 
             } catch {
+                localStorage.removeItem('token')
                 setUser(null)
             }
 
@@ -45,7 +57,6 @@ export const AuthProvider = ({ children }) => {
             const response = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/login`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                credentials: 'include',
                 body: JSON.stringify({ email, password })
             })
 
@@ -55,6 +66,8 @@ export const AuthProvider = ({ children }) => {
                 throw new Error(data.error || 'Login failed')
             }
 
+            localStorage.setItem('token', data.token)
+            setToken(data.token)
             setUser(data.user)
             return { success: true }
         } catch (error) {
@@ -67,7 +80,6 @@ export const AuthProvider = ({ children }) => {
             const response = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/signup`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                credentials: 'include',
                 body: JSON.stringify({ username, email, password })
             })
 
@@ -77,6 +89,8 @@ export const AuthProvider = ({ children }) => {
                 throw new Error(data.error || 'Signup failed')
             }
 
+            localStorage.setItem('token', data.token)
+            setToken(data.token)
             setUser(data.user)
             return { success: true }
         } catch (error) {
@@ -85,14 +99,8 @@ export const AuthProvider = ({ children }) => {
     }
 
     const logout = async () => {
-        try {
-            await fetch(`${import.meta.env.VITE_API_URL}/api/auth/logout`, {
-                method: 'POST',
-                credentials: 'include'
-            })
-        } catch (error) {
-            console.error('Logout error:', error)
-        }
+        localStorage.removeItem('token')
+        setToken(null)
         setUser(null)
     }
 
