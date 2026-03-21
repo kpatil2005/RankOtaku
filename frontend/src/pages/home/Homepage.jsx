@@ -1,11 +1,11 @@
 import React from 'react'
 import { Header } from '../../components/header/Header';
-import { Anime } from './anime';
+import { Anime } from './Anime';
 import { Herosection } from './Herosection';
 import { Footer } from '../../components/footer/Footer';
 import './Homepage.css';
 import axios from 'axios';
-import { Strip } from './strip';
+import { Strip } from './Strip';
 import { Search } from './Search';
 
 const MemoizedAnime = React.memo(Anime);
