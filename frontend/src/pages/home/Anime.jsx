@@ -1,5 +1,5 @@
 import React from 'react'
-import './anime.css'
+import './Anime.css'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
 import { quizCache } from '../../utils/quizCache'
