@@ -1,0 +1,44 @@
+.door-transition {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 9999;
+    pointer-events: none;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(10px);
+}
+
+.door {
+    position: absolute;
+    top: 0;
+    width: 50vw;
+    height: 100vh;
+    overflow: hidden;
+    transition: transform 0.8s ease-in-out;
+}
+
+.door img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.door-left {
+    left: 0;
+    transform: translateX(-100%);
+}
+
+.door-left.close {
+    transform: translateX(0);
+}
+
+.door-right {
+    right: 0;
+    transform: translateX(100%);
+}
+
+.door-right.close {
+    transform: translateX(0);
+}

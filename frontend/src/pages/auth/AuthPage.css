@@ -1,0 +1,352 @@
+@import url('https://fonts.googleapis.com/css2?family=Bangers&display=swap');
+@import url('https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css');
+
+.auth-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: #0a0a0a;
+    font-family: "Roboto", Arial, sans-serif;
+}
+
+.container{
+    position: relative;
+    width: 1000px;
+    height: 600px;
+    background: #0a0a0a;
+    margin: 20px;
+    overflow: hidden;
+    border: 1px solid #333;
+}
+
+.container h1{
+    font-family: 'Bangers', cursive;
+    font-size: 42px;
+    margin: 0 0 10px 0;
+    background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: 2px;
+}
+
+.container p{
+    font-size: 14px;
+    margin: 10px 0 30px 0;
+    color: #888;
+}
+
+form{ width: 100%; }
+
+.form-box{
+    position: absolute;
+    right: 0;
+    width: 50%;
+    height: 100%;
+    background: #0a0a0a;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    text-align: center;
+    padding: 40px;
+    z-index: 5;
+    transition: right 0.8s ease-in-out;
+}
+
+.container.active .form-box.login{ 
+    right: 50%; 
+}
+
+.form-box.register{ 
+    right: -50%;
+}
+
+.container.active .form-box.register{ 
+    right: 50%;
+}
+
+.input-box{
+    position: relative;
+    margin: 20px 0;
+    width: 100%;
+}
+
+.input-box input{
+    width: 350px;
+    max-width: 350px;
+    padding: 15px 50px 15px 20px;
+    background: #1a1a1a;
+    border: 1px solid #333;
+    outline: none;
+    font-size: 14px;
+    color: white;
+    font-weight: 400;
+    font-family: "Roboto", Arial, sans-serif;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease;
+}
+
+.input-box input:focus{
+    border-color: #ffd700;
+}
+
+.input-box input::placeholder{
+    color: #666;
+    font-weight: 400;
+}
+
+.input-box i{
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 18px;
+    color: #666;
+}
+
+.btn{
+    width: 350px;
+    height: 50px;
+    background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    color: #000;
+    font-weight: 600;
+    font-family: "Roboto", Arial, sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: transform 0.2s;
+}
+
+.btn:hover{
+    transform: translateY(-2px);
+}
+
+.btn:disabled{
+    background: #333;
+    color: #666;
+    cursor: not-allowed;
+    opacity: 0.6;
+    transform: none;
+}
+
+.toggle-box{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+.toggle-box::before{
+    content: '';
+    position: absolute;
+    left: -250%;
+    width: 300%;
+    height: 100%;
+    background: #0a0a0a;
+    border-radius: 150px;
+    z-index: 2;
+    transition: left 1.2s ease-in-out;
+}
+
+.container.active .toggle-box::before{ 
+    left: 50%; 
+}
+
+.toggle-panel{
+    position: absolute;
+    width: 50%;
+    height: 100%;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 3;
+    transition: transform 0.8s ease-in-out, opacity 0.4s ease-in-out;
+    background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+}
+
+.toggle-panel.toggle-left{ 
+    left: 0;
+    transform: translateX(0);
+    opacity: 1;
+}
+
+.container.active .toggle-panel.toggle-left{
+    transform: translateX(-100%);
+    opacity: 0;
+}
+
+.toggle-panel.toggle-right{ 
+    right: 0;
+    transform: translateX(100%);
+    opacity: 0;
+}
+
+.container.active .toggle-panel.toggle-right{
+    transform: translateX(0);
+    opacity: 1;
+}
+
+.toggle-panel p{ 
+    margin-bottom: 25px;
+    color: #000;
+    font-weight: 500;
+}
+
+.toggle-panel .btn{
+    width: 180px;
+    height: 50px;
+    background: #000;
+    border: 2px solid #000;
+    color: #fff;
+    font-weight: 700;
+}
+
+.toggle-panel .btn:hover{
+    background: rgba(0, 0, 0, 0.8);
+    transform: translateY(-2px);
+}
+
+.error-message {
+    background: rgba(220, 38, 38, 0.1);
+    border: 1px solid #dc2626;
+    color: #dc2626;
+    padding: 12px;
+    margin-bottom: 20px;
+    font-size: 13px;
+    text-align: center;
+}
+
+.input-box input.error {
+    border-color: #dc2626 !important;
+}
+
+.input-box input.valid {
+    border-color: #10b981 !important;
+}
+
+.validation-error {
+    display: block;
+    color: #dc2626;
+    font-size: 11px;
+    margin-top: 5px;
+    text-align: left;
+    padding-left: 5px;
+}
+
+.password-toggle {
+    cursor: pointer;
+    right: 50px !important;
+    color: #666;
+    transition: color 0.3s ease;
+}
+
+.password-toggle:hover {
+    color: #ffd700;
+}
+
+.password-strength {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+.strength-bar {
+    flex: 1;
+    height: 3px;
+    background: #1a1a1a;
+    overflow: hidden;
+}
+
+.strength-fill {
+    height: 100%;
+    transition: width 0.3s ease, background-color 0.3s ease;
+}
+
+.password-strength span {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.forgot-password-link {
+    margin-top: 15px;
+    text-align: center;
+}
+
+.forgot-password-link a {
+    color: #ffd700;
+    font-size: 13px;
+    text-decoration: none;
+    transition: color 0.3s;
+    font-weight: 500;
+}
+
+.forgot-password-link a:hover {
+    color: #ffed4e;
+}
+
+@media screen and (max-width: 650px){
+    .container{ height: calc(100vh - 40px); }
+
+    .form-box{
+        bottom: 0;
+        width: 100%;
+        height: 70%;
+    }
+
+    .container.active .form-box{
+        right: 0;
+        bottom: 30%;
+    }
+
+    .toggle-box::before{
+        left: 0;
+        top: -270%;
+        width: 100%;
+        height: 300%;
+        border-radius: 20vw;
+    }
+
+    .container.active .toggle-box::before{
+        left: 0;
+        top: 70%;
+    }
+
+    .container.active .toggle-panel.toggle-left{
+        left: 0;
+        top: -30%;
+    }
+
+    .toggle-panel{ 
+        width: 100%;
+        height: 30%;
+    }
+    
+    .toggle-panel.toggle-left{ top: 0; }
+    
+    .toggle-panel.toggle-right{
+        right: 0;
+        bottom: -30%;
+    }
+
+    .container.active .toggle-panel.toggle-right{ bottom: 0; }
+    
+    .input-box input,
+    .btn{
+        width: 280px;
+        max-width: 280px;
+    }
+}
+
+@media screen and (max-width: 400px){
+    .form-box { padding: 20px; }
+    .toggle-panel h1{font-size: 32px; }
+}

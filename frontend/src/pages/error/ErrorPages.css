@@ -1,0 +1,74 @@
+.error-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #0a0a0a;
+  padding: 20px;
+}
+
+.error-content {
+  text-align: center;
+  max-width: 600px;
+}
+
+.error-code {
+  font-family: 'Bangers', cursive;
+  font-size: 120px;
+  background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 0 0 20px 0;
+  line-height: 1;
+}
+
+.error-title {
+  font-family: 'Bangers', cursive;
+  font-size: 32px;
+  color: #fff;
+  margin: 0 0 20px 0;
+  letter-spacing: 2px;
+}
+
+.error-message {
+  font-size: 16px;
+  color: #888;
+  margin: 0 0 40px 0;
+  line-height: 1.6;
+}
+
+.error-btn-group {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.error-btn {
+  padding: 15px 40px;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+  color: #000;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.error-btn:hover {
+  transform: translateY(-2px);
+}
+
+.error-btn-secondary {
+  background: transparent;
+  color: #fff;
+  border: 1px solid #333;
+}
+
+.error-btn-secondary:hover {
+  border-color: #ffd700;
+  color: #ffd700;
+}

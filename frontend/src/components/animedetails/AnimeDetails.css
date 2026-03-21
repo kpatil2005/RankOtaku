@@ -1,0 +1,414 @@
+@import url('https://fonts.googleapis.com/css2?family=Bangers&display=swap');
+
+.anime-details-container {
+    color: white;
+    background: #000;
+    padding-top: 100px;
+}
+
+.loading {
+    color: white;
+    padding: 40px;
+    text-align: center;
+    font-size: 24px;
+}
+
+/* Hero Banner */
+.anime-hero {
+    height: 600px;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    position: relative;
+}
+
+.anime-hero .navbar {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+}
+
+.anime-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.98));
+    z-index: 1;
+}
+
+.anime-hero-content {
+    display: flex;
+    gap: 40px;
+    max-width: 1400px;
+    margin: auto;
+    width: 100%;
+    position: relative;
+    z-index: 2;
+    padding: 0 40px;
+}
+
+.anime-poster {
+    width: 280px;
+    height: 400px;
+    object-fit: cover;
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+}
+
+.anime-hero-info h1 {
+    font-size: 48px;
+    margin: 0 0 16px 0;
+    font-weight: 800;
+}
+
+.anime-meta {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.meta-badge {
+    background: rgba(246, 201, 2, 0.2);
+    color: rgb(246, 201, 2);
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.anime-stats {
+    display: flex;
+    gap: 40px;
+    margin-bottom: 24px;
+}
+
+.stat {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-value {
+    font-size: 32px;
+    font-weight: 800;
+    color: rgb(246, 201, 2);
+}
+
+.stat-label {
+    font-size: 14px;
+    color: #999;
+    margin-top: 4px;
+}
+
+.anime-genres {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 32px;
+}
+
+.genre-tag {
+    background: rgba(255,255,255,0.1);
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    border: 1px solid rgba(255,255,255,0.2);
+}
+
+.anime-actions {
+    display: flex;
+    gap: 16px;
+}
+
+.btn-primary-large {
+    background: rgb(246, 201, 2);
+    color: black;
+    border: none;
+    padding: 16px 48px;
+    font-size: 18px;
+    font-weight: 700;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-primary-large:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(246, 201, 2, 0.5);
+}
+
+.btn-secondary-large {
+    background: transparent;
+    color: white;
+    border: 3px solid white;
+    padding: 16px 48px;
+    font-size: 18px;
+    font-weight: 700;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-secondary-large:hover {
+    background: white;
+    color: black;
+}
+
+/* Content Sections */
+.content-section {
+    max-width: 1400px;
+    margin: 60px auto;
+    padding: 0 60px;
+}
+
+.section-title {
+    font-size: 32px;
+    font-weight: 800;
+    margin-bottom: 24px;
+    color: white;
+}
+
+.synopsis-text {
+    font-size: 18px;
+    line-height: 1.8;
+    color: #ccc;
+}
+
+/* Info Grid */
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
+}
+
+.info-item {
+    background: rgba(255,255,255,0.05);
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.info-label {
+    display: block;
+    font-size: 14px;
+    color: #999;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.info-value {
+    display: block;
+    font-size: 18px;
+    color: white;
+    font-weight: 600;
+}
+
+/* Characters Grid */
+.characters-grid {
+    display: flex;
+    overflow-x: auto;
+    gap: 24px;
+    padding-bottom: 20px;
+}
+
+.character-card-new {
+    min-width: 180px;
+    width: 180px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: transform 0.3s;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.character-card-new:hover {
+    transform: translateY(-8px);
+    border-color: rgb(246, 201, 2);
+}
+
+.character-card-new img {
+    width: 100%;
+    height: 240px;
+    object-fit: cover;
+}
+
+.character-info {
+    padding: 16px;
+}
+
+.character-name {
+    font-size: 16px;
+    font-weight: 700;
+    margin: 0 0 4px 0;
+    color: white;
+}
+
+.character-role {
+    font-size: 13px;
+    color: rgb(246, 201, 2);
+    margin: 0;
+}
+
+/* Gallery Grid */
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.gallery-image {
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: transform 0.3s;
+}
+
+.gallery-image:hover {
+    transform: scale(1.05);
+}
+
+/* Quiz Type Modal */
+.quiz-type-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    backdrop-filter: blur(5px);
+}
+
+.quiz-type-modal {
+    background: #000;
+    border-radius: 16px;
+    padding: 40px;
+    max-width: 800px;
+    width: 90%;
+}
+
+.quiz-type-modal h2 {
+    font-size: 32px;
+    font-weight: 700;
+    color: #fff;
+    margin: 0 0 12px 0;
+    text-align: center;
+}
+
+.quiz-type-modal > p {
+    font-size: 16px;
+    color: #888;
+    text-align: center;
+    margin: 0 0 32px 0;
+}
+
+.quiz-type-buttons {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+    margin-bottom: 24px;
+}
+
+.quiz-type-btn {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    border: 2px solid #ffffff;
+    border-radius: 12px;
+    padding: 0;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    min-height: 350px;
+    display: flex;
+    flex-direction: column;
+}
+
+.quiz-type-btn-header {
+    padding: 30px 20px;
+    background: rgba(255, 255, 255, 0.9);
+    position: relative;
+    z-index: 1;
+}
+
+.quiz-type-btn-image {
+    flex: 1;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: relative;
+}
+
+.anime-quiz-btn .quiz-type-btn-image {
+    background-image: url('/animelist.webp');
+}
+
+.character-quiz-btn .quiz-type-btn-image {
+    background-image: url('/charactorlist.jpg');
+}
+
+.quiz-type-btn-image::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.3);
+    z-index: 0;
+}
+
+.quiz-type-btn:hover .quiz-type-btn-image::before {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.quiz-type-btn:hover {
+    transform: translateY(-4px);
+    border-color: #ffffff;
+}
+
+
+
+.quiz-type-btn h3 {
+    font-size: 36px;
+    font-weight: 700;
+    color: #000000;
+    margin: 0;
+    font-family: 'Bangers', cursive;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+}
+
+.quiz-type-btn p {
+    font-size: 14px;
+    color: #000000;
+    margin: 8px 0 0 0;
+    line-height: 1.5;
+    font-weight: 600;
+}
+
+.close-modal-btn {
+    width: 100%;
+    background: transparent;
+    border: 2px solid #fff;
+    color: #fff;
+    padding: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.close-modal-btn:hover {
+    background: #d30000;
+    color: #000;
+}
