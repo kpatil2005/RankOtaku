@@ -13,7 +13,9 @@ const leaderboardRoutes = require("./routes/leaderboard")
 const app = express()
 
 // Security headers
-app.use(helmet());
+app.use(helmet({
+    crossOriginResourcePolicy: { policy: "cross-origin" }
+}));
 
 // Global rate limiting
 const globalLimiter = rateLimit({

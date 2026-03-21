@@ -22,7 +22,7 @@ export function Anime({ anime, title = "Top Anime Battles" }) {
         
         lastFetchTime.current[animeTitle] = now;
         
-        axios.post('http://localhost:5000/api/generate-quiz', {
+        axios.post(`${import.meta.env.VITE_API_URL}/api/generate-quiz`, {
             animeTitle: animeTitle
         })
         .then(response => {
