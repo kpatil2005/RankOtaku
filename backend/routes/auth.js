@@ -146,14 +146,8 @@ router.get('/profile', async (req, res) => {
 });
 
 // Submit quiz answers (secure)
-router.post('/submit-quiz', async (req, res) => {
+router.post('/submit-quiz', authenticateToken, async (req, res) => {
     try {
-        const token = req.cookies.token;
-        if (!token) {
-            return res.status(401).json({ error: 'No token provided' });
-        }
-        
-        const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
         const { answers, quiz, animeTitle, animeImage } = req.body;
         
         // Calculate score on backend (secure)
@@ -167,7 +161,7 @@ router.post('/submit-quiz', async (req, res) => {
         const points = score * 10; // 10 points per correct answer
         
         const user = await User.findByIdAndUpdate(
-            decoded.userId,
+            req.user.userId,
             { 
                 $inc: { otakuPoints: points, quizzesTaken: 1 },
                 $push: { 
@@ -234,15 +228,9 @@ router.post('/logout', (req, res) => {
 });
 
 // Get quiz history
-router.get('/quiz-history', async (req, res) => {
+router.get('/quiz-history', authenticateToken, async (req, res) => {
     try {
-        const token = req.cookies.token;
-        if (!token) {
-            return res.status(401).json({ error: 'No token provided' });
-        }
-        
-        const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
-        const user = await User.findById(decoded.userId).select('quizHistory');
+        const user = await User.findById(req.user.userId).select('quizHistory');
         
         res.json({ quizHistory: user.quizHistory || [] });
     } catch (error) {
@@ -251,15 +239,9 @@ router.get('/quiz-history', async (req, res) => {
 });
 
 // Get user rank
-router.get('/rank', async (req, res) => {
+router.get('/rank', authenticateToken, async (req, res) => {
     try {
-        const token = req.cookies.token;
-        if (!token) {
-            return res.status(401).json({ error: 'No token provided' });
-        }
-        
-        const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
-        const user = await User.findById(decoded.userId);
+        const user = await User.findById(req.user.userId);
         
         if (!user) {
             return res.status(404).json({ error: 'User not found' });
@@ -279,14 +261,8 @@ router.get('/rank', async (req, res) => {
 });
 
 // Update profile
-router.put('/update-profile', async (req, res) => {
+router.put('/update-profile', authenticateToken, async (req, res) => {
     try {
-        const token = req.cookies.token;
-        if (!token) {
-            return res.status(401).json({ error: 'No token provided' });
-        }
-        
-        const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
         const { username, bio, avatar } = req.body;
         
         const updateData = {};
@@ -295,7 +271,7 @@ router.put('/update-profile', async (req, res) => {
         if (avatar !== undefined) updateData.avatar = avatar;
         
         const user = await User.findByIdAndUpdate(
-            decoded.userId,
+            req.user.userId,
             updateData,
             { new: true }
         ).select('-password');
