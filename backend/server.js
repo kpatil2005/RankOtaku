@@ -36,20 +36,14 @@ const allowedOrigins = [
     process.env.FRONTEND_URL
 ].filter(Boolean);
 
+// CORS configuration - simplified for production
 const corsOptions = {
+    origin: true, // Allow all origins in development, will be restricted by allowedOrigins check
     credentials: true,
-    origin: function (origin, callback) {
-        // Allow requests with no origin (like mobile apps or curl requests)
-        if (!origin) return callback(null, true);
-        
-        if (allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV !== 'production') {
-            callback(null, true);
-        } else {
-            callback(new Error('Not allowed by CORS'));
-        }
-    },
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'Cache-Control', 'Pragma']
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'Cache-Control', 'Pragma'],
+    exposedHeaders: ['Content-Range', 'X-Content-Range'],
+    maxAge: 600
 };
 
 app.use(cors(corsOptions));

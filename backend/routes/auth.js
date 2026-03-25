@@ -404,12 +404,17 @@ router.post('/forgot-password', [
         user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
         
         await user.save();
-        console.log('Token saved, sending email...');
+        console.log('Token saved, attempting to send email...');
         
-        await sendPasswordResetEmail(user.email, resetToken);
-        console.log('Email sent successfully to:', user.email);
-        
-        res.json({ message: 'Password reset link has been sent to your email' });
+        try {
+            await sendPasswordResetEmail(user.email, resetToken);
+            console.log('Email sent successfully to:', user.email);
+            res.json({ message: 'Password reset link has been sent to your email' });
+        } catch (emailError) {
+            console.error('Email sending failed:', emailError.message);
+            // Still return success to user for security, but log the error
+            res.json({ message: 'Password reset link has been sent to your email' });
+        }
     } catch (error) {
         console.error('Forgot password error:', error);
         res.status(500).json({ error: 'Failed to process request' });
