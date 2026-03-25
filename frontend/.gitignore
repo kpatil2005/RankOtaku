@@ -8,7 +8,7 @@ pnpm-debug.log*
 lerna-debug.log*
 
 node_modules
-dist
+distvia.placeholder.com/300x400/1a1a1a/ff6b35?text=No+Image:1  GET https://via.placeholder.com/300x400/1a1a1a/ff6b35?text=No+Image net::ERR_NAME_NOT_RESOLVED
 dist-ssr
 *.local
 

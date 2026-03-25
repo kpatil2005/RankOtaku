@@ -386,11 +386,11 @@ export default function ProfilePage() {
                                             <div key={index} className="anime-list-card">
                                                 <div className="anime-list-image">
                                                     <img 
-                                                        src={anime.image || 'https://via.placeholder.com/180x240'} 
+                                                        src={anime.image || ''} 
                                                         alt={anime.title}
                                                         onError={(e) => {
                                                             e.target.onerror = null;
-                                                            e.target.src = 'https://via.placeholder.com/180x240';
+                                                            e.target.src = '';
                                                         }}
                                                     />
                                                 </div>
@@ -415,11 +415,11 @@ export default function ProfilePage() {
                                         <div key={index} className="anime-list-card">
                                             <div className="anime-list-image">
                                                 <img 
-                                                    src={anime.image || 'https://via.placeholder.com/180x240'} 
+                                                    src={anime.image || ''} 
                                                     alt={anime.title}
                                                     onError={(e) => {
                                                         e.target.onerror = null;
-                                                        e.target.src = 'https://via.placeholder.com/180x240';
+                                                        e.target.src = '';
                                                     }}
                                                 />
                                             </div>
@@ -500,7 +500,7 @@ export default function ProfilePage() {
                                                 if (!animeMap[title]) {
                                                     animeMap[title] = {
                                                         title,
-                                                        image: quiz.animeImage || 'https://via.placeholder.com/300x400/1a1a1a/ff6b35?text=No+Image',
+                                                        image: quiz.animeImage || '',
                                                         quizzes: [],
                                                         totalScore: 0,
                                                         totalQuestions: 0,
@@ -572,11 +572,11 @@ export default function ProfilePage() {
                                                     <div key={index} className="anime-achievement-card character-achievement-card">
                                                         <div className="anime-achievement-image">
                                                             <img 
-                                                                src={quiz.animeImage || 'https://via.placeholder.com/300x400/1a1a1a/ff6b35?text=No+Image'} 
+                                                                src={quiz.animeImage || ''} 
                                                                 alt={characterName} 
                                                                 onError={(e) => {
                                                                     e.target.onerror = null;
-                                                                    e.target.src = 'https://via.placeholder.com/300x400/1a1a1a/ff6b35?text=No+Image';
+                                                                    e.target.src = '';
                                                                 }}
                                                             />
                                                             <div 
@@ -896,7 +896,7 @@ export default function ProfilePage() {
                                                 if (!animeMap[title]) {
                                                     animeMap[title] = {
                                                         title,
-                                                        image: quiz.animeImage || 'https://via.placeholder.com/300x400/1a1a1a/ff6b35?text=No+Image',
+                                                        image: quiz.animeImage || '',
                                                         quizzes: [],
                                                         totalScore: 0,
                                                         totalQuestions: 0,
@@ -919,7 +919,7 @@ export default function ProfilePage() {
                                                                 alt={anime.title} 
                                                                 onError={(e) => {
                                                                     e.target.onerror = null;
-                                                                    e.target.src = 'https://via.placeholder.com/300x400/1a1a1a/ff6b35?text=No+Image';
+                                                                    e.target.src = '';
                                                                 }}
                                                             />
                                                         </div>
@@ -977,11 +977,11 @@ export default function ProfilePage() {
                                                     <div key={index} className="anime-achievement-card character-achievement-card">
                                                         <div className="anime-achievement-image">
                                                             <img 
-                                                                src={quiz.animeImage || 'https://via.placeholder.com/300x400/1a1a1a/ff6b35?text=No+Image'} 
+                                                                src={quiz.animeImage || ''} 
                                                                 alt={characterName} 
                                                                 onError={(e) => {
                                                                     e.target.onerror = null;
-                                                                    e.target.src = 'https://via.placeholder.com/300x400/1a1a1a/ff6b35?text=No+Image';
+                                                                    e.target.src = '';
                                                                 }}
                                                             />
                                                             <div 
