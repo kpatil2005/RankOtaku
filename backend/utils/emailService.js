@@ -12,6 +12,12 @@ const transporter = nodemailer.createTransport({
 
 const sendPasswordResetEmail = async (email, resetToken) => {
     try {
+        // Verify transporter configuration
+        if (!process.env.BREVO_SMTP_LOGIN || !process.env.BREVO_API_KEY) {
+            console.error('Missing SMTP credentials');
+            throw new Error('Email service not configured');
+        }
+
         const resetUrl = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
         
         const mailOptions = {
