@@ -521,7 +521,7 @@ export default function ProfilePage() {
                                                             alt={anime.title} 
                                                             onError={(e) => {
                                                                 e.target.onerror = null;
-                                                                e.target.src = 'https://via.placeholder.com/300x400/1a1a1a/ff6b35?text=No+Image';
+                                                                e.target.src = 'https://placehold.co/300x400/1a1a1a/ff6b35?text=No+Image';
                                                             }}
                                                         />
                                                     </div>
