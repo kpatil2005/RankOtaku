@@ -100,61 +100,12 @@ export default function ProfilePage() {
         navigate('/');
     };
 
-    const handleFileChange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            // Check file size (max 2MB)
-            if (file.size > 2 * 1024 * 1024) {
-                alert('Image size should be less than 2MB');
-                return;
-            }
-            
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                const img = new Image();
-                img.onload = () => {
-                    // Create canvas to resize image
-                    const canvas = document.createElement('canvas');
-                    const MAX_SIZE = 300;
-                    let width = img.width;
-                    let height = img.height;
-                    
-                    // Calculate new dimensions
-                    if (width > height) {
-                        if (width > MAX_SIZE) {
-                            height *= MAX_SIZE / width;
-                            width = MAX_SIZE;
-                        }
-                    } else {
-                        if (height > MAX_SIZE) {
-                            width *= MAX_SIZE / height;
-                            height = MAX_SIZE;
-                        }
-                    }
-                    
-                    canvas.width = width;
-                    canvas.height = height;
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0, width, height);
-                    
-                    // Convert to base64 with compression
-                    const resizedImage = canvas.toDataURL('image/jpeg', 0.8);
-                    document.getElementById('avatarPreview').src = resizedImage;
-                    document.getElementById('avatarInput').value = resizedImage;
-                };
-                img.src = reader.result;
-            };
-            reader.readAsDataURL(file);
-        }
-    };
-
     const handleSubmit = async (e) => {
         e.preventDefault();
         
         const formData = {
             username: e.target.username.value,
-            bio: e.target.bio.value,
-            avatar: e.target.avatarInput.value
+            bio: e.target.bio.value
         };
         
         try {
@@ -171,12 +122,13 @@ export default function ProfilePage() {
             
             const data = await response.json();
             
-            if (data.user) {
+            if (response.ok && data.user) {
                 setUser(data.user);
+                setProfileUser(data.user);
                 setShowEditModal(false);
                 alert('Profile updated successfully!');
             } else {
-                alert('Failed to update profile');
+                alert(data.error || 'Failed to update profile');
             }
         } catch (error) {
             alert('Error updating profile: ' + error.message);
@@ -1190,13 +1142,12 @@ export default function ProfilePage() {
                         <form className="edit-form" onSubmit={handleSubmit}>
                             <div className="form-group">
                                 <label>Username</label>
-                                <input type="text" name="username" defaultValue={user.username} />
+                                <input type="text" name="username" defaultValue={user.username} required />
                             </div>
                             <div className="form-group">
                                 <label>Bio</label>
                                 <textarea name="bio" rows="3" placeholder="Tell us about yourself..." defaultValue={user.bio || ''}></textarea>
                             </div>
-                            <input type="hidden" id="avatarInput" name="avatarInput" defaultValue={user.avatar || ''} />
                             <div className="modal-actions">
                                 <button type="button" className="btn secondary" onClick={() => setShowEditModal(false)}>Cancel</button>
                                 <button type="submit" className="btn primary">Save Changes</button>
