@@ -3,13 +3,12 @@ import './Herosection.css';
 import { Leaderboard } from '../leaderboard/leaderboard';
 import { HeroContent } from './HeroContent';
 import { AnimeBackground } from './AnimeBackground';
-import { HeroLoading } from './HeroLoading';
+
 export function Herosection() {
     const [animeList, setAnimeList] = useState([]);
-    const [loading, setLoading] = useState(() => {
-        return !sessionStorage.getItem('heroLoaded');
-    });
+    const [loading, setLoading] = useState(true);
     const [currentSlide, setCurrentSlide] = useState(0);
+
     useEffect(() => {
         const fetchPopularAnime = async () => {
             try {
@@ -25,7 +24,6 @@ export function Herosection() {
                     setAnimeList(popularAnime);
                 }
                 setLoading(false);
-                sessionStorage.setItem('heroLoaded', 'true');
             } catch (error) {
                 console.error('Error fetching anime:', error);
                 const fallbackAnime = Array.from({ length: 10 }, (_, index) => ({
@@ -33,11 +31,11 @@ export function Herosection() {
                 }));
                 setAnimeList(fallbackAnime);
                 setLoading(false);
-                sessionStorage.setItem('heroLoaded', 'true');
             }
         };
         fetchPopularAnime();
     }, []);
+
     useEffect(() => {
         if (animeList.length === 0) return;
 
@@ -46,19 +44,13 @@ export function Herosection() {
         }, 5000);
         return () => clearInterval(interval);
     }, [animeList]);
-    if (loading) {
-        return (
-            <div className='hero'>
-                <HeroLoading />
-            </div>
-        );
-    }
+
     return (
         <div className='hero'>
             <AnimeBackground animeList={animeList} currentSlide={currentSlide} />
             <div className='hero-main'>
                 <HeroContent />
-                <Leaderboard />
+                <Leaderboard loading={loading} />
             </div>
         </div>
     );
