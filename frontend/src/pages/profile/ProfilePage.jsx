@@ -216,8 +216,12 @@ export default function ProfilePage() {
         const fetchQuizHistory = async () => {
             if (!isOwnProfile) return;
             try {
+                const token = localStorage.getItem('token');
                 const response = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/quiz-history`, {
-                    credentials: 'include'
+                    credentials: 'include',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
                 });
                 const data = await response.json();
                 setQuizHistory(data.quizHistory || []);
@@ -228,8 +232,12 @@ export default function ProfilePage() {
         const fetchRank = async () => {
             if (!isOwnProfile) return;
             try {
+                const token = localStorage.getItem('token');
                 const response = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/rank?t=${Date.now()}`, {
-                    credentials: 'include'
+                    credentials: 'include',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
                 });
                 if (!response.ok) return;
                 const data = await response.json();
