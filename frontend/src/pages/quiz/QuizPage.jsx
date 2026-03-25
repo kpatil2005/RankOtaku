@@ -55,9 +55,13 @@ export function QuizPage() {
         } else {
             // Submit quiz to backend
             try {
+                const token = localStorage.getItem('token');
                 const response = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/submit-quiz`, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
                     credentials: 'include',
                     body: JSON.stringify({ answers: newAnswers, quiz, animeTitle, animeImage })
                 });
