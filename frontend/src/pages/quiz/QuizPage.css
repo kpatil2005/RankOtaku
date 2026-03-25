@@ -442,6 +442,29 @@
 @media (max-width: 768px) {
     .quiz-page {
         grid-template-columns: 1fr;
+        margin-top: 60px;
+    }
+
+    .user-profile-top {
+        position: fixed;
+        top: 10px;
+        right: 10px;
+        padding: 8px 16px;
+        border-radius: 40px;
+    }
+
+    .user-profile-top .profile-avatar {
+        width: 32px;
+        height: 32px;
+        font-size: 14px;
+    }
+
+    .user-profile-top .profile-name {
+        font-size: 13px;
+    }
+
+    .points-display .points-value {
+        font-size: 13px;
     }
 
     .quiz-stats {
@@ -449,24 +472,58 @@
     }
 
     .quiz-card {
-        padding: 30px 20px;
-    }
-
-    .options-grid {
-        grid-template-columns: 1fr;
+        padding: 20px 16px;
+        min-height: calc(100vh - 60px);
     }
 
     .quiz-title {
-        font-size: 22px;
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
+
+    .question-header {
+        font-size: 12px;
+        padding: 8px 20px;
+        margin-bottom: 20px;
     }
 
     .question-text {
         font-size: 18px;
+        margin-bottom: 25px;
+    }
+
+    .options-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+        margin-bottom: 25px;
+    }
+
+    .option-btn {
+        padding: 16px;
+        font-size: 15px;
+        min-height: 48px;
+    }
+
+    .submit-btn {
+        padding: 16px 32px;
+        font-size: 15px;
+        width: 100%;
+        max-width: 280px;
+        margin: 0 auto;
+        display: block;
+    }
+
+    .surrender-btn-left {
+        bottom: 16px;
+        left: 16px;
+        padding: 12px 20px;
+        font-size: 11px;
     }
 
     .result-container {
         flex-direction: column;
-        gap: 30px;
+        gap: 24px;
+        margin-top: 16px;
     }
 
     .result-gif {
@@ -475,11 +532,132 @@
     }
 
     .result-anime-title {
-        font-size: 24px;
+        font-size: 28px;
+        text-align: center;
+    }
+
+    .result-score-card {
+        padding: 24px;
     }
 
     .score-number {
         font-size: 48px;
+    }
+
+    .back-btn {
+        width: 100%;
+        max-width: 280px;
+        margin: 16px auto 0;
+    }
+
+    .vs-text {
+        font-size: 80px;
+    }
+
+    .fighter-img {
+        width: 200px;
+        height: 260px;
+    }
+
+    .fighter-name {
+        font-size: 24px;
+        margin-top: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .quiz-card {
+        padding: 16px 12px;
+    }
+
+    .quiz-title {
+        font-size: 20px;
+        margin-bottom: 16px;
+    }
+
+    .question-header {
+        font-size: 11px;
+        padding: 6px 16px;
+        margin-bottom: 16px;
+    }
+
+    .question-text {
+        font-size: 16px;
+        margin-bottom: 20px;
+    }
+
+    .option-btn {
+        padding: 14px;
+        font-size: 14px;
+        min-height: 44px;
+    }
+
+    .submit-btn {
+        padding: 14px 28px;
+        font-size: 14px;
+        max-width: 260px;
+    }
+
+    .surrender-btn-left {
+        padding: 10px 16px;
+        font-size: 10px;
+    }
+
+    .result-gif {
+        width: 160px;
+        height: 160px;
+    }
+
+    .result-anime-title {
+        font-size: 24px;
+    }
+
+    .result-score-card {
+        padding: 20px;
+    }
+
+    .score-number {
+        font-size: 40px;
+    }
+
+    .back-btn {
+        max-width: 240px;
+        padding: 12px 24px;
+        font-size: 13px;
+    }
+
+    .vs-text {
+        font-size: 60px;
+    }
+
+    .fighter-img {
+        width: 160px;
+        height: 200px;
+    }
+
+    .fighter-name {
+        font-size: 20px;
+        margin-top: 12px;
+    }
+
+    .user-profile-top {
+        top: 8px;
+        right: 8px;
+        padding: 6px 12px;
+    }
+
+    .user-profile-top .profile-avatar {
+        width: 28px;
+        height: 28px;
+        font-size: 12px;
+    }
+
+    .user-profile-top .profile-name {
+        font-size: 12px;
+    }
+
+    .points-display .points-value {
+        font-size: 12px;
     }
 }
 

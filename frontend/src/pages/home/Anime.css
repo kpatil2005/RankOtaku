@@ -177,3 +177,79 @@
         transform: translateX(0);
     }
 }
+
+@media (max-width: 768px) {
+    .anime-container {
+        padding: 0 20px;
+        margin: 40px 0;
+    }
+
+    .anime-container h1 {
+        font-size: 28px;
+        letter-spacing: 1.5px;
+        margin-bottom: 20px;
+    }
+
+    .anime-card {
+        min-width: 180px;
+        max-width: 180px;
+    }
+
+    .anime-card img {
+        height: 260px;
+    }
+
+    .anime-info {
+        padding: 12px;
+    }
+
+    .anime-info h2 {
+        font-size: 12px;
+        min-height: 34px;
+    }
+
+    .anime-info p {
+        font-size: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .anime-container {
+        padding: 0 16px;
+        margin: 30px 0;
+    }
+
+    .anime-container h1 {
+        font-size: 22px;
+        letter-spacing: 1px;
+        margin-bottom: 16px;
+    }
+
+    .anime-card {
+        min-width: 150px;
+        max-width: 150px;
+    }
+
+    .anime-card img {
+        height: 210px;
+    }
+
+    .anime-info {
+        padding: 10px;
+    }
+
+    .anime-info h2 {
+        font-size: 11px;
+        min-height: 30px;
+        margin-bottom: 6px;
+    }
+
+    .anime-info p {
+        font-size: 9px;
+        padding: 2px 0;
+    }
+
+    .anime-rank {
+        padding: 3px 0;
+    }
+}

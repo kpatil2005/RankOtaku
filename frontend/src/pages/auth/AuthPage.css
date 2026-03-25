@@ -1,5 +1,9 @@
-@import url('https://fonts.googleapis.com/css2?family=Bangers&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 @import url('https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css');
+
+* {
+    box-sizing: border-box;
+}
 
 .auth-page {
     display: flex;
@@ -7,346 +11,488 @@
     align-items: center;
     min-height: 100vh;
     background: #0a0a0a;
-    font-family: "Roboto", Arial, sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    padding: 20px;
 }
 
-.container{
+.container {
     position: relative;
-    width: 1000px;
+    width: 900px;
+    max-width: 100%;
     height: 600px;
-    background: #0a0a0a;
-    margin: 20px;
+    background: #111;
+    border-radius: 16px;
     overflow: hidden;
-    border: 1px solid #333;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    border: 1px solid #222;
 }
 
-.container h1{
-    font-family: 'Bangers', cursive;
-    font-size: 42px;
-    margin: 0 0 10px 0;
-    background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    letter-spacing: 2px;
-}
-
-.container p{
-    font-size: 14px;
-    margin: 10px 0 30px 0;
-    color: #888;
-}
-
-form{ width: 100%; }
-
-.form-box{
+/* Form Box Styling */
+.form-box {
     position: absolute;
     right: 0;
     width: 50%;
     height: 100%;
-    background: #0a0a0a;
+    background: #000;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    color: white;
-    text-align: center;
-    padding: 40px;
+    padding: 60px 40px;
     z-index: 5;
-    transition: right 0.8s ease-in-out;
+    transition: right 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.container.active .form-box.login{ 
-    right: 50%; 
-}
-
-.form-box.register{ 
-    right: -50%;
-}
-
-.container.active .form-box.register{ 
+.container.active .form-box.login {
     right: 50%;
 }
 
-.input-box{
+.form-box.register {
+    right: -50%;
+}
+
+.container.active .form-box.register {
+    right: 50%;
+}
+
+/* Typography */
+.form-box h1 {
+    font-size: 32px;
+    font-weight: 700;
+    color: #ffffff;
+    margin: 0 0 8px 0;
+    letter-spacing: -0.5px;
+}
+
+/* Form Styling */
+form {
+    width: 100%;
+    max-width: 320px;
+}
+
+.input-box {
     position: relative;
-    margin: 20px 0;
+    margin-bottom: 20px;
     width: 100%;
 }
 
-.input-box input{
-    width: 350px;
-    max-width: 350px;
-    padding: 15px 50px 15px 20px;
+.input-box input {
+    width: 100%;
+    height: 48px;
+    padding: 0 50px 0 16px;
     background: #1a1a1a;
-    border: 1px solid #333;
+    border: 1.5px solid #333;
+    border-radius: 8px;
     outline: none;
-    font-size: 14px;
-    color: white;
+    font-size: 16px;
+    color: #ffffff;
     font-weight: 400;
-    font-family: "Roboto", Arial, sans-serif;
-    box-sizing: border-box;
-    transition: border-color 0.3s ease;
+    font-family: inherit;
+    transition: all 0.2s ease;
 }
 
-.input-box input:focus{
+.input-box input:focus {
     border-color: #ffd700;
+    background: #222;
+    box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.1);
 }
 
-.input-box input::placeholder{
+.input-box input::placeholder {
     color: #666;
     font-weight: 400;
 }
 
-.input-box i{
+.input-box input.error {
+    border-color: #ef4444;
+    background: rgba(239, 68, 68, 0.05);
+}
+
+.input-box i {
     position: absolute;
-    right: 20px;
+    right: 16px;
     top: 50%;
     transform: translateY(-50%);
     font-size: 18px;
     color: #666;
-}
-
-.btn{
-    width: 350px;
-    height: 50px;
-    background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
-    border: none;
-    cursor: pointer;
-    font-size: 14px;
-    color: #000;
-    font-weight: 600;
-    font-family: "Roboto", Arial, sans-serif;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    transition: transform 0.2s;
-}
-
-.btn:hover{
-    transform: translateY(-2px);
-}
-
-.btn:disabled{
-    background: #333;
-    color: #666;
-    cursor: not-allowed;
-    opacity: 0.6;
-    transform: none;
-}
-
-.toggle-box{
-    position: absolute;
-    width: 100%;
-    height: 100%;
-}
-
-.toggle-box::before{
-    content: '';
-    position: absolute;
-    left: -250%;
-    width: 300%;
-    height: 100%;
-    background: #0a0a0a;
-    border-radius: 150px;
-    z-index: 2;
-    transition: left 1.2s ease-in-out;
-}
-
-.container.active .toggle-box::before{ 
-    left: 50%; 
-}
-
-.toggle-panel{
-    position: absolute;
-    width: 50%;
-    height: 100%;
-    color: #fff;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    z-index: 3;
-    transition: transform 0.8s ease-in-out, opacity 0.4s ease-in-out;
-    background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
-}
-
-.toggle-panel.toggle-left{ 
-    left: 0;
-    transform: translateX(0);
-    opacity: 1;
-}
-
-.container.active .toggle-panel.toggle-left{
-    transform: translateX(-100%);
-    opacity: 0;
-}
-
-.toggle-panel.toggle-right{ 
-    right: 0;
-    transform: translateX(100%);
-    opacity: 0;
-}
-
-.container.active .toggle-panel.toggle-right{
-    transform: translateX(0);
-    opacity: 1;
-}
-
-.toggle-panel p{ 
-    margin-bottom: 25px;
-    color: #000;
-    font-weight: 500;
-}
-
-.toggle-panel .btn{
-    width: 180px;
-    height: 50px;
-    background: #000;
-    border: 2px solid #000;
-    color: #fff;
-    font-weight: 700;
-}
-
-.toggle-panel .btn:hover{
-    background: rgba(0, 0, 0, 0.8);
-    transform: translateY(-2px);
-}
-
-.error-message {
-    background: rgba(220, 38, 38, 0.1);
-    border: 1px solid #dc2626;
-    color: #dc2626;
-    padding: 12px;
-    margin-bottom: 20px;
-    font-size: 13px;
-    text-align: center;
-}
-
-.input-box input.error {
-    border-color: #dc2626 !important;
-}
-
-.input-box input.valid {
-    border-color: #10b981 !important;
-}
-
-.validation-error {
-    display: block;
-    color: #dc2626;
-    font-size: 11px;
-    margin-top: 5px;
-    text-align: left;
-    padding-left: 5px;
+    pointer-events: none;
 }
 
 .password-toggle {
-    cursor: pointer;
-    right: 50px !important;
+    cursor: pointer !important;
+    pointer-events: auto !important;
     color: #666;
-    transition: color 0.3s ease;
+    transition: color 0.2s ease;
+    right: 16px !important;
 }
 
 .password-toggle:hover {
     color: #ffd700;
 }
 
+/* When there are two icons (lock + toggle) */
+.input-box:has(.password-toggle) i:first-of-type {
+    right: 45px;
+}
+
+/* Button Styling */
+.btn {
+    width: 100%;
+    height: 48px;
+    background: #ffd700;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    color: #000;
+    font-weight: 600;
+    font-family: inherit;
+    transition: all 0.2s ease;
+    margin: 8px 0;
+}
+
+.btn:hover:not(:disabled) {
+    background: #ffed4e;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3);
+}
+
+.btn:active {
+    transform: translateY(0);
+}
+
+.btn:disabled {
+    background: #333;
+    color: #666;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* Toggle Panel Styling */
+.toggle-box {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+.toggle-box::before {
+    content: '';
+    position: absolute;
+    left: -250%;
+    width: 300%;
+    height: 100%;
+    background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+    border-radius: 150px;
+    z-index: 2;
+    transition: left 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.container.active .toggle-box::before {
+    left: 50%;
+}
+
+.toggle-panel {
+    position: absolute;
+    width: 50%;
+    height: 100%;
+    color: #000;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 3;
+    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+    padding: 40px;
+    text-align: center;
+}
+
+.toggle-panel.toggle-left {
+    left: 0;
+    transform: translateX(0);
+    opacity: 1;
+}
+
+.container.active .toggle-panel.toggle-left {
+    transform: translateX(-100%);
+    opacity: 0;
+}
+
+.toggle-panel.toggle-right {
+    right: 0;
+    transform: translateX(100%);
+    opacity: 0;
+}
+
+.container.active .toggle-panel.toggle-right {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+.toggle-panel h1 {
+    font-size: 28px;
+    font-weight: 700;
+    color: #000;
+    margin: 0 0 16px 0;
+    letter-spacing: -0.5px;
+}
+
+.toggle-panel p {
+    font-size: 16px;
+    color: #000;
+    font-weight: 500;
+    margin: 0 0 24px 0;
+    opacity: 0.8;
+    max-width: 280px;
+    line-height: 1.5;
+}
+
+.toggle-panel .btn {
+    width: 160px;
+    height: 48px;
+    background: rgba(0, 0, 0, 0.1);
+    border: 2px solid rgba(0, 0, 0, 0.2);
+    color: #000;
+    font-weight: 600;
+    backdrop-filter: blur(10px);
+}
+
+.toggle-panel .btn:hover {
+    background: rgba(0, 0, 0, 0.2);
+    border-color: rgba(0, 0, 0, 0.3);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Messages */
+.error-message {
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    color: #ef4444;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.validation-error {
+    color: #ef4444;
+    font-size: 12px;
+    margin-top: 4px;
+    display: block;
+}
+
+/* Password Strength */
 .password-strength {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
     margin-top: 8px;
 }
 
 .strength-bar {
     flex: 1;
-    height: 3px;
-    background: #1a1a1a;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
     overflow: hidden;
 }
 
 .strength-fill {
     height: 100%;
-    transition: width 0.3s ease, background-color 0.3s ease;
+    transition: all 0.3s ease;
+    border-radius: 2px;
 }
 
 .password-strength span {
-    font-size: 10px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+    font-size: 12px;
+    font-weight: 500;
+    min-width: 50px;
 }
 
+/* Forgot Password */
 .forgot-password-link {
-    margin-top: 15px;
     text-align: center;
+    margin-top: 16px;
 }
 
 .forgot-password-link a {
     color: #ffd700;
-    font-size: 13px;
     text-decoration: none;
-    transition: color 0.3s;
+    font-size: 14px;
     font-weight: 500;
+    transition: color 0.2s ease;
 }
 
 .forgot-password-link a:hover {
     color: #ffed4e;
 }
 
-@media screen and (max-width: 650px){
-    .container{ height: calc(100vh - 40px); }
+/* Mobile Responsive */
+@media screen and (max-width: 768px) {
+    .auth-page {
+        padding: 16px;
+    }
 
-    .form-box{
-        bottom: 0;
+    .container {
+        height: auto;
+        min-height: 600px;
         width: 100%;
-        height: 70%;
+        flex-direction: column;
     }
 
-    .container.active .form-box{
-        right: 0;
-        bottom: 30%;
-    }
-
-    .toggle-box::before{
-        left: 0;
-        top: -270%;
+    .form-box {
+        position: relative;
         width: 100%;
-        height: 300%;
-        border-radius: 20vw;
+        height: auto;
+        right: 0 !important;
+        padding: 40px 20px;
+        order: 2;
     }
 
-    .container.active .toggle-box::before{
-        left: 0;
-        top: 70%;
+    .container.active .form-box {
+        right: 0 !important;
     }
 
-    .container.active .toggle-panel.toggle-left{
-        left: 0;
-        top: -30%;
+    .toggle-box {
+        position: relative;
+        height: auto;
+        order: 1;
     }
 
-    .toggle-panel{ 
+    .toggle-box::before {
+        display: none;
+    }
+
+    .toggle-panel {
+        position: relative;
         width: 100%;
-        height: 30%;
-    }
-    
-    .toggle-panel.toggle-left{ top: 0; }
-    
-    .toggle-panel.toggle-right{
-        right: 0;
-        bottom: -30%;
+        height: auto;
+        transform: none !important;
+        opacity: 1 !important;
+        padding: 40px 20px;
+        min-height: 200px;
     }
 
-    .container.active .toggle-panel.toggle-right{ bottom: 0; }
-    
+    .toggle-panel h1 {
+        font-size: 24px;
+    }
+
+    .toggle-panel p {
+        font-size: 14px;
+        max-width: 100%;
+    }
+
+    .toggle-panel .btn {
+        width: 140px;
+        height: 44px;
+        font-size: 14px;
+    }
+
+    .form-box h1 {
+        font-size: 28px;
+    }
+
+    form {
+        max-width: 100%;
+    }
+
     .input-box input,
-    .btn{
-        width: 280px;
-        max-width: 280px;
+    .btn {
+        height: 44px;
+        font-size: 16px;
+    }
+
+    /* Show only the active form on mobile */
+    .form-box.login {
+        display: flex;
+    }
+    
+    .form-box.register {
+        display: none;
+    }
+    
+    .container.active .form-box.login {
+        display: none;
+    }
+    
+    .container.active .form-box.register {
+        display: flex;
+    }
+
+    /* Show only the relevant toggle panel */
+    .toggle-panel.toggle-left {
+        display: flex;
+    }
+    
+    .toggle-panel.toggle-right {
+        display: none;
+    }
+    
+    .container.active .toggle-panel.toggle-left {
+        display: none;
+    }
+    
+    .container.active .toggle-panel.toggle-right {
+        display: flex;
     }
 }
 
-@media screen and (max-width: 400px){
-    .form-box { padding: 20px; }
-    .toggle-panel h1{font-size: 32px; }
+@media screen and (max-width: 480px) {
+    .container {
+        border-radius: 12px;
+        min-height: 500px;
+    }
+
+    .form-box {
+        padding: 30px 16px;
+    }
+
+    .toggle-panel {
+        padding: 30px 16px;
+        min-height: 160px;
+    }
+
+    .toggle-panel h1 {
+        font-size: 20px;
+        margin-bottom: 12px;
+    }
+
+    .toggle-panel p {
+        font-size: 13px;
+        margin-bottom: 20px;
+    }
+
+    .toggle-panel .btn {
+        width: 120px;
+        height: 40px;
+        font-size: 13px;
+    }
+
+    .form-box h1 {
+        font-size: 24px;
+    }
+
+    .input-box {
+        margin-bottom: 16px;
+    }
+
+    .input-box input {
+        height: 44px;
+        padding: 0 45px 0 14px;
+    }
+
+    .input-box i {
+        right: 14px;
+        font-size: 16px;
+    }
+
+    .password-toggle {
+        right: 14px !important;
+    }
+
+    .input-box:has(.password-toggle) i:first-of-type {
+        right: 40px;
+    }
 }

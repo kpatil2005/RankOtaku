@@ -354,88 +354,116 @@
 @media (max-width: 1200px) {
     .leaderboard {
         width: 100%;
-        max-width: 500px;
+        max-width: 450px;
+        margin: 0 auto;
     }
 }
 
 @media (max-width: 768px) {
     .leaderboard {
-        width: 100%;
-        max-width: 480px;
+        width: 90%;
+        max-width: 360px;
         height: auto;
-        max-height: 500px;
-        border: 2px solid #2a2a2a;
+        max-height: none;
+        border: 1px solid #2a2a2a;
+        border-radius: 12px;
+        margin: 0 auto;
     }
     
     .leaderboard-header {
-        padding: 16px 20px;
-        border-bottom: 2px solid #2a2a2a;
+        padding: 14px;
+        border-bottom: 1px solid #2a2a2a;
     }
     
     .leaderboard-header h3 {
-        font-size: 14px;
+        font-size: 13px;
+    }
+
+    .live-badge {
+        font-size: 8px;
+        padding: 4px 8px;
+    }
+
+    .leader-list {
+        max-height: 320px;
     }
     
     .leader-item {
-        grid-template-columns: 45px 1fr 35px 65px;
-        padding: 12px 18px;
+        grid-template-columns: 36px 1fr 55px;
+        padding: 10px 14px;
         gap: 10px;
     }
     
     .leader-rank {
-        height: 30px;
-        gap: 5px;
+        height: 28px;
+        gap: 4px;
     }
     
     .rank-number {
-        font-size: 13px;
+        font-size: 12px;
     }
     
     .rank-medal {
-        font-size: 13px;
+        font-size: 12px;
     }
     
     .leader-name {
-        font-size: 13px;
+        font-size: 12px;
     }
     
     .leader-eye {
-        width: 28px;
-        height: 28px;
-    }
-    
-    .eye-image {
-        width: 16px;
-        height: 16px;
+        display: none;
     }
     
     .leader-score {
-        font-size: 15px;
+        font-size: 14px;
+        font-weight: 700;
     }
 }
 
 @media (max-width: 480px) {
     .leaderboard {
-        width: 100%;
+        width: 90%;
+        max-width: 320px;
+        border-radius: 10px;
+        margin: 0 auto;
+    }
+
+    .leaderboard-header {
+        padding: 12px;
+    }
+
+    .leaderboard-header h3 {
+        font-size: 12px;
+    }
+
+    .leader-list {
+        max-height: 280px;
     }
     
     .leader-item {
-        grid-template-columns: 40px 1fr 32px 60px;
-        padding: 10px 14px;
+        grid-template-columns: 32px 1fr 50px;
+        padding: 9px 12px;
         gap: 8px;
     }
     
     .leader-rank {
-        height: 28px;
-    }
-    
-    .leader-eye {
-        width: 26px;
         height: 26px;
     }
-    
-    .eye-image {
-        width: 14px;
-        height: 14px;
+
+    .rank-number {
+        font-size: 11px;
+    }
+
+    .rank-medal {
+        font-size: 11px;
+    }
+
+    .leader-score {
+        font-size: 13px;
+    }
+
+    .leader-name {
+        font-size: 11px;
     }
 }

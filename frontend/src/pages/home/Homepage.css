@@ -2,6 +2,8 @@
     position: relative;
     padding-top: 100px;
     min-height: 100vh;
+    width: 100%;
+    overflow-x: hidden;
 }
 
 .homepage::before {
@@ -230,4 +232,155 @@
     border: none;
     height: 1px;
     background: linear-gradient(90deg, transparent, rgba(246, 201, 2, 0.5), transparent);
+}
+
+@media (max-width: 768px) {
+    .homepage {
+        padding-top: 70px;
+        overflow-x: hidden;
+    }
+
+    .homepage::before {
+        width: 400px;
+        height: 400px;
+        opacity: 0.08;
+        top: 200px;
+    }
+
+    .arena-header {
+        padding: 40px 20px 30px;
+    }
+
+    .arena-title {
+        font-size: 48px;
+        letter-spacing: 3px;
+    }
+
+    .arena-subtitle {
+        font-size: 15px;
+        letter-spacing: 1px;
+    }
+
+    .search-container {
+        padding: 0 20px;
+        margin: 30px auto;
+        max-width: 95%;
+    }
+
+    .global-search {
+        padding: 14px 20px;
+        font-size: 15px;
+        border-radius: 40px;
+    }
+
+    .search-filters {
+        gap: 10px;
+        margin-bottom: 16px;
+    }
+
+    .filter-label {
+        font-size: 13px;
+        margin-right: 8px;
+    }
+
+    .search-filter-btn,
+    .category-btn {
+        padding: 8px 16px;
+        font-size: 12px;
+        border-radius: 16px;
+        min-height: 32px;
+    }
+
+    .category-filters {
+        gap: 10px;
+    }
+
+    .info-strip-wrapper {
+        padding: 10px 0;
+        margin-bottom: 30px;
+    }
+
+    .info-item {
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .homepage {
+        padding-top: 60px;
+    }
+
+    .homepage::before {
+        width: 300px;
+        height: 300px;
+        opacity: 0.06;
+        top: 150px;
+    }
+
+    .arena-header {
+        padding: 30px 16px 25px;
+    }
+
+    .arena-title {
+        font-size: 36px;
+        letter-spacing: 2px;
+    }
+
+    .arena-subtitle {
+        font-size: 13px;
+        letter-spacing: 0.5px;
+    }
+
+    .search-container {
+        padding: 0 16px;
+        margin: 25px auto;
+        max-width: 100%;
+    }
+
+    .global-search {
+        padding: 12px 18px;
+        font-size: 14px;
+        border-radius: 35px;
+    }
+
+    .search-filters {
+        gap: 8px;
+        margin-bottom: 12px;
+    }
+
+    .filter-label {
+        font-size: 12px;
+        margin-right: 6px;
+    }
+
+    .search-filter-btn,
+    .category-btn {
+        padding: 6px 12px;
+        font-size: 11px;
+        border-radius: 12px;
+        min-height: 28px;
+    }
+
+    .category-filters {
+        gap: 8px;
+    }
+
+    .loading-categories {
+        padding: 25px 16px;
+        font-size: 13px;
+    }
+
+    .no-results {
+        padding: 25px 16px;
+        font-size: 14px;
+    }
+
+    .info-strip-wrapper {
+        padding: 8px 0;
+        margin-bottom: 25px;
+    }
+
+    .info-item {
+        font-size: 11px;
+    }
 }
