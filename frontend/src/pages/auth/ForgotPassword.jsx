@@ -16,6 +16,13 @@ const ForgotPassword = () => {
         setError('');
         setMessage('');
 
+        // Disable email sending - show message instead
+        setTimeout(() => {
+            setMessage('Password reset feature is currently disabled. Please contact support at kpatil800083@gmail.com for assistance.');
+            setLoading(false);
+        }, 500);
+
+        /* Original email sending code - disabled
         try {
             const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/forgot-password`, { email });
             setMessage('If an account exists with this email, a password reset link has been sent. Please check your inbox and spam folder.');
@@ -25,6 +32,7 @@ const ForgotPassword = () => {
         } finally {
             setLoading(false);
         }
+        */
     };
 
     return (
