@@ -1185,14 +1185,6 @@ export default function ProfilePage() {
                         <h2>Edit Profile</h2>
                         <form className="edit-form" onSubmit={handleSubmit}>
                             <div className="form-group">
-                                <label>Avatar</label>
-                                <div className="avatar-upload">
-                                    <img id="avatarPreview" src={user.avatar || `https://ui-avatars.com/api/?name=${user.username}&background=ff6b35&color=fff&size=80`} alt="Avatar" className="avatar-preview" />
-                                    <input type="file" accept="image/*" onChange={handleFileChange} className="file-input" />
-                                    <input type="hidden" id="avatarInput" name="avatarInput" defaultValue={user.avatar || ''} />
-                                </div>
-                            </div>
-                            <div className="form-group">
                                 <label>Username</label>
                                 <input type="text" name="username" defaultValue={user.username} />
                             </div>
@@ -1200,6 +1192,7 @@ export default function ProfilePage() {
                                 <label>Bio</label>
                                 <textarea name="bio" rows="3" placeholder="Tell us about yourself..." defaultValue={user.bio || ''}></textarea>
                             </div>
+                            <input type="hidden" id="avatarInput" name="avatarInput" defaultValue={user.avatar || ''} />
                             <div className="modal-actions">
                                 <button type="button" className="btn secondary" onClick={() => setShowEditModal(false)}>Cancel</button>
                                 <button type="submit" className="btn primary">Save Changes</button>
