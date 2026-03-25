@@ -32,6 +32,7 @@ app.use(globalLimiter);
 const allowedOrigins = [
     'http://localhost:5173',
     'http://localhost:3000',
+    'https://rankotaku-frontend.onrender.com',
     process.env.FRONTEND_URL
 ].filter(Boolean);
 
