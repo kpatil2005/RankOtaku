@@ -1,6 +1,5 @@
 import React from 'react'
 import { Header } from '../../components/header/Header';
-import { Anime } from './Anime';
 import { Herosection } from './Herosection';
 import { Footer } from '../../components/footer/Footer';
 import './Homepage.css';
@@ -8,6 +7,7 @@ import axios from 'axios';
 import { Strip } from './Strip';
 import { Search } from './Search';
 import { usePageMeta } from '../../hooks/usePageMeta';
+import { Anime } from './Anime';
 
 const MemoizedAnime = React.memo(Anime);
 
@@ -20,6 +20,13 @@ export function Homepage({ anime }) {
   const [activeCategory, setActiveCategory] = React.useState('all');
   const [isSearchActive, setIsSearchActive] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(true);
+  const [displayCounts, setDisplayCounts] = React.useState({
+    top: 10,
+    trending: 10,
+    airing: 10,
+    movies: 10
+  });
+  const [isLoadingMore, setIsLoadingMore] = React.useState(false);
 
   usePageMeta({
     title: 'RankOtaku | Home - Anime Quizzes & Leaderboard',
@@ -95,6 +102,52 @@ export function Homepage({ anime }) {
     setIsSearchActive(searchState.isSearching);
   }, []);
 
+  const loadMoreAnime = React.useCallback(async (category) => {
+    setIsLoadingMore(true);
+    try {
+      const newCount = displayCounts[category] + 10;
+      let response;
+
+      // Fetch more data from API based on category
+      if (category === 'top') {
+        response = await axios.get(`https://api.jikan.moe/v4/top/anime?filter=bypopularity&page=${Math.ceil(newCount / 25)}&limit=25`);
+        // Keep existing anime and add new ones
+        setCategories(prev => ({
+          ...prev,
+          // For top, we'll handle this separately in the state
+        }));
+      } else if (category === 'trending') {
+        response = await axios.get(`https://api.jikan.moe/v4/seasons/now?page=${Math.ceil(newCount / 25)}&limit=25`);
+        setCategories(prev => ({
+          ...prev,
+          trending: [...prev.trending, ...response.data.data]
+        }));
+      } else if (category === 'airing') {
+        response = await axios.get(`https://api.jikan.moe/v4/seasons/now?page=${Math.ceil(newCount / 25)}&limit=25`);
+        setCategories(prev => ({
+          ...prev,
+          airing: [...prev.airing, ...response.data.data]
+        }));
+      } else if (category === 'movies') {
+        response = await axios.get(`https://api.jikan.moe/v4/top/anime?type=movie&page=${Math.ceil(newCount / 25)}&limit=25`);
+        setCategories(prev => ({
+          ...prev,
+          movies: [...prev.movies, ...response.data.data]
+        }));
+      }
+
+      // Update display count
+      setDisplayCounts(prev => ({
+        ...prev,
+        [category]: newCount
+      }));
+    } catch (error) {
+      console.error(`Error loading more ${category} anime:`, error);
+    } finally {
+      setIsLoadingMore(false);
+    }
+  }, [displayCounts]);
+
   return (
     <div className='homepage'>
       <Header />
@@ -115,14 +168,42 @@ export function Homepage({ anime }) {
       {/* Show sections when not searching and not loading */}
       {!isSearchActive && !isLoading && (
         <>
-          {(activeCategory === 'all' || activeCategory === 'top') && 
-            <MemoizedAnime anime={anime} title="Top Rated Anime" />}
-          {(activeCategory === 'all' || activeCategory === 'trending') && 
-            <MemoizedAnime anime={categories.trending} title="Trending Anime" />}
-          {(activeCategory === 'all' || activeCategory === 'airing') && 
-            <MemoizedAnime anime={categories.airing} title="Currently Airing" />}
-          {(activeCategory === 'all' || activeCategory === 'movies') && 
-            <MemoizedAnime anime={categories.movies} title="Top Anime Movies" />}
+          {(activeCategory === 'all' || activeCategory === 'top') && (
+            <MemoizedAnime 
+              anime={anime?.slice(0, displayCounts.top)} 
+              title="Top Rated Anime" 
+              category="top"
+              onLoadMore={loadMoreAnime}
+              isLoadingMore={isLoadingMore}
+            />
+          )}
+          {(activeCategory === 'all' || activeCategory === 'trending') && (
+            <MemoizedAnime 
+              anime={categories.trending?.slice(0, displayCounts.trending)} 
+              title="Trending Anime" 
+              category="trending"
+              onLoadMore={loadMoreAnime}
+              isLoadingMore={isLoadingMore}
+            />
+          )}
+          {(activeCategory === 'all' || activeCategory === 'airing') && (
+            <MemoizedAnime 
+              anime={categories.airing?.slice(0, displayCounts.airing)} 
+              title="Currently Airing" 
+              category="airing"
+              onLoadMore={loadMoreAnime}
+              isLoadingMore={isLoadingMore}
+            />
+          )}
+          {(activeCategory === 'all' || activeCategory === 'movies') && (
+            <MemoizedAnime 
+              anime={categories.movies?.slice(0, displayCounts.movies)} 
+              title="Top Anime Movies" 
+              category="movies"
+              onLoadMore={loadMoreAnime}
+              isLoadingMore={isLoadingMore}
+            />
+          )}
         </>
       )}
       <Footer />

@@ -395,3 +395,65 @@
         font-size: 11px;
     }
 }
+
+/* Load More Button Styles */
+.load-more-container {
+    display: flex;
+    justify-content: center;
+    padding: 40px 20px;
+    width: 100%;
+}
+
+.load-more-btn {
+    padding: 12px 40px;
+    background: linear-gradient(135deg, rgb(246, 201, 2), rgb(255, 215, 0));
+    border: none;
+    border-radius: 25px;
+    color: #000;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(246, 201, 2, 0.3);
+}
+
+.load-more-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 25px rgba(246, 201, 2, 0.5);
+    background: linear-gradient(135deg, rgb(255, 215, 0), rgb(246, 201, 2));
+}
+
+.load-more-btn:active {
+    transform: translateY(0);
+}
+
+.load-more-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+@media (max-width: 768px) {
+    .load-more-container {
+        padding: 30px 16px;
+    }
+
+    .load-more-btn {
+        padding: 10px 30px;
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 480px) {
+    .load-more-container {
+        padding: 25px 16px;
+    }
+
+    .load-more-btn {
+        padding: 10px 25px;
+        font-size: 12px;
+        letter-spacing: 0.5px;
+    }
+}

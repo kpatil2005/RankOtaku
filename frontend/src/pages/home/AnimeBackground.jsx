@@ -7,8 +7,13 @@ export function AnimeBackground( {animeList , currentSlide}) {
                 <div
                     key={index}
                     className={`anime-slide ${index === currentSlide ? 'active' : ''}`}
-                    style={{ backgroundImage: `url(${anime.image})` }}
                 >
+                    <img
+                        src={anime.image}
+                        alt="Anime background"
+                        className="anime-bg-image"
+                        loading={index === 0 ? "eager" : "lazy"}
+                    />
                     <div className='anime-overlay'></div>
                 </div>
             ))}

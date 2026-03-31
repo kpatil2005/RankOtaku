@@ -141,42 +141,16 @@
 .anime-scroll-track {
     display: flex;
     gap: 20px;
-    animation: scroll-left 80s linear infinite;
     width: fit-content;
-}
-
-.anime-scroll-track:hover {
-    animation-play-state: paused;
 }
 
 .anime-scroll-track-reverse {
     display: flex;
     gap: 20px;
-    animation: scroll-right 80s linear infinite;
     width: fit-content;
 }
 
-.anime-scroll-track-reverse:hover {
-    animation-play-state: paused;
-}
 
-@keyframes scroll-left {
-    0% {
-        transform: translateX(0);
-    }
-    100% {
-        transform: translateX(calc(-100% / 3));
-    }
-}
-
-@keyframes scroll-right {
-    0% {
-        transform: translateX(calc(-100% / 3));
-    }
-    100% {
-        transform: translateX(0);
-    }
-}
 
 @media (max-width: 768px) {
     .anime-container {
