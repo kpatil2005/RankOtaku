@@ -1,6 +1,6 @@
 import React from 'react'
 import axios from 'axios';
-
+import { Anime } from './anime';
 
 // Move constants outside component (never change)
 const CATEGORIES = [
