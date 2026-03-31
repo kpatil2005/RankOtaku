@@ -18,7 +18,7 @@ export function Herosection() {
                 if (data.data) {
                     const popularAnime = data.data.slice(0, 10).map((anime, index) => {
                         return {
-                            image: `/${index + 1}.jpg`,
+                            image: `/${index + 1}.webp`,
                         };
                     });
                     setAnimeList(popularAnime);
@@ -27,7 +27,7 @@ export function Herosection() {
             } catch (error) {
                 console.error('Error fetching anime:', error);
                 const fallbackAnime = Array.from({ length: 10 }, (_, index) => ({
-                    image: `/${index + 1}.jpg`,
+                    image: `/${index + 1}.webp`,
                 }));
                 setAnimeList(fallbackAnime);
                 setLoading(false);
