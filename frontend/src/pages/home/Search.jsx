@@ -1,6 +1,6 @@
 import React from 'react'
 import axios from 'axios';
-import { Anime } from './anime';
+
 
 // Move constants outside component (never change)
 const CATEGORIES = [
@@ -19,6 +19,7 @@ const SEARCH_FILTERS = [
 ];
 
 const MemoizedAnime = React.memo(Anime);
+
 
 export function Search({ onCategoryChange, onSearchStateChange }) {
     const [searchState, setSearchState] = React.useState({
