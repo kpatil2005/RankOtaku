@@ -1,9 +1,12 @@
-.homepage {
-    position: relative;
-    padding-top: 100px;
-    min-height: 100vh;
-    width: 100%;
-    overflow-x: hidden;
+.loading-anime {
+    text-align: center;
+    padding: 40px;
+    color: #fff;
+    font-size: 18px;
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    border-radius: 10px;
+    margin: 20px auto;
+    max-width: 600px;
 }
 
 .homepage::before {

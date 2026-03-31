@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Suspense } from 'react'
 import { Header } from '../../components/header/Header';
 import { Herosection } from './Herosection';
 import { Footer } from '../../components/footer/Footer';
@@ -7,9 +7,9 @@ import axios from 'axios';
 import { Strip } from './Strip';
 import { Search } from './Search';
 import { usePageMeta } from '../../hooks/usePageMeta';
-import { Anime } from './Anime';
 
-const MemoizedAnime = React.memo(Anime);
+// Lazy load Anime component to reduce initial JS
+const Anime = React.lazy(() => import('./Anime').then(module => ({ default: module.Anime })));
 
 export function Homepage({ anime }) {
   const [categories, setCategories] = React.useState({
@@ -169,40 +169,48 @@ export function Homepage({ anime }) {
       {!isSearchActive && !isLoading && (
         <>
           {(activeCategory === 'all' || activeCategory === 'top') && (
-            <MemoizedAnime 
-              anime={anime?.slice(0, displayCounts.top)} 
-              title="Top Rated Anime" 
-              category="top"
-              onLoadMore={loadMoreAnime}
-              isLoadingMore={isLoadingMore}
-            />
+            <Suspense fallback={<div className="loading-anime">Loading Top Rated Anime...</div>}>
+              <Anime 
+                anime={anime?.slice(0, displayCounts.top)} 
+                title="Top Rated Anime" 
+                category="top"
+                onLoadMore={loadMoreAnime}
+                isLoadingMore={isLoadingMore}
+              />
+            </Suspense>
           )}
           {(activeCategory === 'all' || activeCategory === 'trending') && (
-            <MemoizedAnime 
-              anime={categories.trending?.slice(0, displayCounts.trending)} 
-              title="Trending Anime" 
-              category="trending"
-              onLoadMore={loadMoreAnime}
-              isLoadingMore={isLoadingMore}
-            />
+            <Suspense fallback={<div className="loading-anime">Loading Trending Anime...</div>}>
+              <Anime 
+                anime={categories.trending?.slice(0, displayCounts.trending)} 
+                title="Trending Anime" 
+                category="trending"
+                onLoadMore={loadMoreAnime}
+                isLoadingMore={isLoadingMore}
+              />
+            </Suspense>
           )}
           {(activeCategory === 'all' || activeCategory === 'airing') && (
-            <MemoizedAnime 
-              anime={categories.airing?.slice(0, displayCounts.airing)} 
-              title="Currently Airing" 
-              category="airing"
-              onLoadMore={loadMoreAnime}
-              isLoadingMore={isLoadingMore}
-            />
+            <Suspense fallback={<div className="loading-anime">Loading Currently Airing...</div>}>
+              <Anime 
+                anime={categories.airing?.slice(0, displayCounts.airing)} 
+                title="Currently Airing" 
+                category="airing"
+                onLoadMore={loadMoreAnime}
+                isLoadingMore={isLoadingMore}
+              />
+            </Suspense>
           )}
           {(activeCategory === 'all' || activeCategory === 'movies') && (
-            <MemoizedAnime 
-              anime={categories.movies?.slice(0, displayCounts.movies)} 
-              title="Top Anime Movies" 
-              category="movies"
-              onLoadMore={loadMoreAnime}
-              isLoadingMore={isLoadingMore}
-            />
+            <Suspense fallback={<div className="loading-anime">Loading Top Anime Movies...</div>}>
+              <Anime 
+                anime={categories.movies?.slice(0, displayCounts.movies)} 
+                title="Top Anime Movies" 
+                category="movies"
+                onLoadMore={loadMoreAnime}
+                isLoadingMore={isLoadingMore}
+              />
+            </Suspense>
           )}
         </>
       )}
