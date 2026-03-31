@@ -7,6 +7,7 @@ import './Homepage.css';
 import axios from 'axios';
 import { Strip } from './Strip';
 import { Search } from './Search';
+import { usePageMeta } from '../../hooks/usePageMeta';
 
 const MemoizedAnime = React.memo(Anime);
 
@@ -19,6 +20,12 @@ export function Homepage({ anime }) {
   const [activeCategory, setActiveCategory] = React.useState('all');
   const [isSearchActive, setIsSearchActive] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(true);
+
+  usePageMeta({
+    title: 'RankOtaku | Home - Anime Quizzes & Leaderboard',
+    description: 'Discover top anime quizzes and compete on global leaderboards with RankOtaku.',
+    keywords: 'anime quiz, anime trivia, otaku leaderboard, anime challenge, RankOtaku'
+  });
 
   React.useEffect(() => {
     const CACHE_KEY = 'homepage_categories';

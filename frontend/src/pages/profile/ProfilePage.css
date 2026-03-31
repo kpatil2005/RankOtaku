@@ -120,9 +120,11 @@
 }
 
 .btn-small {
-    padding: 2px 4x !important;
-    font-size: 10px !important;
+    padding: 8px 16px !important;
+    font-size: 12px !important;
     width: auto !important;
+    align-self: flex-start;
+    margin-top: 4px;
 }
 
 .profile-right {
@@ -360,7 +362,7 @@
 .bio-text {
     margin: 0;
     font-size: 11px;
-    color: #aaa;
+    color: #ffffff;
     line-height: 1.6;
 }
 
@@ -369,6 +371,7 @@
     flex-direction: column;
     gap: 10px;
     margin: 0 0 20px 0;
+   
 }
 
 .menu-btn {
@@ -622,377 +625,7 @@
     box-shadow: 0 8px 20px rgba(255, 255, 255, 0.2);
 }
 
-@media (max-width: 768px) {
-    .profile-page {
-        padding-left: 0;
-        padding-top: 80px;
-    }
 
-    .profile-left {
-        position: relative;
-        width: 100%;
-        height: auto;
-        top: 0;
-        border-right: none;
-        border-bottom: 2px solid #ffffff;
-    }
-
-    .profile-header {
-        padding: 30px 20px 20px 20px;
-    }
-
-    .profile-info-wrapper {
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-    }
-
-    .avatar {
-        width: 100px;
-        height: 100px;
-        font-size: 40px;
-    }
-
-    .user-info {
-        text-align: center;
-    }
-
-    .user-info h1 {
-        font-size: 18px;
-    }
-
-    .rank {
-        font-size: 12px;
-    }
-
-    .email {
-        font-size: 11px;
-    }
-
-    .bio-section {
-        text-align: center;
-    }
-
-    .profile-scrollable {
-        padding: 0 20px 20px 20px;
-    }
-
-    .sidebar-menu {
-        gap: 8px;
-    }
-
-    .menu-btn {
-        padding: 10px 14px;
-        font-size: 13px;
-    }
-
-    .profile-right {
-        padding: 20px 20px 60px 20px;
-    }
-
-    .stats-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 12px;
-    }
-
-    .stat-value {
-        font-size: 28px;
-    }
-
-    .stat-label {
-        font-size: 10px;
-    }
-
-    .progress-section h2,
-    .stats-section h2,
-    .tips-section h2,
-    .leaderboard-section h2,
-    .activity-section h2,
-    .achievements-section h2,
-    .favorites-section h2 {
-        font-size: 12px;
-    }
-
-    .current-rank {
-        font-size: 22px;
-    }
-
-    .next-rank {
-        font-size: 11px;
-    }
-
-    .goku-blast {
-        width: 100px;
-    }
-
-    .progress-bar-container {
-        margin-left: -20px;
-    }
-
-    .tips-grid {
-        flex-direction: column;
-        gap: 10px;
-    }
-
-    .tip-card {
-        padding: 16px;
-    }
-
-    .tip-icon {
-        font-size: 24px;
-    }
-
-    .tip-title {
-        font-size: 12px;
-    }
-
-    .tip-text {
-        font-size: 10px;
-    }
-
-    .achievement-buttons-container {
-        flex-direction: column;
-        gap: 16px;
-    }
-
-    .achievement-category-btn {
-        padding: 40px 30px;
-        min-height: 200px;
-    }
-
-    .achievement-btn-content h3 {
-        font-size: 36px;
-    }
-
-    .achievement-btn-content p {
-        font-size: 14px;
-    }
-
-    .anime-achievements-grid {
-        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-        gap: 16px;
-    }
-
-    .anime-achievement-image {
-        height: 220px;
-    }
-
-    .anime-achievement-header h3 {
-        font-size: 13px;
-        min-height: 36px;
-    }
-
-    .anime-quiz-count {
-        font-size: 10px;
-    }
-
-    .anime-stat-label {
-        font-size: 10px;
-    }
-
-    .anime-stat-value {
-        font-size: 13px;
-    }
-
-    .anime-list-grid {
-        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-        gap: 12px;
-    }
-
-    .anime-list-image {
-        height: 200px;
-    }
-
-    .anime-list-title {
-        font-size: 12px;
-        min-height: 50px;
-        padding: 10px;
-    }
-
-    .activity-item {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 12px;
-        padding: 14px;
-    }
-
-    .activity-title {
-        font-size: 14px;
-    }
-
-    .activity-date {
-        font-size: 11px;
-    }
-
-    .activity-stats {
-        width: 100%;
-        justify-content: space-between;
-    }
-
-    .activity-score {
-        font-size: 14px;
-    }
-
-    .activity-points {
-        font-size: 13px;
-    }
-
-    .leaderboard-item {
-        padding: 12px 16px;
-        gap: 12px;
-    }
-
-    .leaderboard-rank {
-        font-size: 14px;
-        min-width: 35px;
-    }
-
-    .leaderboard-avatar {
-        width: 35px;
-        height: 35px;
-        font-size: 14px;
-    }
-
-    .leaderboard-username {
-        font-size: 14px;
-    }
-
-    .leaderboard-rank-title {
-        font-size: 11px;
-    }
-
-    .leaderboard-eye-power {
-        min-width: 50px;
-        width: 50px;
-        height: 50px;
-    }
-
-    .eye-image {
-        width: 40px;
-        height: 40px;
-    }
-
-    .eye-icon {
-        width: 40px;
-        height: 40px;
-    }
-
-    .leaderboard-points {
-        font-size: 13px;
-    }
-
-    .eye-guide {
-        padding: 16px;
-        overflow-x: auto;
-    }
-
-    .eye-guide h3 {
-        font-size: 14px;
-        margin-bottom: 12px;
-    }
-
-    .eye-guide-progression {
-        gap: 12px;
-        padding-bottom: 10px;
-    }
-
-    .eye-guide-item {
-        padding: 12px 10px;
-        min-width: 100px;
-    }
-
-    .eye-guide-image {
-        width: 48px;
-        height: 48px;
-    }
-
-    .eye-guide-icon {
-        width: 48px;
-        height: 48px;
-        font-size: 28px;
-    }
-
-    .eye-guide-name {
-        font-size: 10px;
-    }
-
-    .eye-guide-points {
-        font-size: 8px;
-    }
-
-    .progression-arrow {
-        font-size: 16px;
-    }
-
-    .eye-power-display {
-        padding: 20px;
-    }
-
-    .eye-power-image {
-        width: 70px;
-        height: 70px;
-    }
-
-    .eye-power-icon {
-        width: 70px;
-        height: 70px;
-        font-size: 42px;
-    }
-
-    .eye-power-name {
-        font-size: 14px;
-    }
-
-    .modal-content {
-        padding: 30px 20px;
-        width: 95%;
-    }
-
-    .modal-content h2 {
-        font-size: 20px;
-        margin-bottom: 24px;
-    }
-
-    .edit-form {
-        gap: 20px;
-    }
-
-    .form-group label {
-        font-size: 12px;
-    }
-
-    .form-group input,
-    .form-group textarea {
-        padding: 12px 14px;
-        font-size: 13px;
-    }
-
-    .avatar-preview {
-        width: 100px;
-        height: 100px;
-    }
-
-    .modal-actions {
-        flex-direction: column;
-        gap: 10px;
-    }
-
-    .modal-actions .btn {
-        width: 100%;
-        padding: 12px;
-        font-size: 13px;
-    }
-
-    .achievement-content-full {
-        padding: 20px;
-    }
-
-    .no-achievements,
-    .no-activity {
-        font-size: 13px;
-        padding: 16px;
-    }
-}
 
 .tips-section {
     margin-top: 48px;
@@ -1369,6 +1002,51 @@
     padding: 0;
 }
 
+.achievement-overview {
+    margin-bottom: -72px;
+    padding: 24px;
+    background: #0a0a0a;
+    border: 1px solid rgba(255, 107, 53, 0.2);
+    border-radius: 12px;
+}
+
+.achievement-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.achievement-stat-card {
+    text-align: center;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.achievement-stat-card:hover {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(255, 107, 53, 0.3);
+    transform: translateY(-2px);
+}
+
+.achievement-stat-value {
+    font-size: 32px;
+    font-weight: 700;
+    color: #ff6b35;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.achievement-stat-label {
+    font-size: 12px;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 500;
+}
+
 .achievement-buttons-container {
     display: flex;
     gap: 24px;
@@ -1614,9 +1292,803 @@
     border: 1px solid rgba(158, 158, 158, 0.3);
 }
 
+/* Mobile Responsive Styles */
 @media (max-width: 768px) {
+    .profile-page {
+        flex-direction: column;
+        padding: 0;
+        gap: 0;
+        padding-top: 60px; /* Account for header */
+    }
+
+    .profile-left {
+        width: 100%;
+        max-width: none;
+        position: static;
+        height: auto;
+        border-right: none;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        background-size: cover;
+        background-position: center;
+    }
+
+    .profile-header {
+        padding: 10px 12px;
+        text-align: left;
+    }
+
+    .profile-info-wrapper {
+        flex-direction: row;
+        align-items: center;
+        gap: 8px;
+        justify-content: flex-start;
+        margin-bottom: 8px;
+    }
+
+    .avatar {
+        margin-top: 20px;
+        margin-left: 10px;
+        width: 80px;
+        height: 80px;
+        font-size: 20px;
+        flex-shrink: 0;
+        border-width: 2px;
+    }
+
+    .user-info {
+        text-align: left;
+        flex: 1;
+        min-height: auto;
+    }
+
+    .user-info h1 {
+        font-size: 14px;
+        margin-bottom: 2px;
+    }
+
+    .user-info .rank {
+        font-size: 10px;
+        margin-bottom: 2px;
+    }
+
+    .user-info .email {
+        font-size: 9px;
+        margin-bottom: 4px;
+    }
+
+.btn-small {
+    /* Base Styling (Matching logout-btn) */
+    background: transparent !important;
+    border: none !important;
+    color: #888 !important; /* Muted grey */
+    font-size: 11px !important;
+    font-weight: 500 !important;
+    cursor: pointer;
+    padding: 4px 0 !important; /* Vertical padding only */
+    margin: 0 !important;
+    font-family: 'Poppins', sans-serif;
+    transition: color 0.2s ease, transform 0.2s ease;
+    display: inline-block;
+    width: auto !important;
+    text-align: left;
+    text-decoration: none;
+    box-shadow: none !important; /* Removes any primary btn glow */
+}
+
+/* TARGETING THE SIDEBAR FOOTER ACTIONS */
+
+/* 1. Target the profile-scrollable which contains both buttons */
+.profile-scrollable {
+    display: flex;
+    flex-direction: column;
+}
+
+/* 2. Target the buttons directly. 
+      Since they are siblings in the same parent, we force them to behave like inline elements */
+.profile-left .logout-btn {
+    
+    display: inline-block !important;
+    width: auto !important; /* Prevent them from taking full width */
+    margin: 10px 10px 0 0 !important; /* Add spacing between them */
+    vertical-align: middle;
+}
+
+/* 3. Handle the container alignment */
+/* We target the buttons specifically at the bottom of the scrollable area */
+.profile-left .logout-btn:nth-last-child(1),
+.profile-left .logout-btn:nth-last-child(2) {
+    float: left; /* Old school but effective way to align siblings without a wrapper */
+}
+
+/* 4. MODERN FIX: If you want them perfectly centered in the sidebar */
+.profile-scrollable {
+    text-align: center; /* This will align the inline-block buttons side by side */
+}
+
+/* 5. Production Polish (Matching your Anime Detail minimalist style) */
+.logout-btn {
+    
+    background: transparent !important;
+    border: none !important;
+    color: #fffbfb !important; /* Muted grey */
+    font-size: 12px !important;
+    cursor: pointer;
+    transition: color 0.3s ease;
+    padding: 5px 10px !important;
+}
+
+.logout-btn:hover {
+    color: #ff6b35 !important; /* Anime orange accent */
+}
+
+/* Mobile Alignment Fix */
+@media (max-width: 768px) {
+    .profile-left .logout-btn {
+        margin: 5px 15px 0 0 !important;
+        float: none; /* Reset float for mobile flex behavior */
+    }
+}
+
+/* Hover/Active State (Matching logout-btn red or your accent color) */
+.btn-small:hover, 
+.btn-small:active {
+    color: #ff6b35 !important; /* Changes to your orange accent on hover */
+    background: transparent !important;
+    transform: scale(1.02);
+}
+
+/* --- THE FIX: SIDE-BY-SIDE AND CENTERED --- */
+
+/* 1. Set the container to center its inline children */
+.profile-scrollable {
+    text-align: center !important; /* Centers inline-block children */
+    display: block !important;    /* Changes from flex-column to block for horizontal flow */
+    padding-bottom: 40px;         /* Space at the bottom */
+}
+
+/* 2. Style the buttons to sit next to each other */
+.profile-left .logout-btn {
+    display: inline-block !important; /* Force them onto the same line */
+    width: auto !important;           /* Only take required width */
+    margin: 10px 12px !important;     /* Even spacing on both sides for centering */
+    padding: 8px 0 !important;
+    font-size: 12px !important;
+    color: #888 !important;
+    background: transparent !important;
+    border: none !important;
+    cursor: pointer;
+    transition: color 0.3s ease;
+    text-align: center;
+}
+
+.profile-left .logout-btn:hover {
+    color: #ff6b35 !important;
+}
+
+/* 3. Mobile UI Adjustment */
+@media (max-width: 768px) {
+    .profile-scrollable {
+        text-align: left !important; /* Keep them left-aligned on mobile header */
+        padding: 0 12px 8px 12px !important;
+    }
+
+    .profile-left .logout-btn {
+        margin: 5px 15px 5px 0 !important; /* Spacing for mobile */
+        font-size: 11px !important;
+    }
+}
+/* --- MOBILE UI FIX --- */
+@media (max-width: 768px) {
+    .sidebar-menu {
+        display: flex;
+        flex-direction: row;
+        overflow-x: auto;
+        gap: 8px;
+    }
+
+    /* Keep Logout and Edit Profile side by side on mobile header */
+    .profile-left .logout-btn {
+        margin: 5px 20px 0 0 !important;
+        font-size: 11px !important;
+        display: inline-block !important;
+    }
+}
+
+    .bio-section {
+        margin-top: 8px;
+        padding-top: 8px;
+        text-align: left;
+        margin-bottom: 8px;
+    }
+
+    .bio-text {
+        font-size: 10px;
+        line-height: 1.3;
+    }
+
+    .profile-scrollable {
+        height: auto;
+        overflow: visible;
+        padding: 0 12px 8px 12px;
+    }
+
+    .sidebar-menu {
+        display: flex;
+        overflow-x: auto;
+        gap: 6px;
+        padding: 8px 0;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        flex-direction: row;
+        margin: 0;
+    }
+
+    .sidebar-menu::-webkit-scrollbar {
+        display: none;
+    }
+
+    .menu-btn {
+        white-space: nowrap;
+        min-width: auto;
+        padding: 6px 12px;
+        font-size: 11px;
+        flex-shrink: 0;
+        border-radius: 16px;
+        transition: all 0.2s ease;
+    }
+
+    .menu-btn:active {
+        transform: scale(0.95);
+    }
+
+    .logout-btn {
+        margin: 6px 0 0 0;
+        padding: 6px;
+        font-size: 11px;
+        border-radius: 6px;
+        transition: all 0.2s ease;
+    }
+
+    .logout-btn:active {
+        transform: scale(0.95);
+    }
+
+    .profile-right {
+        width: 100%;
+        padding: 16px;
+        margin-left: 0;
+        min-height: auto;
+    }
+
+    /* Stats Section Mobile */
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+
+    .stat-card {
+        padding: 16px 12px;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid rgba(255, 107, 53, 0.2);
+        border-left: 3px solid rgba(255, 107, 53, 0.5);
+    }
+
+    .stat-value {
+        font-size: 20px;
+    }
+
+    .stat-label {
+        font-size: 11px;
+    }
+
+    /* Progress Section Mobile */
+    .progress-section {
+        padding-bottom: 20px;
+    }
+
+    .progress-section h2 {
+        font-size: 16px;
+        margin-bottom: 16px;
+        text-align: center;
+    }
+
+    .rank-display {
+        flex-direction: column;
+        gap: 8px;
+        text-align: center;
+        margin-bottom: 16px;
+    }
+
+    .current-rank {
+        font-size: 24px;
+    }
+
+    .next-rank {
+        font-size: 14px;
+    }
+
+    .progress-bar-wrapper {
+        margin: 16px 0;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .goku-blast {
+        width: 60px;
+        height: 60px;
+        order: -1;
+    }
+
+    .progress-bar-container {
+        width: 100%;
+        margin-left: 0;
+        height: 12px;
+        border-radius: 6px;
+    }
+
+    .progress-text {
+        font-size: 12px;
+        text-align: center;
+    }
+
+    /* Achievement Buttons Mobile */
+    .achievement-buttons-container {
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .achievement-category-btn {
+        padding: 40px 20px;
+        min-height: 180px;
+        border-radius: 16px;
+        transition: all 0.2s ease;
+    }
+
+    .achievement-category-btn:active {
+        transform: scale(0.98);
+    }
+
+    .achievement-btn-content h3 {
+        font-size: 28px;
+        margin-bottom: 8px;
+    }
+
+    .achievement-btn-content p {
+        font-size: 14px;
+    }
+
+    /* Achievement Sections Mobile */
     .achievement-sections {
         flex-direction: column;
+        gap: 20px;
+        margin-top: 40px;
+    }
+
+    .achievement-section {
+        padding: 16px;
+        border-radius: 12px;
+    }
+
+    .achievement-section .section-title {
+        font-size: 16px;
+    }
+
+    .achievement-section .section-description {
+        font-size: 12px;
+    }
+
+    /* Anime Achievements Grid Mobile */
+    .anime-achievements-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+
+    .anime-achievement-card {
+        border-width: 1px;
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    .anime-achievement-image {
+        height: 200px;
+    }
+
+    .anime-achievement-content {
+        padding: 12px;
+    }
+
+    .anime-achievement-header h3 {
+        font-size: 12px;
+        min-height: 32px;
+        -webkit-line-clamp: 2;
+    }
+
+    .anime-quiz-count {
+        font-size: 10px;
+        margin-bottom: 8px;
+    }
+
+    .anime-stat-label {
+        font-size: 10px;
+    }
+
+    .anime-stat-value {
+        font-size: 12px;
+    }
+
+    /* Activity Section Mobile */
+    .activity-section {
+        border-radius: 12px;
+        padding: 16px;
+    }
+
+    .activity-item {
+        padding: 12px;
+        flex-direction: column;
+        gap: 8px;
+        align-items: flex-start;
+        border-radius: 8px;
+        transition: all 0.2s ease;
+    }
+
+    .activity-item:active {
+        transform: scale(0.98);
+    }
+
+    .activity-info {
+        width: 100%;
+    }
+
+    .activity-title {
+        font-size: 14px;
+        margin-bottom: 4px;
+    }
+
+    .activity-date {
+        font-size: 11px;
+    }
+
+    .activity-stats {
+        width: 100%;
+        justify-content: space-between;
+        flex-direction: row;
+    }
+
+    .activity-score {
+        font-size: 14px;
+    }
+
+    .activity-points {
+        font-size: 12px;
+        padding: 4px 8px;
+        border-radius: 8px;
+    }
+
+    /* Leaderboard Mobile */
+    .leaderboard-section {
+        padding: 0;
+    }
+
+    .leaderboard-list {
+        border-radius: 12px;
+    }
+
+    .leaderboard-item {
+        padding: 12px;
+        gap: 12px;
+    }
+
+    .leaderboard-rank {
+        font-size: 14px;
+        min-width: 40px;
+    }
+
+    .leaderboard-avatar {
+        width: 40px;
+        height: 40px;
+        font-size: 16px;
+    }
+
+    .leaderboard-username {
+        font-size: 14px;
+    }
+
+    .leaderboard-rank-title {
+        font-size: 11px;
+    }
+
+    .leaderboard-eye-power {
+        min-width: 50px;
+        width: 50px;
+        height: 50px;
+    }
+
+    .leaderboard-eye-power .eye-image {
+        width: 32px;
+        height: 32px;
+    }
+
+    .leaderboard-points {
+        font-size: 12px;
+        min-width: 60px;
+    }
+
+    /* Eye Guide Mobile */
+    .eye-guide {
+        border-radius: 12px;
+        padding: 16px;
+        margin-bottom: 20px;
+    }
+
+    .eye-guide h3 {
+        font-size: 16px;
+        margin-bottom: 16px;
+    }
+
+    .eye-guide-progression {
+        flex-direction: column;
+        gap: 12px;
+        align-items: center;
+    }
+
+    .progression-arrow {
+        transform: rotate(90deg);
+        font-size: 16px;
+    }
+
+    .eye-guide-item {
+        flex-direction: row;
+        gap: 12px;
+        align-items: center;
+        width: 100%;
+        max-width: 280px;
+        padding: 12px;
+        border-radius: 8px;
+    }
+
+    .eye-guide-image {
+        width: 32px;
+        height: 32px;
+        flex-shrink: 0;
+    }
+
+    .eye-guide-icon {
+        width: 32px;
+        height: 32px;
+        font-size: 20px;
+        flex-shrink: 0;
+    }
+
+    .eye-guide-info {
+        text-align: left;
+    }
+
+    .eye-guide-name {
+        font-size: 12px;
+    }
+
+    .eye-guide-points {
+        font-size: 10px;
+    }
+
+    /* Eye Power Display Mobile */
+    .eye-power-display {
+        margin-top: 20px;
+        padding: 16px;
+        border-radius: 12px;
+    }
+
+    .eye-power-display h3 {
+        font-size: 14px;
+        margin-bottom: 12px;
+        text-align: center;
+    }
+
+    .eye-power-image {
+        width: 60px;
+        height: 60px;
+    }
+
+    .eye-power-icon {
+        width: 60px;
+        height: 60px;
+        font-size: 36px;
+    }
+
+    .eye-power-name {
+        font-size: 14px;
+    }
+
+    /* Anime List Grid Mobile */
+    .anime-list-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+
+    .anime-list-card {
+        border-radius: 8px;
+    }
+
+    .anime-list-image {
+        height: 180px;
+    }
+
+    .anime-list-title {
+        padding: 8px;
+        font-size: 11px;
+        min-height: 44px;
+    }
+
+    /* Tips Section Mobile */
+    .tips-section {
+        margin-top: 32px;
+    }
+
+    .tips-grid {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .tip-card {
+        padding: 16px;
+        border-radius: 12px;
+    }
+
+    .tip-icon {
+        font-size: 24px;
+    }
+
+    .tip-title {
+        font-size: 14px;
+    }
+
+    .tip-text {
+        font-size: 12px;
+    }
+
+    /* Modal Mobile */
+    .modal-overlay {
+        padding: 20px;
+    }
+
+    .modal-content {
+        width: 100%;
+        max-width: 400px;
+        margin: 0;
+        padding: 20px;
+        border-radius: 16px;
+    }
+
+    .modal-content h2 {
+        font-size: 18px;
+        margin-bottom: 16px;
+    }
+
+    .form-group label {
+        font-size: 14px;
+    }
+
+    .form-group input,
+    .form-group textarea {
+        font-size: 14px;
+        padding: 12px;
+        border-radius: 8px;
+    }
+
+    .modal-actions {
+        gap: 12px;
+        margin-top: 20px;
+    }
+
+    .btn {
+        padding: 12px 16px;
+        font-size: 14px;
+        border-radius: 8px;
+        transition: all 0.2s ease;
+    }
+
+    .btn:active {
+        transform: scale(0.95);
+    }
+
+    /* Section Headers Mobile */
+    .achievements-section h2,
+    .activity-section h2,
+    .favorites-section h2,
+    .leaderboard-section h2 {
+        font-size: 18px;
+        margin-bottom: 16px;
+        text-align: center;
+    }
+
+    /* No Activity/Achievements Mobile */
+    .no-activity,
+    .no-achievements {
+        font-size: 14px;
+        padding: 20px 16px;
+        text-align: center;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    /* Achievement Content Full Mobile */
+    .achievement-content-full {
+        padding: 20px 16px;
+        min-height: 200px;
+        border-radius: 12px;
+    }
+
+    /* Touch-friendly improvements */
+    .menu-btn,
+    .achievement-category-btn,
+    .activity-item,
+    .leaderboard-item,
+    .anime-achievement-card,
+    .anime-list-card,
+    .tip-card {
+        -webkit-tap-highlight-color: rgba(255, 107, 53, 0.1);
+    }
+
+    /* Improve scrolling on mobile */
+    .profile-page {
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
+/* Small Mobile Devices */
+@media (max-width: 480px) {
+    .profile-right {
+        padding: 12px;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+
+    .anime-achievements-grid,
+    .anime-list-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .achievement-category-btn {
+        padding: 30px 16px;
+        min-height: 150px;
+    }
+
+    .achievement-btn-content h3 {
+        font-size: 24px;
+    }
+
+    .achievement-btn-content p {
+        font-size: 12px;
+    }
+
+    .anime-achievement-image {
+        height: 240px;
+    }
+
+    .anime-list-image {
+        height: 200px;
+    }
+
+    .sidebar-menu {
+        padding: 8px 12px;
+    }
+
+    .menu-btn {
+        padding: 6px 12px;
+        font-size: 11px;
+    }
+
+    .modal-content {
+        width: 95%;
+        margin: 10px;
+        padding: 16px;
     }
 }
 
@@ -1838,4 +2310,5 @@
     font-size: 14px;
     margin-top: 16px;
 }
+
 

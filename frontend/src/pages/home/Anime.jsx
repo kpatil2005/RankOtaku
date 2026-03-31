@@ -28,7 +28,7 @@ export function Anime({ anime, title = "Top Anime Battles" }) {
         .then(response => {
             const quiz = response.data.quiz;
             quizCache[animeTitle] = quiz;
-            console.log('Quiz generated and cached:', quiz);
+            
         })
         .catch(error => {
             console.error('Error generating quiz:', error);
@@ -37,7 +37,7 @@ export function Anime({ anime, title = "Top Anime Battles" }) {
     };
 
     // Triple the anime array for truly seamless infinite scroll
-    const tripleAnime = anime ? [...anime, ...anime, ...anime] : [];
+    const tripleAnime = anime ? [ ...anime] : [];
 
     return (
         <div className='anime-container'>

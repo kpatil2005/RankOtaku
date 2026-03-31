@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../contexts/AuthContext'
 import { Header } from '../../components/header/Header'
+import { usePageMeta } from '../../hooks/usePageMeta'
 import './QuizPage.css'
 
 export function QuizPage() {
@@ -13,6 +14,16 @@ export function QuizPage() {
     const [score, setScore] = useState(0);
     const [showScore, setShowScore] = useState(false);
     const [selectedAnswer, setSelectedAnswer] = useState(null);
+
+    usePageMeta({
+      title: animeTitle
+        ? `RankOtaku Quiz: ${animeTitle}`
+        : 'RankOtaku Quiz - Anime Trivia',
+      description: animeTitle
+        ? `Test your knowledge with ${animeTitle} quiz questions and climb the leaderboard.`
+        : 'Start an anime quiz and compete with other otaku on the leaderboard.',
+      keywords: 'anime quiz, RankOtaku quiz, anime trivia, quiz leaderboard'
+    });
     const [showIntro, setShowIntro] = useState(true);
     const [userAnswers, setUserAnswers] = useState([]);
     const [pointsEarned, setPointsEarned] = useState(0);

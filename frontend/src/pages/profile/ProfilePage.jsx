@@ -3,6 +3,7 @@ import { useAuth } from "../../contexts/AuthContext";
 import { useNavigate, useSearchParams, useParams, useLocation } from "react-router-dom";
 import { Header } from "../../components/header/Header";
 import { MyAnimeList } from "../../components/myanimelist/MyAnimeList";
+import { usePageMeta } from '../../hooks/usePageMeta';
 import "./ProfilePage.css";
 import "../../components/header/header.css";
 
@@ -21,11 +22,19 @@ export default function ProfilePage() {
     const [loading, setLoading] = useState(true);
     const isOwnProfile = !userId || (user && userId === user._id);
 
+    usePageMeta({
+        title: isOwnProfile ? 'RankOtaku | Your Profile' : `RankOtaku | ${profileUser?.username || 'Profile'}`,
+        description: isOwnProfile ?
+            'View your anime quiz progress, achievements, and global leaderboard rank on RankOtaku.' :
+            `Explore ${profileUser?.username}'s RankOtaku profile, quiz history, and achievements.`,
+        keywords: 'anime profile, RankOtaku profile, quiz leaderboard, anime achievements'
+    });
+
     // Check URL parameters and location state to set active section
     useEffect(() => {
         const section = searchParams.get('section');
         const stateSection = location.state?.section;
-        
+
         if (stateSection && ['statistics', 'achievements', 'recent', 'leaderboard', 'favorites', 'anime-achievements', 'character-achievements'].includes(stateSection)) {
             setActiveSection(stateSection);
         } else if (section && ['statistics', 'achievements', 'recent', 'leaderboard', 'favorites', 'anime-achievements', 'character-achievements'].includes(section)) {
@@ -68,12 +77,12 @@ export default function ProfilePage() {
         if (points >= 300) eyes.push({ name: "Sharingan (3 Tomoe)", image: "/Sharingan3.png", color: "#dc2626", hasImage: true });
         if (points >= 500) eyes.push({ name: "Mangekyou Sharingan", image: "/Mangekyou.png", color: "#dc2626", hasImage: true });
         if (points >= 1000) eyes.push({ name: "Rinnegan", image: "/Rinnegan.png", color: "#9333ea", hasImage: true });
-        
+
         // Only show dash if no eyes are unlocked
         if (eyes.length === 0) {
             eyes.push({ name: "Normal Eyes", icon: "-", color: "#6b7280", hasImage: false });
         }
-        
+
         return eyes;
     };
 
@@ -102,26 +111,26 @@ export default function ProfilePage() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+
         const formData = {
             username: e.target.username.value,
             bio: e.target.bio.value
         };
-        
+
         try {
             const token = localStorage.getItem('token');
             const response = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/update-profile`, {
                 method: 'PUT',
-                headers: { 
+                headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 },
                 credentials: 'include',
                 body: JSON.stringify(formData)
             });
-            
+
             const data = await response.json();
-            
+
             if (response.ok && data.user) {
                 setUser(data.user);
                 setProfileUser(data.user);
@@ -152,7 +161,7 @@ export default function ProfilePage() {
                     console.log('Response status:', response.status);
                     const data = await response.json();
                     console.log('Response data:', data);
-                    
+
                     if (response.ok && data.user) {
                         setProfileUser(data.user);
                         setGlobalRank(data.rank);
@@ -263,11 +272,7 @@ export default function ProfilePage() {
                                 <h1>{profileUser.username}</h1>
                                 <p className="rank">{getRank(profileUser.otakuPoints)}</p>
                                 {isOwnProfile && <p className="email">{profileUser.email}</p>}
-                                {isOwnProfile && (
-                                    <button className="btn primary btn-small" onClick={() => setShowEditModal(true)}>
-                                        Edit Profile
-                                    </button>
-                                )}
+
                             </div>
                         </div>
                         {profileUser.bio && (
@@ -297,10 +302,17 @@ export default function ProfilePage() {
                             </button>
                         </div>
                         {isOwnProfile && (
-                            <button className="logout-btn" onClick={handleLogout}>
-                                Logout
-                            </button>
+                            <>
+                                <button className="logout-btn" onClick={handleLogout}>
+                                    Logout
+                                </button>
+                                <button className="logout-btn" onClick={() => setShowEditModal(true)}>
+                                    Edit Profile
+                                </button>
+                            </>
+
                         )}
+
                     </div>
                 </div>
 
@@ -340,16 +352,16 @@ export default function ProfilePage() {
                                 <div className="progress-bar-wrapper">
                                     <img src="/goku-blast.png" alt="Goku" className="goku-blast" />
                                     <div className="progress-bar-container">
-                                        <div 
-                                            className="progress-bar-fill" 
-                                            style={{ 
+                                        <div
+                                            className="progress-bar-fill"
+                                            style={{
                                                 width: `${(() => {
                                                     const nextRank = getNextRank(profileUser.otakuPoints);
                                                     const currentMin = getCurrentRankMin(profileUser.otakuPoints);
                                                     return nextRank.target === currentMin
                                                         ? 100
                                                         : ((profileUser.otakuPoints - currentMin) / (nextRank.target - currentMin)) * 100;
-                                                })()}%` 
+                                                })()}%`
                                             }}
                                         ></div>
                                     </div>
@@ -385,8 +397,8 @@ export default function ProfilePage() {
                                         {profileUser.animeList.slice(0, 12).map((anime, index) => (
                                             <div key={index} className="anime-list-card">
                                                 <div className="anime-list-image">
-                                                    <img 
-                                                        src={anime.image || ''} 
+                                                    <img
+                                                        src={anime.image || ''}
                                                         alt={anime.title}
                                                         onError={(e) => {
                                                             e.target.onerror = null;
@@ -414,8 +426,8 @@ export default function ProfilePage() {
                                     {profileUser.animeList.map((anime, index) => (
                                         <div key={index} className="anime-list-card">
                                             <div className="anime-list-image">
-                                                <img 
-                                                    src={anime.image || ''} 
+                                                <img
+                                                    src={anime.image || ''}
                                                     alt={anime.title}
                                                     onError={(e) => {
                                                         e.target.onerror = null;
@@ -460,6 +472,18 @@ export default function ProfilePage() {
                     {!isOwnProfile && activeSection === 'achievements' && (
                         <div className="achievements-section">
                             <h2>{profileUser.username}'s Achievements</h2>
+
+                            {/* Show quick stats first */}
+                            <div className="achievement-overview">
+                                <div className="achievement-stats-grid">
+                                    <div className="achievement-stat-card">
+                                        
+                                       
+                                    </div>
+                                    
+                                </div>
+                            </div>
+
                             <div className="achievement-buttons-container">
                                 <button className="achievement-category-btn anime-btn" onClick={() => handleSectionChange('anime-achievements')}>
                                     <div className="achievement-btn-content">
@@ -486,14 +510,14 @@ export default function ProfilePage() {
                                 ) : (
                                     <div className="anime-achievements-grid">
                                         {(() => {
-                                            const animeQuizzes = profileUser.quizHistory.filter(quiz => 
+                                            const animeQuizzes = profileUser.quizHistory.filter(quiz =>
                                                 quiz.animeTitle && !quiz.animeTitle.includes(' - ')
                                             );
-                                            
+
                                             if (animeQuizzes.length === 0) {
                                                 return <p className="no-achievements">{profileUser.username} hasn't played any anime quizzes yet.</p>;
                                             }
-                                            
+
                                             const animeMap = {};
                                             animeQuizzes.forEach(quiz => {
                                                 const title = quiz.animeTitle === 'Quiz' ? 'Unknown Anime' : quiz.animeTitle;
@@ -512,13 +536,13 @@ export default function ProfilePage() {
                                                 animeMap[title].totalQuestions += quiz.totalQuestions;
                                                 animeMap[title].totalPoints += quiz.pointsEarned;
                                             });
-                                            
+
                                             return Object.values(animeMap).map((anime, index) => (
                                                 <div key={index} className="anime-achievement-card">
                                                     <div className="anime-achievement-image">
-                                                        <img 
-                                                            src={anime.image} 
-                                                            alt={anime.title} 
+                                                        <img
+                                                            src={anime.image}
+                                                            alt={anime.title}
                                                             onError={(e) => {
                                                                 e.target.onerror = null;
                                                                 e.target.src = 'https://placehold.co/300x400/1a1a1a/ff6b35?text=No+Image';
@@ -555,31 +579,31 @@ export default function ProfilePage() {
                                 ) : (
                                     <div className="anime-achievements-grid">
                                         {(() => {
-                                            const characterQuizzes = profileUser.quizHistory.filter(quiz => 
+                                            const characterQuizzes = profileUser.quizHistory.filter(quiz =>
                                                 quiz.animeTitle && quiz.animeTitle.includes(' - ')
                                             );
-                                            
+
                                             if (characterQuizzes.length === 0) {
                                                 return <p className="no-achievements">{profileUser.username} hasn't played any character quizzes yet.</p>;
                                             }
-                                            
+
                                             return characterQuizzes.map((quiz, index) => {
                                                 const [animeName, characterName] = quiz.animeTitle.split(' - ');
                                                 const accuracy = Math.round((quiz.score / quiz.totalQuestions) * 100);
                                                 const redOpacity = (1 - (accuracy / 100)) * 0.8;
-                                                
+
                                                 return (
                                                     <div key={index} className="anime-achievement-card character-achievement-card">
                                                         <div className="anime-achievement-image">
-                                                            <img 
-                                                                src={quiz.animeImage || ''} 
-                                                                alt={characterName} 
+                                                            <img
+                                                                src={quiz.animeImage || ''}
+                                                                alt={characterName}
                                                                 onError={(e) => {
                                                                     e.target.onerror = null;
                                                                     e.target.src = '';
                                                                 }}
                                                             />
-                                                            <div 
+                                                            <div
                                                                 className="character-performance-overlay"
                                                                 style={{ opacity: redOpacity }}
                                                             ></div>
@@ -613,7 +637,7 @@ export default function ProfilePage() {
                     {!isOwnProfile && activeSection === 'leaderboard' && (
                         <div className="leaderboard-section">
                             <h2>Top Otaku</h2>
-                            
+
                             <div className="eye-guide">
                                 <h3>Eye Power Progression</h3>
                                 <div className="eye-guide-progression">
@@ -702,15 +726,15 @@ export default function ProfilePage() {
                                                 </div>
                                                 <div className="leaderboard-eye-power" title={eyePower.name}>
                                                     {eyePower.hasImage ? (
-                                                        <img 
-                                                            src={eyePower.image} 
+                                                        <img
+                                                            src={eyePower.image}
                                                             alt={eyePower.name}
                                                             className="eye-image"
                                                         />
                                                     ) : (
-                                                        <span 
-                                                            className="eye-icon" 
-                                                            style={{ 
+                                                        <span
+                                                            className="eye-icon"
+                                                            style={{
                                                                 color: eyePower.color,
                                                                 fontSize: '24px'
                                                             }}
@@ -730,93 +754,93 @@ export default function ProfilePage() {
 
                     {isOwnProfile && (
                         activeSection === 'statistics' && (
-                        <>
-                            <div className="progress-section">
-                                <h2>Rank Progress</h2>
-                                <div className="rank-display">
-                                    <div className="current-rank">{getRank(user.otakuPoints)}</div>
-                                    <div className="next-rank">Next: {getNextRank(user.otakuPoints).name}</div>
-                                </div>
-                                <div className="progress-bar-wrapper">
-                                    <img src="/goku-blast.png" alt="Goku" className="goku-blast" />
-                                    <div className="progress-bar-container">
-                                        <div 
-                                            className="progress-bar-fill" 
-                                            style={{ 
-                                                width: `${(() => {
-                                                    const nextRank = getNextRank(user.otakuPoints);
-                                                    const currentMin = getCurrentRankMin(user.otakuPoints);
-                                                    return nextRank.target === currentMin
-                                                        ? 100
-                                                        : ((user.otakuPoints - currentMin) / (nextRank.target - currentMin)) * 100;
-                                                })()}%` 
-                                            }}
-                                        ></div>
+                            <>
+                                <div className="progress-section">
+                                    <h2>Rank Progress</h2>
+                                    <div className="rank-display">
+                                        <div className="current-rank">{getRank(user.otakuPoints)}</div>
+                                        <div className="next-rank">Next: {getNextRank(user.otakuPoints).name}</div>
                                     </div>
-                                    
-                                </div>
-                                <div className="progress-text">
-                                    {user.otakuPoints} / {getNextRank(user.otakuPoints).target} points
-                                </div>
-                            </div>
+                                    <div className="progress-bar-wrapper">
+                                        <img src="/goku-blast.png" alt="Goku" className="goku-blast" />
+                                        <div className="progress-bar-container">
+                                            <div
+                                                className="progress-bar-fill"
+                                                style={{
+                                                    width: `${(() => {
+                                                        const nextRank = getNextRank(user.otakuPoints);
+                                                        const currentMin = getCurrentRankMin(user.otakuPoints);
+                                                        return nextRank.target === currentMin
+                                                            ? 100
+                                                            : ((user.otakuPoints - currentMin) / (nextRank.target - currentMin)) * 100;
+                                                    })()}%`
+                                                }}
+                                            ></div>
+                                        </div>
 
-                            <div className="stats-section">
-                                <h2>Statistics</h2>
-                                <div className="stats-grid">
-                                    <div className="stat-card">
-                                        <div className="stat-value">{user.otakuPoints}</div>
-                                        <div className="stat-label">Otaku Points</div>
                                     </div>
-                                    <div className="stat-card">
-                                        <div className="stat-value">{user.quizzesTaken || 0}</div>
-                                        <div className="stat-label">Quizzes Taken</div>
-                                    </div>
-                                    <div className="stat-card">
-                                        <div className="stat-value">
-                                            {(() => {
-                                                const totalCorrect = quizHistory.reduce((sum, q) => sum + q.score, 0);
-                                                const totalQuestions = quizHistory.reduce((sum, q) => sum + q.totalQuestions, 0);
-                                                return totalQuestions > 0 ? Math.round((totalCorrect / totalQuestions) * 100) : 0;
-                                            })()}%
-                                        </div>
-                                        <div className="stat-label">Accuracy</div>
-                                    </div>
-                                    <div className="stat-card">
-                                        <div className="stat-value">
-                                            {globalRank !== null ? `#${globalRank}` : 'Loading...'}
-                                        </div>
-                                        <div className="stat-label">Global Rank</div>
+                                    <div className="progress-text">
+                                        {user.otakuPoints} / {getNextRank(user.otakuPoints).target} points
                                     </div>
                                 </div>
-                            </div>
 
-                            <div className="tips-section">
-                                <h2>Quick Tips</h2>
-                                <div className="tips-grid">
-                                    <div className="tip-card">
-                                        <div className="tip-icon">🎯</div>
-                                        <div className="tip-content">
-                                            <div className="tip-title">Take Quizzes</div>
-                                            <div className="tip-text">Earn points by testing your anime knowledge</div>
+                                <div className="stats-section">
+                                    <h2>Statistics</h2>
+                                    <div className="stats-grid">
+                                        <div className="stat-card">
+                                            <div className="stat-value">{user.otakuPoints}</div>
+                                            <div className="stat-label">Otaku Points</div>
                                         </div>
-                                    </div>
-                                    <div className="tip-card">
-                                        <div className="tip-icon">⚡</div>
-                                        <div className="tip-content">
-                                            <div className="tip-title">Stay Accurate</div>
-                                            <div className="tip-text">Higher accuracy means more points per quiz</div>
+                                        <div className="stat-card">
+                                            <div className="stat-value">{user.quizzesTaken || 0}</div>
+                                            <div className="stat-label">Quizzes Taken</div>
                                         </div>
-                                    </div>
-                                    <div className="tip-card">
-                                        <div className="tip-icon">🏆</div>
-                                        <div className="tip-content">
-                                            <div className="tip-title">Rank Up</div>
-                                            <div className="tip-text">Reach 50 points to become a Casual Fan</div>
+                                        <div className="stat-card">
+                                            <div className="stat-value">
+                                                {(() => {
+                                                    const totalCorrect = quizHistory.reduce((sum, q) => sum + q.score, 0);
+                                                    const totalQuestions = quizHistory.reduce((sum, q) => sum + q.totalQuestions, 0);
+                                                    return totalQuestions > 0 ? Math.round((totalCorrect / totalQuestions) * 100) : 0;
+                                                })()}%
+                                            </div>
+                                            <div className="stat-label">Accuracy</div>
+                                        </div>
+                                        <div className="stat-card">
+                                            <div className="stat-value">
+                                                {globalRank !== null ? `#${globalRank}` : 'Loading...'}
+                                            </div>
+                                            <div className="stat-label">Global Rank</div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </>
+
+                                <div className="tips-section">
+                                    <h2>Quick Tips</h2>
+                                    <div className="tips-grid">
+                                        <div className="tip-card">
+                                            <div className="tip-icon">🎯</div>
+                                            <div className="tip-content">
+                                                <div className="tip-title">Take Quizzes</div>
+                                                <div className="tip-text">Earn points by testing your anime knowledge</div>
+                                            </div>
+                                        </div>
+                                        <div className="tip-card">
+                                            <div className="tip-icon">⚡</div>
+                                            <div className="tip-content">
+                                                <div className="tip-title">Stay Accurate</div>
+                                                <div className="tip-text">Higher accuracy means more points per quiz</div>
+                                            </div>
+                                        </div>
+                                        <div className="tip-card">
+                                            <div className="tip-icon">🏆</div>
+                                            <div className="tip-content">
+                                                <div className="tip-title">Rank Up</div>
+                                                <div className="tip-text">Reach 50 points to become a Casual Fan</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </>
                         )
                     )}
 
@@ -854,6 +878,17 @@ export default function ProfilePage() {
                     {isOwnProfile && activeSection === 'achievements' && (
                         <div className="achievements-section">
                             <h2>Achievements</h2>
+
+                            {/* Show quick stats first */}
+                            <div className="achievement-overview">
+                                <div className="achievement-stats-grid">
+                                    <div className="achievement-stat-card">
+                                        <div className="achievement-stat-value">
+                                            </div>
+                                       </div>
+                                </div>
+                            </div>
+
                             <div className="achievement-buttons-container">
                                 <button className="achievement-category-btn anime-btn" onClick={() => handleSectionChange('anime-achievements')}>
                                     <div className="achievement-btn-content">
@@ -881,14 +916,14 @@ export default function ProfilePage() {
                                     <div className="anime-achievements-grid">
                                         {(() => {
                                             // Filter only anime quizzes (those WITHOUT " - " in title)
-                                            const animeQuizzes = quizHistory.filter(quiz => 
+                                            const animeQuizzes = quizHistory.filter(quiz =>
                                                 quiz.animeTitle && !quiz.animeTitle.includes(' - ')
                                             );
-                                            
+
                                             if (animeQuizzes.length === 0) {
                                                 return <p className="no-achievements">No anime quizzes played yet. Start playing to unlock achievements!</p>;
                                             }
-                                            
+
                                             // Group quizzes by anime title
                                             const animeMap = {};
                                             animeQuizzes.forEach(quiz => {
@@ -908,15 +943,15 @@ export default function ProfilePage() {
                                                 animeMap[title].totalQuestions += quiz.totalQuestions;
                                                 animeMap[title].totalPoints += quiz.pointsEarned;
                                             });
-                                            
+
                                             return Object.values(animeMap).map((anime, index) => {
                                                 const accuracy = Math.round((anime.totalScore / anime.totalQuestions) * 100);
                                                 return (
                                                     <div key={index} className="anime-achievement-card">
                                                         <div className="anime-achievement-image">
-                                                            <img 
-                                                                src={anime.image} 
-                                                                alt={anime.title} 
+                                                            <img
+                                                                src={anime.image}
+                                                                alt={anime.title}
                                                                 onError={(e) => {
                                                                     e.target.onerror = null;
                                                                     e.target.src = '';
@@ -955,36 +990,36 @@ export default function ProfilePage() {
                                     <div className="anime-achievements-grid">
                                         {(() => {
                                             // Filter only character quizzes (those with " - " in title)
-                                            const characterQuizzes = quizHistory.filter(quiz => 
+                                            const characterQuizzes = quizHistory.filter(quiz =>
                                                 quiz.animeTitle && quiz.animeTitle.includes(' - ')
                                             );
-                                            
+
                                             if (characterQuizzes.length === 0) {
                                                 return <p className="no-achievements">No character quizzes played yet. Start playing to unlock achievements!</p>;
                                             }
-                                            
+
                                             return characterQuizzes.map((quiz, index) => {
                                                 // Split anime title and character name
                                                 const [animeName, characterName] = quiz.animeTitle.split(' - ');
                                                 const accuracy = Math.round((quiz.score / quiz.totalQuestions) * 100);
-                                                
+
                                                 // Calculate red overlay opacity based on performance
                                                 // 0% accuracy = 0.8 opacity (very red)
                                                 // 100% accuracy = 0 opacity (no red)
                                                 const redOpacity = (1 - (accuracy / 100)) * 0.8;
-                                                
+
                                                 return (
                                                     <div key={index} className="anime-achievement-card character-achievement-card">
                                                         <div className="anime-achievement-image">
-                                                            <img 
-                                                                src={quiz.animeImage || ''} 
-                                                                alt={characterName} 
+                                                            <img
+                                                                src={quiz.animeImage || ''}
+                                                                alt={characterName}
                                                                 onError={(e) => {
                                                                     e.target.onerror = null;
                                                                     e.target.src = '';
                                                                 }}
                                                             />
-                                                            <div 
+                                                            <div
                                                                 className="character-performance-overlay"
                                                                 style={{ opacity: redOpacity }}
                                                             ></div>
@@ -1018,7 +1053,7 @@ export default function ProfilePage() {
                     {isOwnProfile && activeSection === 'leaderboard' && (
                         <div className="leaderboard-section">
                             <h2>Top Otaku</h2>
-                            
+
                             <div className="eye-guide">
                                 <h3>Eye Power Progression</h3>
                                 <div className="eye-guide-progression">
@@ -1107,15 +1142,15 @@ export default function ProfilePage() {
                                                 </div>
                                                 <div className="leaderboard-eye-power" title={eyePower.name}>
                                                     {eyePower.hasImage ? (
-                                                        <img 
-                                                            src={eyePower.image} 
+                                                        <img
+                                                            src={eyePower.image}
                                                             alt={eyePower.name}
                                                             className="eye-image"
                                                         />
                                                     ) : (
-                                                        <span 
-                                                            className="eye-icon" 
-                                                            style={{ 
+                                                        <span
+                                                            className="eye-icon"
+                                                            style={{
                                                                 color: eyePower.color,
                                                                 fontSize: '24px'
                                                             }}

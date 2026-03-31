@@ -1,6 +1,6 @@
 import React from 'react'
 import axios from 'axios';
-import { Anime } from './Anime';
+import { Anime } from './anime';
 
 // Move constants outside component (never change)
 const CATEGORIES = [
@@ -41,7 +41,7 @@ export function Search({ onCategoryChange, onSearchStateChange }) {
         }
 
         setSearchState(prev => ({ ...prev, isSearching: true }));
-        
+
         try {
             let url = `https://api.jikan.moe/v4/anime?q=${encodeURIComponent(query)}&limit=20`;
 
@@ -131,8 +131,8 @@ export function Search({ onCategoryChange, onSearchStateChange }) {
 
     // Memoize search result title
     const searchResultTitle = React.useMemo(() => {
-        const filterLabel = searchFilter !== 'all' 
-            ? `(${SEARCH_FILTERS.find(f => f.id === searchFilter)?.label})` 
+        const filterLabel = searchFilter !== 'all'
+            ? `(${SEARCH_FILTERS.find(f => f.id === searchFilter)?.label})`
             : '';
         return `Search Results for "${searchState.term}" ${filterLabel}`;
     }, [searchState.term, searchFilter]);

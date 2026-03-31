@@ -5,6 +5,7 @@ import './AnimeDetails.css'
 import { Header } from '../header/Header';
 import { DoorTransition } from '../doortransition/DoorTransition';
 import { useAddToList, useIsAnimeInList } from '../../hooks/useAnimeQueries';
+import { usePageMeta } from '../../hooks/usePageMeta';
 
 export function AnimeDetails() {
     const { id } = useParams()
@@ -13,6 +14,14 @@ export function AnimeDetails() {
     const [pictures, setPictures] = useState([])
     const [characters, setCharacters] = useState([])
     const [loading, setLoading] = useState(false)
+
+    usePageMeta({
+      title: anime ? `RankOtaku: ${anime.title} Quiz & Details` : 'RankOtaku Anime Details',
+      description: anime
+        ? `Read synopsis, stats, characters, and start a ${anime.title} quiz on RankOtaku.`
+        : 'Discover anime details and start quizzes on RankOtaku.',
+      keywords: 'anime details, anime quiz, RankOtaku, anime statistics'
+    });
     const [showDoor, setShowDoor] = useState(true)
     const [showQuizTypeModal, setShowQuizTypeModal] = useState(false)
     const [completedCharacters, setCompletedCharacters] = useState([])
