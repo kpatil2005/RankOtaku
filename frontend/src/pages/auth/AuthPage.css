@@ -168,6 +168,40 @@ form {
     box-shadow: none;
 }
 
+/* Social Login */
+.social-login {
+    margin: 16px 0;
+}
+
+.google-btn {
+    width: 100%;
+    height: 48px;
+    background: #fff;
+    border: 1.5px solid #ddd;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 15px;
+    color: #333;
+    font-weight: 500;
+    font-family: inherit;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.google-btn:hover {
+    background: #f8f8f8;
+    border-color: #ccc;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.google-btn:active {
+    transform: translateY(0);
+}
+
 /* Toggle Panel Styling */
 .toggle-box {
     position: absolute;

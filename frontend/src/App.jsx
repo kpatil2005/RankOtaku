@@ -6,6 +6,7 @@ import { Routes, Route, useLocation } from "react-router-dom"
 import { Anime } from "./pages/home/Anime"
 import { QuizPage } from "./pages/quiz/QuizPage"
 import AuthPage from "./pages/auth/AuthPage"
+import AuthCallback from "./pages/auth/AuthCallback"
 import ForgotPassword from "./pages/auth/ForgotPassword"
 import ResetPassword from "./pages/auth/ResetPassword"
 import ProfilePage from "./pages/profile/ProfilePage"
@@ -74,6 +75,7 @@ function App() {
             <Route path="/profile/:userId" element={<ProfilePage />} />
             <Route path="/anime/:id" element={<AnimeDetails />} />
             <Route path="/auth" element={<AuthPage />} />
+            <Route path="/auth/callback" element={<AuthCallback />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password/:token" element={<ResetPassword />} />
             <Route path="*" element={<NotFound />} />

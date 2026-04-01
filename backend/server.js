@@ -5,12 +5,21 @@ const mongoose = require("mongoose")
 const cookieParser = require("cookie-parser")
 const helmet = require("helmet")
 const rateLimit = require("express-rate-limit")
+const session = require("express-session")
 require("dotenv").config()
 const quizRoutes = require("./routes/quiz")
 const authRoutes = require("./routes/auth")
 const leaderboardRoutes = require("./routes/leaderboard")
 
 const app = express()
+
+// Session setup for OAuth
+app.use(session({
+    secret: process.env.SESSION_SECRET || 'fallback-secret-key',
+    resave: false,
+    saveUninitialized: false,
+    cookie: { secure: process.env.NODE_ENV === 'production' }
+}));
 
 // Security headers
 app.use(helmet({

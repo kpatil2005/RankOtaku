@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import GoogleLogin from '../../components/GoogleLogin';
 import './AuthPage.css';
 
 // Debounce utility
@@ -282,6 +283,9 @@ const AuthPage = () => {
                         <button type="submit" className="btn" disabled={loading || !isLoginValid}>
                             {loading ? 'Logging in...' : 'Login'}
                         </button>
+                        <div className="social-login">
+                            <GoogleLogin />
+                        </div>
                         <div className="forgot-password-link">
                             <a href="/forgot-password">Forgot Password?</a>
                         </div>
@@ -377,6 +381,9 @@ const AuthPage = () => {
                         <button type="submit" className="btn" disabled={loading || !isSignupValid}>
                             {loading ? 'Registering...' : 'Register'}
                         </button>
+                        <div className="social-login">
+                            <GoogleLogin />
+                        </div>
                     </form>
                 </div>
 

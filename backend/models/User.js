@@ -25,6 +25,11 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: ''
     },
+    googleId: {
+        type: String,
+        sparse: true,
+        unique: true
+    },
     otakuPoints: {
         type: Number,
         default: 0

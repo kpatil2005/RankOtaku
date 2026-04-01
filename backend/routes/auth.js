@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const axios = require('axios');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
@@ -457,6 +458,61 @@ router.post('/reset-password/:token', [
     } catch (error) {
         console.error('Reset password error:', error);
         res.status(500).json({ error: 'Failed to reset password' });
+    }
+});
+
+// Google OAuth - Exchange code for tokens
+router.post('/google', async (req, res) => {
+    const { code } = req.body;
+    
+    try {
+        const { data } = await axios.post(
+            'https://oauth2.googleapis.com/token',
+            new URLSearchParams({
+                code,
+                client_id: process.env.GOOGLE_CLIENT_ID,
+                client_secret: process.env.GOOGLE_CLIENT_SECRET,
+                redirect_uri: `${process.env.FRONTEND_URL || 'http://localhost:5173'}/auth/callback`,
+                grant_type: 'authorization_code',
+            }),
+            { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
+        );
+        
+        // Get user info from Google
+        const userInfo = await axios.get('https://www.googleapis.com/oauth2/v2/userinfo', {
+            headers: { Authorization: `Bearer ${data.access_token}` }
+        });
+        
+        const { email, name, picture } = userInfo.data;
+        
+        // Find or create user
+        let user = await User.findOne({ email });
+        
+        if (!user) {
+            user = await User.create({
+                username: name,
+                email,
+                password: await bcrypt.hash(crypto.randomBytes(32).toString('hex'), 12),
+                avatar: picture,
+                googleId: userInfo.data.id
+            });
+        }
+        
+        const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET || 'your-secret-key', { expiresIn: '7d' });
+        
+        res.json({ 
+            token,
+            user: { 
+                id: user._id, 
+                username: user.username, 
+                email: user.email,
+                otakuPoints: user.otakuPoints,
+                avatar: user.avatar
+            } 
+        });
+    } catch (error) {
+        console.error('Google Auth Error:', error.response?.data || error.message);
+        res.status(500).json({ error: 'Google authentication failed' });
     }
 });
 
