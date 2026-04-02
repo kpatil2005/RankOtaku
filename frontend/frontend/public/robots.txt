@@ -1,0 +1,15 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://rankotaku-frontend.onrender.com/sitemap.xml
+
+# Disallow admin/auth pages
+Disallow: /auth
+Disallow: /admin
+Disallow: /api
+
+# Allow important pages
+Allow: /
+Allow: /anime/
+Allow: /leaderboard
