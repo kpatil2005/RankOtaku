@@ -25,4 +25,64 @@
     <changefreq>daily</changefreq>
   </url>
 
+  <url>
+    <loc>https://rankotaku-frontend.onrender.com/anime/naruto-20</loc>
+    <priority>0.7</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+
+  <url>
+    <loc>https://rankotaku-frontend.onrender.com/anime/one-piece-21</loc>
+    <priority>0.7</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+
+  <url>
+    <loc>https://rankotaku-frontend.onrender.com/anime/attack-on-titan-16498</loc>
+    <priority>0.7</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+
+  <url>
+    <loc>https://rankotaku-frontend.onrender.com/anime/fullmetal-alchemist-brotherhood-5114</loc>
+    <priority>0.7</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+
+  <url>
+    <loc>https://rankotaku-frontend.onrender.com/anime/death-note-1535</loc>
+    <priority>0.7</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+
+  <url>
+    <loc>https://rankotaku-frontend.onrender.com/anime/demon-slayer-kimetsu-no-yaiba-38000</loc>
+    <priority>0.7</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+
+  <url>
+    <loc>https://rankotaku-frontend.onrender.com/anime/my-hero-academia-31964</loc>
+    <priority>0.7</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+
+  <url>
+    <loc>https://rankotaku-frontend.onrender.com/anime/steins-gate-9253</loc>
+    <priority>0.7</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+
+  <url>
+    <loc>https://rankotaku-frontend.onrender.com/anime/hunter-x-hunter-11061</loc>
+    <priority>0.7</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+
+  <url>
+    <loc>https://rankotaku-frontend.onrender.com/anime/code-geass-lelouch-of-the-rebellion-1575</loc>
+    <priority>0.7</priority>
+    <changefreq>weekly</changefreq>
+  </url>
+
 </urlset>
