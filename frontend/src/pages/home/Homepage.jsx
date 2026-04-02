@@ -150,8 +150,38 @@ export function Homepage({ anime }) {
 
   return (
     <div className='homepage'>
+      <script type="application/ld+json">
+        {JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          "name": "RankOtaku",
+          "url": "https://rankotaku-frontend.onrender.com",
+          "description": "Best anime quizzes online. Test your knowledge with thousands of anime quizzes and compete on global leaderboards.",
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": "https://rankotaku-frontend.onrender.com/search?q={search_term_string}",
+            "query-input": "required name=search_term_string"
+          }
+        })}
+      </script>
       <Header />
       <Herosection />
+      
+      {/* SEO Content Block */}
+      <section className="seo-content">
+        <h1>Best Anime Quizzes Online – RankOtaku</h1>
+        <p>
+          RankOtaku is the ultimate platform for anime fans to test their knowledge with thousands of anime quizzes. 
+          Explore popular series like Naruto, One Piece, Attack on Titan, and Fullmetal Alchemist.
+          Compete on the global leaderboard and prove you are a true otaku.
+        </p>
+        <h2>Explore Anime Quizzes by Category</h2>
+        <p>
+          Browse top rated anime, trending shows, currently airing series, and anime movies. 
+          Each quiz is designed to challenge your knowledge of characters, storylines, and epic battles.
+        </p>
+      </section>
+      
       <Strip />
       <Search 
         onCategoryChange={handleCategoryChange}

@@ -4,11 +4,19 @@ import { Link } from 'react-router-dom'
 import axios from 'axios'
 import { quizCache } from '../../utils/quizCache'
 
+const slugify = (title, id) => {
+    return title
+        .toLowerCase()
+        .replace(/[^a-z0-9\s-]/g, '')
+        .replace(/\s+/g, '-')
+        + '-' + id;
+};
+
 // Move AnimeCard outside component for proper memoization
 const AnimeCard = React.memo(({ a, index, generateQuiz }) => {
     return (
         <Link
-            to={`/anime/${a.mal_id}`}
+            to={`/anime/${slugify(a.title, a.mal_id)}`}
             key={`${a.mal_id}-${index}`}
             style={{ textDecoration: 'none' }}
             onClick={() => generateQuiz(a.title)}

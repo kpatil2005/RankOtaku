@@ -8,7 +8,8 @@ import { useAddToList, useIsAnimeInList } from '../../hooks/useAnimeQueries';
 import { usePageMeta } from '../../hooks/usePageMeta';
 
 export function AnimeDetails() {
-    const { id } = useParams()
+    const { slug } = useParams()
+    const id = slug.split('-').pop()
     const navigate = useNavigate()
     const [anime, setAnime] = useState(null)
     const [pictures, setPictures] = useState([])
@@ -203,7 +204,12 @@ export function AnimeDetails() {
 
             {/* Synopsis */}
             <div className='content-section'>
-                <h2 className='section-title'>Synopsis</h2>
+                <h1>{anime.title} Quiz - Test Your Knowledge</h1>
+                <p>
+                    Play {anime.title} quiz and test your knowledge about characters, story, and battles. 
+                    Challenge yourself with questions about {anime.title} and compete with other fans on the leaderboard.
+                </p>
+                <h2 className='section-title'>About {anime.title}</h2>
                 <p className='synopsis-text'>{anime.synopsis}</p>
             </div>
 

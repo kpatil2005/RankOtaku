@@ -73,7 +73,7 @@ function App() {
               </ProtectedRoute>
             } />
             <Route path="/profile/:userId" element={<ProfilePage />} />
-            <Route path="/anime/:id" element={<AnimeDetails />} />
+            <Route path="/anime/:slug" element={<AnimeDetails />} />
             <Route path="/auth" element={<AuthPage />} />
             <Route path="/auth/callback" element={<AuthCallback />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
