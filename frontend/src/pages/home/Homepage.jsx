@@ -172,13 +172,14 @@ export function Homepage({ anime }) {
         <h1>Best Anime Quizzes Online – RankOtaku</h1>
         <p>
           RankOtaku is the ultimate platform for anime fans to test their knowledge with thousands of anime quizzes. 
-          Explore popular series like Naruto, One Piece, Attack on Titan, and Fullmetal Alchemist.
-          Compete on the global leaderboard and prove you are a true otaku.
+          Explore popular series like <a href="/anime/naruto-20" className="seo-link">Naruto</a>, <a href="/anime/one-piece-21" className="seo-link">One Piece</a>, <a href="/anime/attack-on-titan-16498" className="seo-link">Attack on Titan</a>, and <a href="/anime/fullmetal-alchemist-brotherhood-5114" className="seo-link">Fullmetal Alchemist</a>.
+          Compete on the <a href="/leaderboard" className="seo-link">global leaderboard</a> and prove you are a true otaku.
         </p>
         <h2>Explore Anime Quizzes by Category</h2>
         <p>
           Browse top rated anime, trending shows, currently airing series, and anime movies. 
           Each quiz is designed to challenge your knowledge of characters, storylines, and epic battles.
+          Start your <a href="/quiz" className="seo-link">anime quiz journey</a> today and compete with fans worldwide.
         </p>
       </section>
       
