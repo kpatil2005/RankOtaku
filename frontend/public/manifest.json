@@ -1,0 +1,36 @@
+{
+  "name": "RankOtaku - Anime Quiz Platform",
+  "short_name": "RankOtaku",
+  "description": "Test your anime knowledge with thousands of quizzes and compete on global leaderboards",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#f6c902",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["entertainment", "games", "education"],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "Take Quiz",
+      "short_name": "Quiz",
+      "description": "Start a new anime quiz",
+      "url": "/quiz",
+      "icons": []
+    },
+    {
+      "name": "Leaderboard",
+      "short_name": "Leaderboard",
+      "description": "View global rankings",
+      "url": "/leaderboard",
+      "icons": []
+    }
+  ]
+}

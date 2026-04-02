@@ -17,7 +17,7 @@ const sendPasswordResetEmail = async (email, resetToken) => {
         const emailData = {
             sender: {
                 name: "RankOtaku",
-                email: "kpatil800083@gmail.com"
+                email: process.env.NODE_ENV === 'production' ? "noreply@rankotaku.com" : "kpatil800083@gmail.com"
             },
             to: [{
                 email: email

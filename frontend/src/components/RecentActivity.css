@@ -1,0 +1,170 @@
+.recent-activity {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    padding: 20px;
+    margin-top: 20px;
+}
+
+.activity-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.activity-header h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #fff;
+    margin: 0;
+}
+
+.live-indicator {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #4ade80;
+    letter-spacing: 1px;
+}
+
+.pulse {
+    width: 6px;
+    height: 6px;
+    background: #4ade80;
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.4;
+    }
+}
+
+.activity-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.activity-list::-webkit-scrollbar {
+    width: 4px;
+}
+
+.activity-list::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 2px;
+}
+
+.activity-list::-webkit-scrollbar-thumb {
+    background: rgba(246, 201, 2, 0.3);
+    border-radius: 2px;
+}
+
+.activity-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 8px;
+    transition: background 0.2s ease;
+}
+
+.activity-item:hover {
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.activity-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgb(246, 201, 2), rgb(255, 215, 0));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 14px;
+    color: #000;
+    flex-shrink: 0;
+}
+
+.activity-content {
+    flex: 1;
+}
+
+.activity-text {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.85);
+    margin-bottom: 4px;
+}
+
+.activity-user {
+    font-weight: 600;
+    color: #fff;
+}
+
+.activity-quiz {
+    font-weight: 500;
+    color: rgb(246, 201, 2);
+}
+
+.activity-meta {
+    display: flex;
+    gap: 12px;
+    font-size: 11px;
+}
+
+.activity-score {
+    font-weight: 600;
+}
+
+.activity-time {
+    color: rgba(255, 255, 255, 0.4);
+}
+
+.activity-badge {
+    font-size: 20px;
+}
+
+.activity-loading,
+.no-activity {
+    text-align: center;
+    padding: 40px 20px;
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 13px;
+}
+
+@media (max-width: 768px) {
+    .recent-activity {
+        padding: 16px;
+    }
+
+    .activity-header h3 {
+        font-size: 16px;
+    }
+
+    .activity-list {
+        max-height: 300px;
+    }
+
+    .activity-item {
+        padding: 10px;
+    }
+
+    .activity-avatar {
+        width: 32px;
+        height: 32px;
+        font-size: 13px;
+    }
+}

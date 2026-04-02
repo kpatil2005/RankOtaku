@@ -133,6 +133,13 @@
     width: 100%;
 }
 
+.hero-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    flex-shrink: 0;
+}
+
 .hero-content {
     text-align: left;
     max-width: 700px;

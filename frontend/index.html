@@ -7,12 +7,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="RankOtaku lets anime fans compete with fun quiz challenges and global leaderboards. Play quizzes, track scores, and share with friends." />
     <meta name="keywords" content="anime quiz, leaderboard, otaku games, anime trivia, RankOtaku" />
+    
+    <!-- Preconnect to CDNs for faster loading -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.myanimelist.net">
+    <link rel="dns-prefetch" href="https://api.jikan.moe">
+    
+    <!-- Load fonts from Google CDN -->
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Brawler&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#f6c902">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="RankOtaku">
+    
+    <!-- Preload critical CSS -->
     <link rel="preload" href="/src/index.css" as="style" />
     <link rel="stylesheet" href="/src/index.css" />
     <link rel="preload" href="/src/pages/home/Anime.css" as="style" />
     <link rel="stylesheet" href="/src/pages/home/Anime.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Bangers&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Brawler&display=swap" rel="stylesheet">
+    
     <title>RankOtaku - Anime Quiz Leaderboard</title>
   </head>
   <body>

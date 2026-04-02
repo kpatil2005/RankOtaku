@@ -2,6 +2,9 @@ import React, { Suspense } from 'react'
 import { Header } from '../../components/header/Header';
 import { Herosection } from './Herosection';
 import { Footer } from '../../components/footer/Footer';
+import { FeaturedCarousel } from '../../components/FeaturedCarousel';
+import { RecentActivity } from '../../components/RecentActivity';
+import { AnimeGridSkeleton } from '../../components/LoadingSkeleton';
 import './Homepage.css';
 import axios from 'axios';
 import { Strip } from './Strip';
@@ -167,23 +170,14 @@ export function Homepage({ anime }) {
       <Header />
       <Herosection />
       
-      {/* SEO Content Block */}
-      <section className="seo-content">
-        <h1>Best Anime Quizzes Online – RankOtaku</h1>
-        <p>
-          RankOtaku is the ultimate platform for anime fans to test their knowledge with thousands of anime quizzes. 
-          Explore popular series like <a href="/anime/naruto-20" className="seo-link">Naruto</a>, <a href="/anime/one-piece-21" className="seo-link">One Piece</a>, <a href="/anime/attack-on-titan-16498" className="seo-link">Attack on Titan</a>, and <a href="/anime/fullmetal-alchemist-brotherhood-5114" className="seo-link">Fullmetal Alchemist</a>.
-          Compete on the <a href="/leaderboard" className="seo-link">global leaderboard</a> and prove you are a true otaku.
-        </p>
-        <h2>Explore Anime Quizzes by Category</h2>
-        <p>
-          Browse top rated anime, trending shows, currently airing series, and anime movies. 
-          Each quiz is designed to challenge your knowledge of characters, storylines, and epic battles.
-          Start your <a href="/quiz" className="seo-link">anime quiz journey</a> today and compete with fans worldwide.
-        </p>
-      </section>
-      
       <Strip />
+      
+      <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '0 20px' }}>
+        <RecentActivity />
+      </div>
+      
+      <FeaturedCarousel />
+      
       <Search 
         onCategoryChange={handleCategoryChange}
         onSearchStateChange={handleSearchStateChange}
@@ -192,7 +186,7 @@ export function Homepage({ anime }) {
       {/* Loading state */}
       {isLoading && !isSearchActive && (
         <div className="loading-categories">
-          <p>Loading anime categories...</p>
+          <AnimeGridSkeleton count={6} />
         </div>
       )}
 
@@ -200,7 +194,7 @@ export function Homepage({ anime }) {
       {!isSearchActive && !isLoading && (
         <>
           {(activeCategory === 'all' || activeCategory === 'top') && (
-            <Suspense fallback={<div className="loading-anime">Loading Top Rated Anime...</div>}>
+            <Suspense fallback={<AnimeGridSkeleton count={6} />}>
               <Anime 
                 anime={anime?.slice(0, displayCounts.top)} 
                 title="Top Rated Anime" 
@@ -211,7 +205,7 @@ export function Homepage({ anime }) {
             </Suspense>
           )}
           {(activeCategory === 'all' || activeCategory === 'trending') && (
-            <Suspense fallback={<div className="loading-anime">Loading Trending Anime...</div>}>
+            <Suspense fallback={<AnimeGridSkeleton count={6} />}>
               <Anime 
                 anime={categories.trending?.slice(0, displayCounts.trending)} 
                 title="Trending Anime" 
@@ -222,7 +216,7 @@ export function Homepage({ anime }) {
             </Suspense>
           )}
           {(activeCategory === 'all' || activeCategory === 'airing') && (
-            <Suspense fallback={<div className="loading-anime">Loading Currently Airing...</div>}>
+            <Suspense fallback={<AnimeGridSkeleton count={6} />}>
               <Anime 
                 anime={categories.airing?.slice(0, displayCounts.airing)} 
                 title="Currently Airing" 
@@ -233,7 +227,7 @@ export function Homepage({ anime }) {
             </Suspense>
           )}
           {(activeCategory === 'all' || activeCategory === 'movies') && (
-            <Suspense fallback={<div className="loading-anime">Loading Top Anime Movies...</div>}>
+            <Suspense fallback={<AnimeGridSkeleton count={6} />}>
               <Anime 
                 anime={categories.movies?.slice(0, displayCounts.movies)} 
                 title="Top Anime Movies" 
