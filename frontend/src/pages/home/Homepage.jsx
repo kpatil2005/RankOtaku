@@ -3,7 +3,7 @@ import { Header } from '../../components/header/Header';
 import { Herosection } from './Herosection';
 import { Footer } from '../../components/footer/Footer';
 import { FeaturedCarousel } from '../../components/FeaturedCarousel';
-import { RecentActivity } from '../../components/RecentActivity';
+
 import { AnimeGridSkeleton } from '../../components/LoadingSkeleton';
 import './Homepage.css';
 import axios from 'axios';
@@ -172,9 +172,7 @@ export function Homepage({ anime }) {
       
       <Strip />
       
-      <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '0 20px' }}>
-        <RecentActivity />
-      </div>
+
       
       <FeaturedCarousel />
       

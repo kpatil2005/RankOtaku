@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams, useLocation } from 'react-router-dom';
 import GoogleLogin from '../../components/GoogleLogin';
 import './AuthPage.css';
 
@@ -23,6 +23,7 @@ const useDebounce = (value, delay) => {
 
 const AuthPage = () => {
     const [searchParams] = useSearchParams();
+    const location = useLocation();
     const mode = searchParams.get('mode');
     const [isActive, setIsActive] = useState(mode === 'signup');
     const [formData, setFormData] = useState({
@@ -40,6 +41,10 @@ const AuthPage = () => {
     
     const { login, signup } = useAuth();
     const navigate = useNavigate();
+
+    // Get redirect information from location state
+    const from = location.state?.from || '/';
+    const message = location.state?.message;
 
     // Debounced values for real-time validation
     const debouncedUsername = useDebounce(formData.username, 500);
@@ -183,7 +188,7 @@ const AuthPage = () => {
         try {
             const result = await login(formData.email, formData.password);
             if (result.success) {
-                navigate('/');
+                navigate(from, { replace: true });
             } else {
                 setError(result.error || 'Login failed');
             }
@@ -216,7 +221,7 @@ const AuthPage = () => {
         try {
             const result = await signup(formData.username, formData.email, formData.password);
             if (result.success) {
-                navigate('/');
+                navigate(from, { replace: true });
             } else {
                 setError(result.error || 'Signup failed');
             }
@@ -245,6 +250,7 @@ const AuthPage = () => {
                     <div className="form-box login">
                     <form onSubmit={handleLogin}>
                         <h1>Login</h1>
+                        {message && <div className="info-message">{message}</div>}
                         {error && <div className="error-message">{error}</div>}
                         <div className="input-box">
                             <input 

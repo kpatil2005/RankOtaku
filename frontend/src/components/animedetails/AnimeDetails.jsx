@@ -7,11 +7,15 @@ import { Header } from '../header/Header';
 import { DoorTransition } from '../doortransition/DoorTransition';
 import { useAddToList, useIsAnimeInList } from '../../hooks/useAnimeQueries';
 import { usePageMeta } from '../../hooks/usePageMeta';
+import { ProductionStaff } from './ProductionStaff';
+import { VoiceActors } from './VoiceActors';
+import { useAuth } from '../../contexts/AuthContext';
 
 export function AnimeDetails() {
     const { slug } = useParams()
     const id = slug.split('-').pop()
     const navigate = useNavigate()
+    const { isAuthenticated } = useAuth()
     const [anime, setAnime] = useState(null)
     const [pictures, setPictures] = useState([])
     const [characters, setCharacters] = useState([])
@@ -33,6 +37,18 @@ export function AnimeDetails() {
 
     const handleAddToList = () => {
         if (!anime) return;
+        
+        // Check if user is authenticated
+        if (!isAuthenticated) {
+            // Redirect to login page
+            navigate('/auth', { 
+                state: { 
+                    from: `/anime/${slug}`,
+                    message: 'Please login to add anime to your list'
+                }
+            });
+            return;
+        }
         
         addToListMutation.mutate({
             animeId: anime.mal_id,
@@ -206,9 +222,11 @@ export function AnimeDetails() {
                             <button 
                                 className='btn-secondary-large' 
                                 onClick={handleAddToList}
-                                disabled={isInList || addToListMutation.isPending}
+                                disabled={isAuthenticated && (isInList || addToListMutation.isPending)}
                             >
-                                {isInList ? '✓ In My List' : addToListMutation.isPending ? 'Adding...' : 'Add to My List'}
+                                {!isAuthenticated ? 'Login to Add to List' : 
+                                 isInList ? '✓ In My List' : 
+                                 addToListMutation.isPending ? 'Adding...' : 'Add to My List'}
                             </button>
                         </div>
                     </div>
@@ -217,11 +235,6 @@ export function AnimeDetails() {
 
             {/* Synopsis */}
             <div className='content-section'>
-                <h1>{anime.title} Quiz - Test Your Knowledge</h1>
-                <p>
-                    Play {anime.title} quiz and test your knowledge about characters, story, and battles. 
-                    Challenge yourself with questions about {anime.title} and compete with other fans on the leaderboard.
-                </p>
                 <h2 className='section-title'>About {anime.title}</h2>
                 <p className='synopsis-text'>{anime.synopsis}</p>
             </div>
@@ -283,17 +296,16 @@ export function AnimeDetails() {
                 </div>
             )}
 
-            {/* Gallery */}
-            {pictures.length > 0 && (
-                <div className='content-section'>
-                    <h2 className='section-title'>Gallery</h2>
-                    <div className='gallery-grid'>
-                        {pictures.map((pic, index) => (
-                            <img key={index} src={pic.jpg.image_url} alt={`${anime.title} ${index + 1}`} className='gallery-image' />
-                        ))}
-                    </div>
-                </div>
-            )}
+            {/* Enhanced Information Sections */}
+            <div className='content-section'>
+                <ProductionStaff anime={anime} />
+            </div>
+
+            <div className='content-section'>
+                <VoiceActors characters={characters} />
+            </div>
+
+
 
             {/* Background */}
             {anime.background && (
