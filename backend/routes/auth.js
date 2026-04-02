@@ -465,18 +465,34 @@ router.post('/reset-password/:token', [
 router.post('/google', async (req, res) => {
     const { code } = req.body;
     
+    console.log('Google OAuth attempt with code:', code?.substring(0, 20) + '...');
+    
+    if (!code) {
+        return res.status(400).json({ error: 'Authorization code is required' });
+    }
+    
+    if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
+        console.error('Missing Google OAuth credentials');
+        return res.status(500).json({ error: 'Server configuration error' });
+    }
+    
     try {
+        const redirectUri = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/auth/callback`;
+        console.log('Using redirect URI:', redirectUri);
+        
         const { data } = await axios.post(
             'https://oauth2.googleapis.com/token',
             new URLSearchParams({
                 code,
                 client_id: process.env.GOOGLE_CLIENT_ID,
                 client_secret: process.env.GOOGLE_CLIENT_SECRET,
-                redirect_uri: `${process.env.FRONTEND_URL || 'http://localhost:5173'}/auth/callback`,
+                redirect_uri: redirectUri,
                 grant_type: 'authorization_code',
             }),
             { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
         );
+        
+        console.log('Token exchange successful');
         
         // Get user info from Google
         const userInfo = await axios.get('https://www.googleapis.com/oauth2/v2/userinfo', {
@@ -484,11 +500,13 @@ router.post('/google', async (req, res) => {
         });
         
         const { email, name, picture } = userInfo.data;
+        console.log('User info retrieved:', email);
         
         // Find or create user
         let user = await User.findOne({ email });
         
         if (!user) {
+            console.log('Creating new user for:', email);
             user = await User.create({
                 username: name,
                 email,
@@ -496,6 +514,8 @@ router.post('/google', async (req, res) => {
                 avatar: picture,
                 googleId: userInfo.data.id
             });
+        } else {
+            console.log('Existing user found:', email);
         }
         
         const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET || 'your-secret-key', { expiresIn: '7d' });
@@ -512,8 +532,11 @@ router.post('/google', async (req, res) => {
         });
     } catch (error) {
         const details = error.response?.data || error.message;
-        console.error('Google Auth Error:', details);
-        res.status(500).json({ error: 'Google authentication failed', details });
+        console.error('Google Auth Error:', error.response?.status, details);
+        res.status(500).json({ 
+            error: 'Google authentication failed', 
+            details: error.response?.data?.error_description || error.message 
+        });
     }
 });
 

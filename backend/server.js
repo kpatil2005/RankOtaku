@@ -10,6 +10,7 @@ require("dotenv").config()
 const quizRoutes = require("./routes/quiz")
 const authRoutes = require("./routes/auth")
 const leaderboardRoutes = require("./routes/leaderboard")
+const activityRoutes = require("./routes/activity")
 
 const app = express()
 
@@ -99,6 +100,7 @@ app.get("/home", async (req, res) => {
 app.use("/api", quizRoutes)
 app.use("/api/auth", authRoutes)
 app.use("/api", leaderboardRoutes)
+app.use("/api", activityRoutes)
 
 app.get("/models", async (req, res) => {
     try {
