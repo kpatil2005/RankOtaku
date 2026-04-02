@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
+import { Helmet } from 'react-helmet'
 import axios from 'axios'
 import './AnimeDetails.css'
 import { Header } from '../header/Header';
@@ -153,6 +154,18 @@ export function AnimeDetails() {
 
     return(
         <>
+          <Helmet>
+            <title>{anime.title} Quiz | RankOtaku</title>
+            <meta 
+              name="description" 
+              content={`Play ${anime.title} quiz and test your anime knowledge on RankOtaku. Challenge yourself with questions about ${anime.title} characters, story, and battles.`}
+            />
+            <meta name="keywords" content={`${anime.title} quiz, ${anime.title} trivia, anime quiz, ${anime.genres.map(g => g.name).join(', ')}`} />
+            <meta property="og:title" content={`${anime.title} Quiz | RankOtaku`} />
+            <meta property="og:description" content={`Play ${anime.title} quiz and test your anime knowledge on RankOtaku`} />
+            <meta property="og:image" content={anime.images.jpg.large_image_url} />
+            <meta property="og:type" content="website" />
+          </Helmet>
           {showDoor && <DoorTransition onComplete={() => setShowDoor(false)} />}
           <div className='anime-details-container'>
             {/* Hero Banner */}
