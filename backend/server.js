@@ -11,6 +11,7 @@ const quizRoutes = require("./routes/quiz")
 const authRoutes = require("./routes/auth")
 const leaderboardRoutes = require("./routes/leaderboard")
 const activityRoutes = require("./routes/activity")
+const sitemapRoutes = require("./routes/sitemap")
 
 const app = express()
 
@@ -101,6 +102,7 @@ app.use("/api", quizRoutes)
 app.use("/api/auth", authRoutes)
 app.use("/api", leaderboardRoutes)
 app.use("/api", activityRoutes)
+app.use("/", sitemapRoutes)
 
 app.get("/models", async (req, res) => {
     try {

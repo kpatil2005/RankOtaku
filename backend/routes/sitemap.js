@@ -39,7 +39,7 @@ router.get("/sitemap.xml", async (req, res) => {
         </url>`);
 
         // 🔥 Fetch top anime from Jikan API (multiple pages for more URLs)
-        const pages = [1, 2, 3, 4]; // Fetch 100 anime (25 per page)
+        const pages = Array.from({length: 10}, (_, i) => i + 1); // Fetch 250 anime (25 per page)
         
         for (const page of pages) {
             try {
