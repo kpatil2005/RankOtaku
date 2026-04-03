@@ -5,13 +5,11 @@ import { Footer } from '../../components/footer/Footer';
 import { FeaturedCarousel } from '../../components/FeaturedCarousel';
 import { SEOHead } from '../../components/SEO/SEOHead';
 import { SEOContent } from '../../components/SEO/SEOContent';
-
 import { AnimeGridSkeleton } from '../../components/LoadingSkeleton';
 import './Homepage.css';
 import axios from 'axios';
 import { Strip } from './Strip';
 import { Search } from './Search';
-import { usePageMeta } from '../../hooks/usePageMeta';
 
 // Lazy load Anime component to reduce initial JS
 const Anime = React.lazy(() => import('./Anime').then(module => ({ default: module.Anime })));
@@ -33,11 +31,7 @@ export function Homepage({ anime }) {
   });
   const [isLoadingMore, setIsLoadingMore] = React.useState(false);
 
-  usePageMeta({
-    title: 'RankOtaku | Home - Anime Quizzes & Leaderboard',
-    description: 'Discover top anime quizzes and compete on global leaderboards with RankOtaku.',
-    keywords: 'anime quiz, anime trivia, otaku leaderboard, anime challenge, RankOtaku'
-  });
+  // SEO is now handled by SEOHead component, removing usePageMeta to avoid conflicts
 
   React.useEffect(() => {
     const CACHE_KEY = 'homepage_categories';

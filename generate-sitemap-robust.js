@@ -43,6 +43,8 @@ async function generateSitemap() {
     const staticPages = [
         { path: '', priority: '1.0', changefreq: 'daily' },
         { path: '/leaderboard', priority: '0.8', changefreq: 'daily' },
+        { path: '/about', priority: '0.7', changefreq: 'monthly' },
+        { path: '/contact', priority: '0.6', changefreq: 'monthly' },
         { path: '/auth', priority: '0.5', changefreq: 'monthly' }
     ];
     
