@@ -3,6 +3,8 @@ import { Header } from '../../components/header/Header';
 import { Herosection } from './Herosection';
 import { Footer } from '../../components/footer/Footer';
 import { FeaturedCarousel } from '../../components/FeaturedCarousel';
+import { SEOHead } from '../../components/SEO/SEOHead';
+import { SEOContent } from '../../components/SEO/SEOContent';
 
 import { AnimeGridSkeleton } from '../../components/LoadingSkeleton';
 import './Homepage.css';
@@ -153,20 +155,12 @@ export function Homepage({ anime }) {
 
   return (
     <div className='homepage'>
-      <script type="application/ld+json">
-        {JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "WebSite",
-          "name": "RankOtaku",
-          "url": "https://rankotaku-frontend.onrender.com",
-          "description": "Best anime quizzes online. Test your knowledge with thousands of anime quizzes and compete on global leaderboards.",
-          "potentialAction": {
-            "@type": "SearchAction",
-            "target": "https://rankotaku-frontend.onrender.com/search?q={search_term_string}",
-            "query-input": "required name=search_term_string"
-          }
-        })}
-      </script>
+      <SEOHead 
+        title="RankOtaku - Ultimate Anime Quiz & Ranking Platform | Test Your Otaku Knowledge"
+        description="Test your anime knowledge with thousands of quizzes! Compete on global leaderboards, discover top anime rankings, and join the ultimate otaku community. Play now!"
+        keywords="anime quiz, anime trivia, otaku games, anime leaderboard, anime ranking, anime player, anime knowledge test, otaku quiz, anime challenge, RankOtaku, anime competition, manga quiz, anime games online, otaku community"
+        url="https://rankotaku-frontend.onrender.com/"
+      />
       <Header />
       <Herosection />
       
@@ -237,6 +231,8 @@ export function Homepage({ anime }) {
           )}
         </>
       )}
+      
+      <SEOContent />
       <Footer />
     </div>
   );
