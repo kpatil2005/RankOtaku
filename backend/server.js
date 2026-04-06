@@ -12,6 +12,7 @@ const authRoutes = require("./routes/auth")
 const leaderboardRoutes = require("./routes/leaderboard")
 const activityRoutes = require("./routes/activity")
 const sitemapRoutes = require("./routes/sitemap")
+const agentRoutes = require("./routes/agent")
 const NodeCache = require("node-cache")
 
 // Cache: TTL = 10 minutes (600 seconds)
@@ -278,6 +279,7 @@ app.use("/api", requireDB, quizRoutes)
 app.use("/api/auth", requireDB, authRoutes)
 app.use("/api", requireDB, leaderboardRoutes)
 app.use("/api", requireDB, activityRoutes)
+app.use("/api/agent", requireDB, agentRoutes)
 app.use("/", sitemapRoutes)
 
 app.get("/models", async (req, res) => {

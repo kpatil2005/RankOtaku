@@ -48,6 +48,7 @@ export function Header() {
                         My List
                     </button>
                     <Link to="/about">About Us</Link>
+                    <Link to="/sensei">AI Sensei</Link>
                     <Link to="/profile">Profile</Link>
                 </nav>
 
@@ -86,6 +87,7 @@ export function Header() {
                         My List
                     </button>
                     <Link to="/about" onClick={() => setIsSidebarOpen(false)}>About Us</Link>
+                    <Link to="/sensei" onClick={() => setIsSidebarOpen(false)}>AI Sensei</Link>
                     <Link to="/profile" onClick={() => setIsSidebarOpen(false)}>Profile</Link>
                 </nav>
 

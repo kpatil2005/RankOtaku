@@ -11,6 +11,7 @@ import ForgotPassword from "./pages/auth/ForgotPassword"
 import ResetPassword from "./pages/auth/ResetPassword"
 import ProfilePage from "./pages/profile/ProfilePage"
 import { AboutPage } from "./pages/about/AboutPage"
+import SenseiPage from "./pages/sensei/SenseiPage"
 import { AuthProvider } from "./contexts/AuthContext"
 import { ProtectedRoute } from "./components/ProtectedRoute"
 import { Achievement } from "./components/achivement/Achievement"
@@ -75,6 +76,7 @@ function App() {
             } />
             <Route path="/profile/:userId" element={<ProfilePage />} />
             <Route path="/about" element={<AboutPage />} />
+            <Route path="/sensei" element={<SenseiPage />} />
             <Route path="/anime/:slug" element={<AnimeDetails />} />
             <Route path="/auth" element={<AuthPage />} />
             <Route path="/auth/callback" element={<AuthCallback />} />
