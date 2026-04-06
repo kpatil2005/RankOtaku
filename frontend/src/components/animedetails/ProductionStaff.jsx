@@ -9,7 +9,8 @@ export const ProductionStaff = ({ anime }) => {
   useEffect(() => {
     const fetchStaff = async () => {
       try {
-        const response = await axios.get(`https://api.jikan.moe/v4/anime/${anime.mal_id}/staff`);
+        const API = import.meta.env.VITE_API_URL;
+        const response = await axios.get(`${API}/api/jikan/anime/${anime.mal_id}/staff`);
         setStaff(response.data.data);
         setLoading(false);
       } catch (error) {
@@ -24,7 +25,7 @@ export const ProductionStaff = ({ anime }) => {
   }, [anime?.mal_id]);
 
   const getStaffByPosition = (position) => {
-    return staff.filter(member => 
+    return staff.filter(member =>
       member.positions.some(pos => pos.toLowerCase().includes(position.toLowerCase()))
     );
   };
@@ -48,7 +49,7 @@ export const ProductionStaff = ({ anime }) => {
   return (
     <div className="production-staff">
       <h2 className="section-title">Staff & Production</h2>
-      
+
       {/* Studios */}
       {anime.studios && anime.studios.length > 0 && (
         <div className="studios-section">
@@ -75,8 +76,8 @@ export const ProductionStaff = ({ anime }) => {
                   <div key={index} className="staff-member">
                     <div className="staff-photo">
                       {member.person.images?.jpg?.image_url ? (
-                        <img 
-                          src={member.person.images.jpg.image_url} 
+                        <img
+                          src={member.person.images.jpg.image_url}
                           alt={member.person.name}
                           onError={(e) => {
                             e.target.style.display = 'none';

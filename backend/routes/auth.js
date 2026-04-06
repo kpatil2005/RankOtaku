@@ -110,6 +110,9 @@ router.post('/login', authLimiter, loginValidation, async (req, res) => {
         
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
+            if (user.googleId) {
+                return res.status(400).json({ error: 'Invalid password. Note: This account is linked to Google. Try using "Sign in with Google" or reset your password to log in manually.' });
+            }
             return res.status(400).json({ error: 'Invalid credentials' });
         }
         
@@ -516,6 +519,20 @@ router.post('/google', async (req, res) => {
             });
         } else {
             console.log('Existing user found:', email);
+            // Securely link Google OAuth to the existing email account
+            let updated = false;
+            if (!user.googleId) {
+                user.googleId = userInfo.data.id;
+                updated = true;
+            }
+            if (!user.avatar && picture) {
+                user.avatar = picture;
+                updated = true;
+            }
+            if (updated) {
+                await user.save();
+                console.log('Successfully linked Google account to existing user profile.');
+            }
         }
         
         const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET || 'your-secret-key', { expiresIn: '7d' });

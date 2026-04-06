@@ -19,6 +19,7 @@ export function Footer() {
                         <ul>
                             <li><a href="/">Home</a></li>
                             <li><a href="/leaderboard">Leaderboard</a></li>
+                            <li><a href="/about">About Us</a></li>
                             <li><a href="/privacy">Privacy</a></li>
                             <li><a href="/terms">Terms</a></li>
                         </ul>
@@ -33,11 +34,11 @@ export function Footer() {
                         <p>&copy; 2024 RankOtaku. All rights reserved.</p>
                         <p className="api-credit">Powered by Jikan API</p>
                     </div>
-                    
+
                     <div className="developer-info">
                         <p>Built by <strong>Kalpesh Patil</strong></p>
                         <div className="developer-links">
-                            <a href="https://stylehub-ecommerce-react.vercel.app" target="_blank" rel="noopener noreferrer">Portfolio</a>
+                            <a href="https://portfolio-lemon-alpha-13.vercel.app" target="_blank" rel="noopener noreferrer">Portfolio</a>
                             <a href="https://linkedin.com/in/kalpesh-patil-2a30a9290" target="_blank" rel="noopener noreferrer">LinkedIn</a>
                         </div>
                     </div>

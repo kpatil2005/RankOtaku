@@ -4,7 +4,15 @@ const quizSchema = new mongoose.Schema({
     animeTitle: {
         type: String,
         required: true,
-        unique: true
+    },
+    characterName: {
+        type: String,
+        default: null
+    },
+    quizType: {
+        type: String,
+        enum: ['anime', 'character'],
+        default: 'anime'
     },
     questions: [{
         question: String,
@@ -14,8 +22,14 @@ const quizSchema = new mongoose.Schema({
     }],
     createdAt: {
         type: Date,
-        default: Date.now
+        default: Date.now,
+        expires: 86400  // auto-delete after 24 hours (TTL index)
     }
 });
 
-module.exports = mongoose.model('Quiz', quizSchema);
+// Compound index: allows same anime to have both anime + character quizzes
+quizSchema.index({ animeTitle: 1, quizType: 1, characterName: 1 });
+
+const Quiz = mongoose.model('Quiz', quizSchema);
+
+module.exports = Quiz;

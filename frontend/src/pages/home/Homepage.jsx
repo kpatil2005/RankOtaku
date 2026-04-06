@@ -36,7 +36,7 @@ export function Homepage({ anime }) {
   React.useEffect(() => {
     const CACHE_KEY = 'homepage_categories';
     const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
-    
+
     // Check cache first
     const cached = sessionStorage.getItem(CACHE_KEY);
     if (cached) {
@@ -53,44 +53,36 @@ export function Homepage({ anime }) {
       }
     }
 
-    const controller = new AbortController();
-    const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
 
     setIsLoading(true);
 
+    const API = import.meta.env.VITE_API_URL;
     Promise.all([
-      axios.get('https://api.jikan.moe/v4/top/anime?filter=bypopularity&limit=10', {
-        signal: controller.signal
-      }),
-      delay(1000).then(() => axios.get('https://api.jikan.moe/v4/seasons/now?limit=10', {
-        signal: controller.signal
-      })),
-      delay(2000).then(() => axios.get('https://api.jikan.moe/v4/top/anime?type=movie&limit=10', {
-        signal: controller.signal
-      }))
+      axios.get(`${API}/api/jikan/top/popularity`),
+      axios.get(`${API}/api/jikan/seasons/now`),
+      axios.get(`${API}/api/jikan/top/movies`)
     ]).then(([trending, airing, movies]) => {
       const data = {
         trending: trending.data.data,
         airing: airing.data.data,
         movies: movies.data.data
       };
-      
+
       setCategories(data);
       setIsLoading(false);
-      
+
       // Cache the data
       sessionStorage.setItem(CACHE_KEY, JSON.stringify({
         data,
         timestamp: Date.now()
       }));
     }).catch(error => {
-      if (error.name !== 'AbortError') {
-        console.error('Error fetching anime data:', error);
-        setIsLoading(false);
-      }
+      console.error('Error fetching anime data:', error);
+      setIsLoading(false);
     });
 
-    return () => controller.abort();
+
   }, []);
 
   const handleCategoryChange = React.useCallback((category) => {
@@ -149,7 +141,7 @@ export function Homepage({ anime }) {
 
   return (
     <div className='homepage'>
-      <SEOHead 
+      <SEOHead
         title="RankOtaku - Ultimate Anime Quiz & Ranking Platform | Test Your Otaku Knowledge"
         description="Test your anime knowledge with thousands of quizzes! Compete on global leaderboards, discover top anime rankings, and join the ultimate otaku community. Play now!"
         keywords="anime quiz, anime trivia, otaku games, anime leaderboard, anime ranking, anime player, anime knowledge test, otaku quiz, anime challenge, RankOtaku, anime competition, manga quiz, anime games online, otaku community"
@@ -157,14 +149,14 @@ export function Homepage({ anime }) {
       />
       <Header />
       <Herosection />
-      
-      <Strip />
-      
 
-      
+      <Strip />
+
+
+
       <FeaturedCarousel />
-      
-      <Search 
+
+      <Search
         onCategoryChange={handleCategoryChange}
         onSearchStateChange={handleSearchStateChange}
       />
@@ -181,9 +173,9 @@ export function Homepage({ anime }) {
         <>
           {(activeCategory === 'all' || activeCategory === 'top') && (
             <Suspense fallback={<AnimeGridSkeleton count={6} />}>
-              <Anime 
-                anime={anime?.slice(0, displayCounts.top)} 
-                title="Top Rated Anime" 
+              <Anime
+                anime={anime?.slice(0, displayCounts.top)}
+                title="Top Rated Anime"
                 category="top"
                 onLoadMore={loadMoreAnime}
                 isLoadingMore={isLoadingMore}
@@ -192,9 +184,9 @@ export function Homepage({ anime }) {
           )}
           {(activeCategory === 'all' || activeCategory === 'trending') && (
             <Suspense fallback={<AnimeGridSkeleton count={6} />}>
-              <Anime 
-                anime={categories.trending?.slice(0, displayCounts.trending)} 
-                title="Trending Anime" 
+              <Anime
+                anime={categories.trending?.slice(0, displayCounts.trending)}
+                title="Trending Anime"
                 category="trending"
                 onLoadMore={loadMoreAnime}
                 isLoadingMore={isLoadingMore}
@@ -203,9 +195,9 @@ export function Homepage({ anime }) {
           )}
           {(activeCategory === 'all' || activeCategory === 'airing') && (
             <Suspense fallback={<AnimeGridSkeleton count={6} />}>
-              <Anime 
-                anime={categories.airing?.slice(0, displayCounts.airing)} 
-                title="Currently Airing" 
+              <Anime
+                anime={categories.airing?.slice(0, displayCounts.airing)}
+                title="Currently Airing"
                 category="airing"
                 onLoadMore={loadMoreAnime}
                 isLoadingMore={isLoadingMore}
@@ -214,9 +206,9 @@ export function Homepage({ anime }) {
           )}
           {(activeCategory === 'all' || activeCategory === 'movies') && (
             <Suspense fallback={<AnimeGridSkeleton count={6} />}>
-              <Anime 
-                anime={categories.movies?.slice(0, displayCounts.movies)} 
-                title="Top Anime Movies" 
+              <Anime
+                anime={categories.movies?.slice(0, displayCounts.movies)}
+                title="Top Anime Movies"
                 category="movies"
                 onLoadMore={loadMoreAnime}
                 isLoadingMore={isLoadingMore}
@@ -225,7 +217,7 @@ export function Homepage({ anime }) {
           )}
         </>
       )}
-      
+
       <SEOContent />
       <Footer />
     </div>

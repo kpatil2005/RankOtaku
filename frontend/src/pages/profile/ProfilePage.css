@@ -133,6 +133,8 @@
     gap: 24px;
     padding: 120px 40px;
     min-height: 100vh;
+    overflow: hidden;
+    min-width: 0;
 }
 
 .progress-section {
@@ -173,33 +175,36 @@
 
 .progress-bar-wrapper {
     display: flex;
-    align-items: center;
-    gap: 16px;
+    align-items: flex-end;
+    gap: 0;
     margin-bottom: 11px;
-   
+    position: relative;
 }
 
 .progress-bar-container {
     flex: 1;
-    height: 20px;
-    background: #1a1a1a;
-    border-radius: 4px;
+    height: 10px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 999px;
     overflow: hidden;
-    margin-left: -30px;
 }
 
 .progress-bar-fill {
     height: 100%;
-    background: linear-gradient(90deg, #fbfab5, #fff200);
-    transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    background: linear-gradient(90deg, #ff6b35, #ffe04b);
+    border-radius: 999px;
+    transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: 0 0 10px rgba(255, 107, 53, 0.5);
 }
 
 .goku-blast {
-    margin-top: 10px;
-    width: 150px;
+    width: 90px;
+    flex-shrink: 0;
     object-fit: contain;
-    transform: translateY(8px) translateX(-8px);
+    transform: translateY(6px);
+    margin-right: -8px;
+    position: relative;
+    z-index: 1;
 }
 
 @keyframes pulse {
@@ -223,50 +228,70 @@
     font-weight: 500;
 }
 
+/* ── Statistics Section ── */
 .stats-section h2 {
-    margin: 32px 0 20px 0;
-    font-size: 14px;
-    color: #666;
+    margin: 0 0 20px 0;
+    font-size: 11px;
+    color: #555;
     text-transform: uppercase;
-    letter-spacing: 2px;
-    font-weight: 600;
+    letter-spacing: 3px;
+    font-weight: 700;
 }
 
 .stats-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 16px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
     margin-bottom: 0;
 }
 
 .stat-card {
-    background: transparent;
-    border: none;
-    border-left: 2px solid rgba(255, 107, 53, 0.3);
-    border-radius: 0;
-    padding: 0 0 0 16px;
-    text-align: left;
-    transition: border-color 0.3s ease;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 12px;
+    padding: 20px 24px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s ease, background 0.3s ease;
+    cursor: default;
+}
+
+.stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #ff6b35, transparent);
+    opacity: 0;
+    transition: opacity 0.3s ease;
 }
 
 .stat-card:hover {
-    border-left-color: #ff6b35;
+    border-color: rgba(255,107,53,0.3);
+    background: rgba(255,107,53,0.04);
+}
+
+.stat-card:hover::before {
+    opacity: 1;
 }
 
 .stat-value {
-    font-size: 36px;
+    font-size: 40px;
     font-weight: 700;
     color: #fff;
-    margin-bottom: 4px;
-    letter-spacing: -1px;
+    margin-bottom: 6px;
+    letter-spacing: -2px;
+    line-height: 1;
 }
 
 .stat-label {
-    font-size: 11px;
-    color: #666;
+    font-size: 10px;
+    color: #555;
     text-transform: uppercase;
-    letter-spacing: 1px;
-    font-weight: 600;
+    letter-spacing: 2px;
+    font-weight: 700;
 }
 
 .actions {
@@ -400,83 +425,130 @@
     color: #ffffff;
 }
 
+/* ── Recent Quiz Section ── */
 .activity-section {
-    background: #1a1a1a;
-    border-radius: 10px;
-    padding: 24px;
-    border: 1px solid rgba(255, 107, 53, 0.2);
+    background: transparent;
+    padding: 0;
 }
 
 .activity-section h2 {
-    margin: 0 0 16px 0;
-    font-size: 20px;
-    color: #ffffff;
+    margin: 0 0 24px 0;
+    font-size: 11px;
+    color: #555;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    font-weight: 700;
 }
 
 .no-activity {
     text-align: center;
-    color: #888;
-    padding: 20px;
-    font-size: 14px;
+    color: #444;
+    padding: 40px 20px;
+    font-size: 13px;
+    letter-spacing: 0.5px;
 }
 
 .activity-list {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 0;
+    position: relative;
+}
+
+/* Vertical timeline line */
+.activity-list::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: linear-gradient(to bottom, rgba(255,107,53,0.5), rgba(255,107,53,0.05));
 }
 
 .activity-item {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    padding: 16px;
-    background: #262626;
-    border-radius: 8px;
-    border: 1px solid #333;
-    transition: transform 0.2s ease;
+    align-items: flex-start;
+    padding: 16px 20px 16px 24px;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    transition: background 0.2s ease;
+    position: relative;
+    cursor: default;
+}
+
+/* Timeline dot */
+.activity-item::before {
+    content: '';
+    position: absolute;
+    left: -4px;
+    top: 22px;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #ff6b35;
+    box-shadow: 0 0 8px rgba(255,107,53,0.6);
+    transition: box-shadow 0.2s ease;
 }
 
 .activity-item:hover {
-    transform: translateX(4px);
-    border-color: #ff6b35;
+    background: rgba(255,255,255,0.02);
+}
+
+.activity-item:hover::before {
+    box-shadow: 0 0 14px rgba(255,107,53,0.9);
+}
+
+.activity-item:last-child {
+    border-bottom: none;
 }
 
 .activity-info {
     flex: 1;
+    min-width: 0;
 }
 
 .activity-title {
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 600;
-    color: #ffffff;
+    color: #e0e0e0;
     margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 320px;
 }
 
 .activity-date {
-    font-size: 12px;
-    color: #888;
+    font-size: 11px;
+    color: #444;
+    letter-spacing: 0.5px;
 }
 
 .activity-stats {
     display: flex;
-    gap: 16px;
-    align-items: center;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+    flex-shrink: 0;
+    margin-left: 16px;
 }
 
 .activity-score {
-    font-size: 16px;
-    font-weight: 600;
-    color: #aaa;
+    font-size: 18px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: -0.5px;
+    line-height: 1;
 }
 
 .activity-points {
-    font-size: 14px;
+    font-size: 11px;
     font-weight: 600;
     color: #ff6b35;
-    background: rgba(255, 107, 53, 0.1);
-    padding: 4px 12px;
-    border-radius: 12px;
+    letter-spacing: 0.5px;
 }
 
 .modal-overlay {
@@ -864,71 +936,62 @@
     }
 }
 
+/* ── Eye Power Chart (Leaderboard) ── */
 .eye-guide {
     background: #0a0a0a;
     border: 1px solid rgba(255, 107, 53, 0.2);
-    border-radius: 8px;
+    border-radius: 12px;
     padding: 20px;
     margin-bottom: 24px;
-    overflow-x: auto;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-}
-
-.eye-guide::-webkit-scrollbar {
-    display: none;
+    overflow: hidden;
+    box-sizing: border-box;
+    width: 100%;
 }
 
 .eye-guide h3 {
     margin: 0 0 16px 0;
-    font-size: 16px;
-    color: #fff;
-    font-weight: 600;
+    font-size: 11px;
+    color: #555;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    font-weight: 700;
     text-align: center;
-    position: relative;
-    z-index: 10;
 }
 
 .eye-guide-progression {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    min-width: max-content;
-    justify-content: center;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
+    gap: 8px;
+    align-items: stretch;
+    width: 100%;
 }
 
+/* Arrows are in the DOM — hide them so they don't create ghost grid cells */
 .progression-arrow {
-    font-size: 20px;
-    color: #ff6b35;
-    font-weight: bold;
-    flex-shrink: 0;
-    position: relative;
-    z-index: 5;
+    display: none;
 }
 
 .eye-guide-item {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 8px;
-    padding: 16px 12px;
-    background: #1a1a1a;
+    gap: 6px;
+    padding: 12px 8px;
+    background: rgba(255,255,255,0.03);
     border: 1px solid rgba(255, 107, 53, 0.1);
-    border-radius: 8px;
-    transition: all 0.3s ease;
-    min-width: 120px;
+    border-radius: 10px;
+    transition: border-color 0.3s ease, transform 0.2s ease;
     flex-shrink: 0;
-    position: relative;
 }
 
 .eye-guide-item:hover {
-    border-color: rgba(255, 107, 53, 0.3);
-    transform: translateY(-4px);
+    border-color: rgba(255, 107, 53, 0.4);
+    transform: translateY(-3px);
 }
 
 .eye-guide-image {
-    width: 56px;
-    height: 56px;
+    width: 44px;
+    height: 44px;
     border-radius: 50%;
     object-fit: cover;
     border: 2px solid rgba(255, 107, 53, 0.2);
@@ -941,20 +1004,15 @@
 }
 
 .eye-guide-icon {
-    width: 56px;
-    height: 56px;
+    width: 44px;
+    height: 44px;
     display: flex;
     align-items: center;
     justify-content: center;
     color: #6b7280;
-    font-size: 32px;
+    font-size: 28px;
     font-weight: 600;
     flex-shrink: 0;
-    transition: transform 0.3s ease;
-}
-
-.eye-guide-item:hover .eye-guide-icon {
-    transform: scale(1.1);
 }
 
 .eye-guide-info {
@@ -965,37 +1023,17 @@
 }
 
 .eye-guide-name {
-    font-size: 11px;
-    color: #fff;
-    font-weight: 500;
+    font-size: 9px;
+    color: #ccc;
+    font-weight: 600;
     white-space: nowrap;
     margin-bottom: 2px;
+    letter-spacing: 0.3px;
 }
 
 .eye-guide-points {
-    font-size: 9px;
-    color: #888;
-    font-weight: 400;
-}
-
-.eye-guide-info {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-}
-
-.eye-guide-name {
-    font-size: 11px;
-    color: #fff;
-    font-weight: 500;
-    white-space: nowrap;
-    margin-bottom: 2px;
-}
-
-.eye-guide-points {
-    font-size: 9px;
-    color: #888;
+    font-size: 8px;
+    color: #555;
     font-weight: 400;
 }
 .achievements-section {
@@ -1704,6 +1742,7 @@
         font-size: 12px;
         min-height: 32px;
         -webkit-line-clamp: 2;
+        line-clamp: 2;
     }
 
     .anime-quiz-count {
@@ -2141,15 +2180,20 @@
     font-weight: 600;
 }
 
-.character-performance-overlay {
+.character-achievement-card.mastered {
+    border-color: #ffd700;
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.2);
+}
+
+.character-achievement-card.mastered::before {
+    content: '';
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
-    bottom: 0;
-    background: rgba(220, 38, 38, 1);
-    pointer-events: none;
-    transition: opacity 0.3s ease;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #ffd700, transparent);
+    z-index: 10;
 }
 
 .anime-achievement-content {
@@ -2169,6 +2213,7 @@
     line-height: 1.4;
     display: -webkit-box;
     -webkit-line-clamp: 2;
+    line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -2264,45 +2309,7 @@
     text-align: center;
 }
 
-.anime-list-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 16px;
-    margin-top: 16px;
-}
 
-.anime-list-card {
-    background: transparent;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
-    overflow: hidden;
-    transition: none;
-}
-
-.anime-list-image {
-    width: 100%;
-    height: 240px;
-    overflow: hidden;
-}
-
-.anime-list-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.anime-list-title {
-    padding: 12px;
-    font-size: 13px;
-    color: #fff;
-    font-weight: 500;
-    text-align: center;
-    background: #000;
-    min-height: 60px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
 
 .anime-list-more {
     text-align: center;
@@ -2310,5 +2317,122 @@
     font-size: 14px;
     margin-top: 16px;
 }
+
+/* ══════════════════════════════
+   MOBILE RESPONSIVE
+══════════════════════════════ */
+
+/* Tablet */
+@media (max-width: 900px) {
+    .profile-page {
+        padding-left: 0;
+    }
+
+    .profile-left {
+        position: relative;
+        top: 0;
+        width: 100%;
+        height: auto;
+        border-right: none;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .profile-header {
+        padding: 80px 20px 20px 20px;
+    }
+
+    .profile-right {
+        padding: 32px 24px;
+    }
+
+    /* Eye guide: 4 columns on tablet */
+    .eye-guide-progression {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 8px;
+    }
+
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+    .profile-right {
+        padding: 24px 16px;
+    }
+
+    .profile-header {
+        padding: 70px 16px 16px 16px;
+    }
+
+    /* Eye guide: 2 columns on mobile */
+    .eye-guide-progression {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+
+    .eye-guide-image,
+    .eye-guide-icon {
+        width: 36px;
+        height: 36px;
+        font-size: 22px;
+    }
+
+    /* Progress bar — hide goku on very small screens */
+    .goku-blast {
+        width: 60px;
+    }
+
+    /* Rank display stacks */
+    .rank-display {
+        flex-direction: column;
+        gap: 4px;
+        align-items: flex-start;
+    }
+
+    /* Activity title max width */
+    .activity-title {
+        max-width: 190px;
+    }
+
+    /* Stats 2x2 stays fine, no change needed */
+
+    /* Leaderboard items tighten */
+    .leaderboard-item {
+        gap: 10px;
+        padding: 12px 14px;
+    }
+
+    .leaderboard-avatar {
+        width: 32px;
+        height: 32px;
+        font-size: 13px;
+    }
+
+    .leaderboard-eye-power {
+        min-width: 40px;
+        width: 40px;
+        height: 40px;
+    }
+
+    .eye-image {
+        width: 34px;
+        height: 34px;
+    }
+
+    .leaderboard-username {
+        font-size: 13px;
+    }
+
+    .leaderboard-rank-title {
+        font-size: 10px;
+    }
+
+    .leaderboard-points {
+        font-size: 12px;
+    }
+}
+
 
 

@@ -12,8 +12,9 @@ export const FeaturedCarousel = () => {
     useEffect(() => {
         const fetchFeatured = async () => {
             try {
-                const response = await axios.get('https://api.jikan.moe/v4/top/anime?limit=5');
-                setFeatured(response.data.data);
+                const API = import.meta.env.VITE_API_URL;
+                const response = await axios.get(`${API}/home`);
+                setFeatured(response.data.data.slice(0, 5));
                 setLoading(false);
             } catch (error) {
                 console.error('Error fetching featured anime:', error);
@@ -26,7 +27,7 @@ export const FeaturedCarousel = () => {
 
     useEffect(() => {
         if (featured.length === 0) return;
-        
+
         const interval = setInterval(() => {
             setCurrentIndex((prev) => (prev + 1) % featured.length);
         }, 5000);
@@ -54,14 +55,14 @@ export const FeaturedCarousel = () => {
     return (
         <div className="featured-carousel">
             <div className="featured-content">
-                <div 
+                <div
                     className="featured-background"
                     style={{
                         backgroundImage: `url(${currentAnime.images.jpg.large_image_url})`
                     }}
                 />
                 <div className="featured-overlay" />
-                
+
                 <div className="featured-info">
                     <div className="featured-badge">FEATURED QUIZ</div>
                     <h2 className="featured-title">{currentAnime.title}</h2>
@@ -73,7 +74,7 @@ export const FeaturedCarousel = () => {
                     <p className="featured-synopsis">
                         {currentAnime.synopsis?.slice(0, 150)}...
                     </p>
-                    <button 
+                    <button
                         className="featured-cta"
                         onClick={() => handleStartQuiz(currentAnime)}
                     >
@@ -82,8 +83,8 @@ export const FeaturedCarousel = () => {
                 </div>
 
                 <div className="featured-poster">
-                    <img 
-                        src={currentAnime.images.jpg.large_image_url} 
+                    <img
+                        src={currentAnime.images.jpg.large_image_url}
                         alt={currentAnime.title}
                     />
                 </div>

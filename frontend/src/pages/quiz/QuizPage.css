@@ -733,6 +733,7 @@
     from {
         transform: translateX(-100%);
     }
+
     to {
         transform: translateX(0);
     }
@@ -742,6 +743,7 @@
     from {
         transform: translateX(100%);
     }
+
     to {
         transform: translateX(0);
     }
@@ -752,6 +754,7 @@
         transform: scale(0.5);
         opacity: 0;
     }
+
     to {
         transform: scale(1);
         opacity: 1;
@@ -784,4 +787,26 @@
     background: rgba(244, 67, 54, 0.2);
     color: #f44336;
     border: 1px solid rgba(244, 67, 54, 0.3);
+}
+
+
+/* Level & Points display on quiz result */
+.user-stats-after-quiz {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    margin-top: 12px;
+    flex-wrap: wrap;
+}
+
+.total-points,
+.user-level {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 200, 0, 0.4);
+    color: #ffd700;
+    font-weight: 700;
+    font-size: 0.95rem;
+    padding: 6px 16px;
+    border-radius: 20px;
+    backdrop-filter: blur(4px);
 }

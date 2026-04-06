@@ -16,13 +16,13 @@ export function QuizPage() {
     const [selectedAnswer, setSelectedAnswer] = useState(null);
 
     usePageMeta({
-      title: animeTitle
-        ? `RankOtaku Quiz: ${animeTitle}`
-        : 'RankOtaku Quiz - Anime Trivia',
-      description: animeTitle
-        ? `Test your knowledge with ${animeTitle} quiz questions and climb the leaderboard.`
-        : 'Start an anime quiz and compete with other otaku on the leaderboard.',
-      keywords: 'anime quiz, RankOtaku quiz, anime trivia, quiz leaderboard'
+        title: animeTitle
+            ? `RankOtaku Quiz: ${animeTitle}`
+            : 'RankOtaku Quiz - Anime Trivia',
+        description: animeTitle
+            ? `Test your knowledge with ${animeTitle} quiz questions and climb the leaderboard.`
+            : 'Start an anime quiz and compete with other otaku on the leaderboard.',
+        keywords: 'anime quiz, RankOtaku quiz, anime trivia, quiz leaderboard'
     });
     const [showIntro, setShowIntro] = useState(true);
     const [userAnswers, setUserAnswers] = useState([]);
@@ -54,7 +54,7 @@ export function QuizPage() {
     const handleNext = async () => {
         const newAnswers = [...userAnswers, selectedAnswer];
         setUserAnswers(newAnswers);
-        
+
         if (selectedAnswer === quiz[currentQuestion].answer) {
             setScore(score + 1);
         }
@@ -67,9 +67,13 @@ export function QuizPage() {
             // Submit quiz to backend
             try {
                 const token = localStorage.getItem('token');
+                if (!token) {
+                    setShowScore(true);
+                    return;
+                }
                 const response = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/submit-quiz`, {
                     method: 'POST',
-                    headers: { 
+                    headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${token}`
                     },
@@ -86,6 +90,7 @@ export function QuizPage() {
             }
             setShowScore(true);
         }
+
     };
 
     return (
@@ -107,87 +112,93 @@ export function QuizPage() {
                 <div className="quiz-page" style={animeImage ? { backgroundImage: `url(${animeImage})` } : {}}>
                     <>
                         <div className="quiz-card">
-                                {showScore ? (
-                                    <div className="result-container">
-                                        <img src="/nizuko.gif" alt="Nezuko" className="result-gif" />
-                                        <div className="result-content">
-                                            <div className="result-badge">Quiz Complete!</div>
-                                            <h2 className="result-anime-title">{animeTitle}</h2>
-                                            <div className="result-score-card">
-                                                <div className="score-number">{score}/{quiz.length}</div>
-                                                <div className="score-label">Correct Answers</div>
-                                                {pointsEarned > 0 && (
-                                                    <div className="points-earned">+{pointsEarned} Otaku Points!</div>
-                                                )}
-                                            </div>
-                                            <button className="back-btn" onClick={() => navigate(-1, { state: { fromQuiz: true } })}>
-                                                Return to Battle Selection
-                                            </button>
+                            {showScore ? (
+                                <div className="result-container">
+                                    <img src="/nizuko.gif" alt="Nezuko" className="result-gif" />
+                                    <div className="result-content">
+                                        <div className="result-badge">Quiz Complete!</div>
+                                        <h2 className="result-anime-title">{animeTitle}</h2>
+                                        <div className="result-score-card">
+                                            <div className="score-number">{score}/{quiz.length}</div>
+                                            <div className="score-label">Correct Answers</div>
+                                            {pointsEarned > 0 && (
+                                                <div className="points-earned">+{pointsEarned} Otaku Points!</div>
+                                            )}
+                                            {user && (
+                                                <div className="user-stats-after-quiz">
+                                                    <div className="total-points">🏆 Total: {user.otakuPoints} pts</div>
+                                                    <div className="user-level">⚡ Level {Math.floor(user.otakuPoints / 100) + 1}</div>
+                                                </div>
+                                            )}
                                         </div>
-                                    </div>
-                                ) : (
-                                    <>
-                                        <button className="surrender-btn-left" onClick={() => navigate(-1)}>
-                                            Surrender Battle
+                                        <button className="back-btn" onClick={() => navigate(-1, { state: { fromQuiz: true } })}>
+                                            Return to Battle Selection
                                         </button>
-                                        <div className="question-header">
-                                            Question {currentQuestion + 1} of {quiz.length}
-                                        </div>
-                                        <h2 className="quiz-title">{animeTitle}</h2>
-                                        <div className="question-text">{quiz[currentQuestion].question}</div>
-                                        <div className="options-grid">
-                                            {quiz[currentQuestion].options.map((option, index) => (
-                                                <button
-                                                    key={index}
-                                                    onClick={() => handleAnswer(option)}
-                                                    className={`option-btn ${selectedAnswer === option ? 'active' : ''}`}
-                                                >
-                                                    {option}
-                                                </button>
-                                            ))}
-                                        </div>
-                                        <button
-                                            className="submit-btn"
-                                            onClick={handleNext}
-                                            disabled={!selectedAnswer}
-                                        >
-                                            {currentQuestion === quiz.length - 1 ? 'Finish' : 'Next Question'}
-                                        </button>
-                                    </>
-                                )}
-                            </div>
-
-                            {!showScore && (
-                                <div className="quiz-stats">
-                                    <div className="stats-header">
-                                        <h3>Battle Stats</h3>
-                                    </div>
-
-                                    <div className="stat-item">
-                                        <span className="stat-label">Score</span>
-                                        <span className="stat-value">{score}/{currentQuestion}</span>
-                                    </div>
-
-                                    <div className="stat-item">
-                                        <span className="stat-label">Accuracy</span>
-                                        <span className="stat-value">
-                                            {currentQuestion > 0 ? Math.round((score / currentQuestion) * 100) : 0}%
-                                        </span>
-                                    </div>
-
-                                    <div className="progress-section">
-                                        <div className="stat-label">Progress</div>
-                                        <div className="progress-bar-container">
-                                            <div
-                                                className="progress-bar-fill"
-                                                style={{ width: `${((currentQuestion + 1) / quiz.length) * 100}%` }}
-                                            />
-                                        </div>
-                                        <div className="progress-text">{currentQuestion + 1} / {quiz.length}</div>
                                     </div>
                                 </div>
+                            ) : (
+                                <>
+                                    <button className="surrender-btn-left" onClick={() => navigate(-1)}>
+                                        Surrender Battle
+                                    </button>
+                                    <div className="question-header">
+                                        Question {currentQuestion + 1} of {quiz.length}
+                                    </div>
+                                    <h2 className="quiz-title">{animeTitle}</h2>
+                                    <div className="question-text">{quiz[currentQuestion].question}</div>
+                                    <div className="options-grid">
+                                        {quiz[currentQuestion].options.map((option, index) => (
+                                            <button
+                                                key={index}
+                                                onClick={() => handleAnswer(option)}
+                                                className={`option-btn ${selectedAnswer === option ? 'active' : ''}`}
+                                            >
+                                                {option}
+                                            </button>
+                                        ))}
+                                    </div>
+                                    <button
+                                        className="submit-btn"
+                                        onClick={handleNext}
+                                        disabled={!selectedAnswer}
+                                    >
+                                        {currentQuestion === quiz.length - 1 ? 'Finish' : 'Next Question'}
+                                    </button>
+                                </>
                             )}
-                        </>
+                        </div>
+
+                        {!showScore && (
+                            <div className="quiz-stats">
+                                <div className="stats-header">
+                                    <h3>Battle Stats</h3>
+                                </div>
+
+                                <div className="stat-item">
+                                    <span className="stat-label">Score</span>
+                                    <span className="stat-value">{score}/{currentQuestion}</span>
+                                </div>
+
+                                <div className="stat-item">
+                                    <span className="stat-label">Accuracy</span>
+                                    <span className="stat-value">
+                                        {currentQuestion > 0 ? Math.round((score / currentQuestion) * 100) : 0}%
+                                    </span>
+                                </div>
+
+                                <div className="progress-section">
+                                    <div className="stat-label">Progress</div>
+                                    <div className="progress-bar-container">
+                                        <div
+                                            className="progress-bar-fill"
+                                            style={{ width: `${((currentQuestion + 1) / quiz.length) * 100}%` }}
+                                        />
+                                    </div>
+                                    <div className="progress-text">{currentQuestion + 1} / {quiz.length}</div>
+                                </div>
+                            </div>
+                        )}
+                    </>
                 </div>
             )}
         </>

@@ -295,7 +295,7 @@ export default function ProfilePage() {
                                 </button>
                             )}
                             <button className={`menu-btn ${activeSection === 'favorites' ? 'active' : ''}`} onClick={() => handleSectionChange('favorites')}>
-                                ❤️ My List
+                                ❤️ {isOwnProfile ? 'My List' : `${profileUser.username}'s List`}
                             </button>
                             <button className={`menu-btn ${activeSection === 'statistics' ? 'active' : ''}`} onClick={() => handleSectionChange('statistics')}>
                                 📊 Statistics
@@ -393,20 +393,24 @@ export default function ProfilePage() {
                             {profileUser.animeList && profileUser.animeList.length > 0 && (
                                 <div className="favorites-section">
                                     <h2>{profileUser.username}'s Anime List</h2>
-                                    <div className="anime-list-grid">
+                                    <div className="my-anime-list">
                                         {profileUser.animeList.slice(0, 12).map((anime, index) => (
-                                            <div key={index} className="anime-list-card">
-                                                <div className="anime-list-image">
-                                                    <img
-                                                        src={anime.image || ''}
-                                                        alt={anime.title}
-                                                        onError={(e) => {
-                                                            e.target.onerror = null;
-                                                            e.target.src = '';
-                                                        }}
-                                                    />
+                                            <div key={index} className="anime-list-item">
+                                                <img
+                                                    src={anime.image || ''}
+                                                    alt={anime.title}
+                                                    className="anime-list-image"
+                                                    loading="lazy"
+                                                    onError={(e) => {
+                                                        e.target.onerror = null;
+                                                        e.target.src = '';
+                                                    }}
+                                                />
+                                                <h4 className="anime-list-title">{anime.title}</h4>
+                                                <div className="anime-list-details">
+                                                    <span className="anime-score">⭐ {anime.score || 'N/A'}</span>
+                                                    <span className="anime-status">{anime.status || 'N/A'}</span>
                                                 </div>
-                                                <div className="anime-list-title">{anime.title}</div>
                                             </div>
                                         ))}
                                     </div>
@@ -422,20 +426,24 @@ export default function ProfilePage() {
                         <div className="favorites-section">
                             <h2>{profileUser.username}'s Anime List</h2>
                             {profileUser.animeList && profileUser.animeList.length > 0 ? (
-                                <div className="anime-list-grid">
+                                <div className="my-anime-list">
                                     {profileUser.animeList.map((anime, index) => (
-                                        <div key={index} className="anime-list-card">
-                                            <div className="anime-list-image">
-                                                <img
-                                                    src={anime.image || ''}
-                                                    alt={anime.title}
-                                                    onError={(e) => {
-                                                        e.target.onerror = null;
-                                                        e.target.src = '';
-                                                    }}
-                                                />
+                                        <div key={index} className="anime-list-item">
+                                            <img
+                                                src={anime.image || ''}
+                                                alt={anime.title}
+                                                className="anime-list-image"
+                                                loading="lazy"
+                                                onError={(e) => {
+                                                    e.target.onerror = null;
+                                                    e.target.src = '';
+                                                }}
+                                            />
+                                            <h4 className="anime-list-title">{anime.title}</h4>
+                                            <div className="anime-list-details">
+                                                <span className="anime-score">⭐ {anime.score || 'N/A'}</span>
+                                                <span className="anime-status">{anime.status || 'N/A'}</span>
                                             </div>
-                                            <div className="anime-list-title">{anime.title}</div>
                                         </div>
                                     ))}
                                 </div>
@@ -590,23 +598,32 @@ export default function ProfilePage() {
                                             return characterQuizzes.map((quiz, index) => {
                                                 const [animeName, characterName] = quiz.animeTitle.split(' - ');
                                                 const accuracy = Math.round((quiz.score / quiz.totalQuestions) * 100);
-                                                const redOpacity = (1 - (accuracy / 100)) * 0.8;
+                                                
+                                                // Calculate visual unlock based on accuracy
+                                                const grayscale = 100 - accuracy;
+                                                // Max 6px blur at 0%, 0px blur at 100%
+                                                const blurAmount = accuracy < 100 ? ((100 - accuracy) / 100) * 6 : 0; 
+                                                // 0.3 brightness at 0%, 1.0 brightness at 100%
+                                                const brightness = 0.3 + (0.7 * (accuracy / 100)); 
+
+                                                const imageStyle = {
+                                                    filter: `grayscale(${grayscale}%) blur(${blurAmount}px) brightness(${brightness})`,
+                                                    transition: 'all 0.5s ease',
+                                                    transform: accuracy === 100 ? 'scale(1.05)' : 'scale(1)'
+                                                };
 
                                                 return (
-                                                    <div key={index} className="anime-achievement-card character-achievement-card">
+                                                    <div key={index} className={`anime-achievement-card character-achievement-card ${accuracy === 100 ? 'mastered' : ''}`}>
                                                         <div className="anime-achievement-image">
                                                             <img
                                                                 src={quiz.animeImage || ''}
                                                                 alt={characterName}
+                                                                style={imageStyle}
                                                                 onError={(e) => {
                                                                     e.target.onerror = null;
                                                                     e.target.src = '';
                                                                 }}
                                                             />
-                                                            <div
-                                                                className="character-performance-overlay"
-                                                                style={{ opacity: redOpacity }}
-                                                            ></div>
                                                         </div>
                                                         <div className="anime-achievement-content">
                                                             <div className="anime-achievement-header">
@@ -1003,26 +1020,29 @@ export default function ProfilePage() {
                                                 const [animeName, characterName] = quiz.animeTitle.split(' - ');
                                                 const accuracy = Math.round((quiz.score / quiz.totalQuestions) * 100);
 
-                                                // Calculate red overlay opacity based on performance
-                                                // 0% accuracy = 0.8 opacity (very red)
-                                                // 100% accuracy = 0 opacity (no red)
-                                                const redOpacity = (1 - (accuracy / 100)) * 0.8;
+                                                // Calculate visual unlock based on accuracy
+                                                const grayscale = 100 - accuracy;
+                                                const blurAmount = accuracy < 100 ? ((100 - accuracy) / 100) * 6 : 0; 
+                                                const brightness = 0.3 + (0.7 * (accuracy / 100)); 
+
+                                                const imageStyle = {
+                                                    filter: `grayscale(${grayscale}%) blur(${blurAmount}px) brightness(${brightness})`,
+                                                    transition: 'all 0.5s ease',
+                                                    transform: accuracy === 100 ? 'scale(1.05)' : 'scale(1)'
+                                                };
 
                                                 return (
-                                                    <div key={index} className="anime-achievement-card character-achievement-card">
+                                                    <div key={index} className={`anime-achievement-card character-achievement-card ${accuracy === 100 ? 'mastered' : ''}`}>
                                                         <div className="anime-achievement-image">
                                                             <img
                                                                 src={quiz.animeImage || ''}
                                                                 alt={characterName}
+                                                                style={imageStyle}
                                                                 onError={(e) => {
                                                                     e.target.onerror = null;
                                                                     e.target.src = '';
                                                                 }}
                                                             />
-                                                            <div
-                                                                className="character-performance-overlay"
-                                                                style={{ opacity: redOpacity }}
-                                                            ></div>
                                                         </div>
                                                         <div className="anime-achievement-content">
                                                             <div className="anime-achievement-header">

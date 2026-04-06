@@ -1,8 +1,6 @@
 const express = require("express");
 const Groq = require("groq-sdk");
 const Quiz = require('../models/Quiz');
-const User = require('../models/User');
-const jwt = require('jsonwebtoken');
 
 const router = express.Router();
 
@@ -74,55 +72,6 @@ Make sure the first 5 have "difficulty": "easy", next 5 have "difficulty": "inte
   }
 });
 
-// Submit quiz answers (secure)
-router.post('/submit-quiz', async (req, res) => {
-  try {
-    const authHeader = req.headers.authorization;
-    let token = authHeader && authHeader.split(' ')[1];
-    
-    if (!token) {
-      token = req.cookies.token;
-    }
-    
-    if (!token) {
-      return res.status(401).json({ error: 'No token provided' });
-    }
-
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
-    const { quizId, answers } = req.body;
-
-    const quiz = await Quiz.findById(quizId);
-    if (!quiz) {
-      return res.status(404).json({ error: 'Quiz not found' });
-    }
-
-    let score = 0;
-    quiz.questions.forEach((q, index) => {
-      if (q.answer === answers[index]) {
-        score++;
-      }
-    });
-
-    const points = score * 10;
-
-    const user = await User.findByIdAndUpdate(
-      decoded.userId,
-      { $inc: { otakuPoints: points, quizzesTaken: 1 } },
-      { new: true, returnDocument: 'after' }
-    ).select('-password');
-
-    res.json({
-      score,
-      total: quiz.questions.length,
-      pointsEarned: points,
-      user
-    });
-
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
 // Leaderboard
 router.get('/leaderboard', async (req, res) => {
   try {
@@ -137,18 +86,23 @@ router.get('/leaderboard', async (req, res) => {
   }
 });
 
-module.exports = router;
+
 
 // Generate character-specific quiz
 router.post("/generate-character-quiz", async (req, res) => {
   try {
     const { characterName, animeTitle } = req.body;
-
     if (!characterName || !animeTitle) {
       return res.status(400).json({ error: "Character name and anime title are required" });
     }
+    // 1️⃣ Check MongoDB cache first
+    const cachedQuiz = await Quiz.findOne({ characterName, animeTitle, quizType: 'character' });
+    if (cachedQuiz) {
+        console.log('✅ Returning cached character quiz from MongoDB');
+        return res.json({ quiz: cachedQuiz.questions });
+    }
 
-    // Generate new character quiz (no caching for variety)
+    // 2️⃣ Cache miss — generate from Groq API
     const completion = await groq.chat.completions.create({
       model: "llama-3.1-8b-instant",
       messages: [
@@ -177,15 +131,21 @@ Return ONLY a JSON array in this exact format: [{"question": "text", "options": 
 
     let text = completion.choices[0].message.content;
     text = text.replace(/```json/g, '').replace(/```/g, '').trim();
-
     const quiz = JSON.parse(text);
 
-    res.json({
-      quiz: quiz
+    // 3️⃣ Save to MongoDB for next time (auto-expires in 24h)
+    await Quiz.create({
+        animeTitle,
+        characterName,
+        quizType: 'character',
+        questions: quiz
     });
+
+    res.json({ quiz: quiz });
 
   } catch (error) {
     console.error('Error:', error.message);
     res.status(500).json({ error: error.message });
   }
 });
+module.exports = router;

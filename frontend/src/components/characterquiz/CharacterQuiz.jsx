@@ -82,13 +82,22 @@ export function CharacterQuiz() {
         } else {
             // Submit quiz to backend
             try {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    // Not logged in — show score without awarding points
+                    setShowScore(true);
+                    return;
+                }
                 const response = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/submit-quiz`, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
                     credentials: 'include',
-                    body: JSON.stringify({ 
-                        answers: newAnswers, 
-                        quiz, 
+                    body: JSON.stringify({
+                        answers: newAnswers,
+                        quiz,
                         animeTitle: `${animeTitle} - ${character.name}`,
                         animeImage: character.images.jpg.image_url
                     })
@@ -134,7 +143,28 @@ export function CharacterQuiz() {
                 <div className="quiz-card">
                     {showScore ? (
                         <div className="result-container">
-                            <img src="/nizuko.gif" alt="Nezuko" className="result-gif" />
+                            {(() => {
+                                const accuracy = Math.round((score / quiz.length) * 100);
+                                const grayscale = 100 - accuracy;
+                                const blurAmount = accuracy < 100 ? ((100 - accuracy) / 100) * 6 : 0;
+                                const brightness = 0.3 + (0.7 * (accuracy / 100));
+                                const imageStyle = {
+                                    filter: `grayscale(${grayscale}%) blur(${blurAmount}px) brightness(${brightness})`,
+                                    transition: 'all 1s ease 0.5s',
+                                    transform: accuracy === 100 ? 'scale(1.05)' : 'scale(1)',
+                                    borderColor: accuracy === 100 ? '#ffd700' : 'rgba(246, 201, 2, 0.3)',
+                                    boxShadow: accuracy === 100 ? '0 10px 40px rgba(255, 215, 0, 0.4)' : '0 10px 40px rgba(0, 0, 0, 0.5)'
+                                };
+
+                                return (
+                                    <img 
+                                        src={character.images.jpg.image_url} 
+                                        alt={character.name} 
+                                        className="result-gif" 
+                                        style={imageStyle} 
+                                    />
+                                );
+                            })()}
                             <div className="result-content">
                                 <div className="result-badge">Quiz Complete!</div>
                                 <h2 className="result-anime-title">{character.name}</h2>
@@ -143,6 +173,12 @@ export function CharacterQuiz() {
                                     <div className="score-label">Correct Answers</div>
                                     {pointsEarned > 0 && (
                                         <div className="points-earned">+{pointsEarned} Otaku Points!</div>
+                                    )}
+                                    {user && (
+                                        <div className="user-stats-after-quiz">
+                                            <div className="total-points">🏆 Total: {user.otakuPoints} pts</div>
+                                            <div className="user-level">⚡ Level {Math.floor(user.otakuPoints / 100) + 1}</div>
+                                        </div>
                                     )}
                                 </div>
                                 <button className="back-btn" onClick={() => navigate(-2)}>
