@@ -25,7 +25,7 @@ export function AboutPage() {
 
                 {/* Main Content Container */}
                 <div className="about-container">
-                    
+
                     {/* Mission Section */}
                     <section className="about-section fade-in">
                         <div className="section-header">
@@ -123,8 +123,8 @@ export function AboutPage() {
                                 <h3>Special Thanks to Jikan API</h3>
                             </div>
                             <p>
-                                A massive and heartfelt thank you to the open-source <strong>Jikan API</strong> project. 
-                                RankOtaku wouldn't exist without it. By providing exceptionally fast, reliable, and comprehensive access to the MyAnimeList database, Jikan serves as the core foundational backbone of our entire anime catalog. 
+                                A massive and heartfelt thank you to the open-source <strong>Jikan API</strong> project.
+                                RankOtaku wouldn't exist without it. By providing exceptionally fast, reliable, and comprehensive access to the MyAnimeList database, Jikan serves as the core foundational backbone of our entire anime catalog.
                             </p>
                             <p>
                                 We are deeply grateful to the Jikan developers and the MyAnimeList community for their tireless work in making the world's anime data accessible to developers everywhere.
