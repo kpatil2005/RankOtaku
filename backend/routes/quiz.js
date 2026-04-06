@@ -72,20 +72,6 @@ Make sure the first 5 have "difficulty": "easy", next 5 have "difficulty": "inte
   }
 });
 
-// Leaderboard
-router.get('/leaderboard', async (req, res) => {
-  try {
-    const users = await User.find()
-      .sort({ otakuPoints: -1 })
-      .limit(10)
-      .select('username otakuPoints');
-
-    res.json(users);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
 
 
 // Generate character-specific quiz
