@@ -42,10 +42,7 @@ export function SenseiWidget() {
     const messagesRef    = useRef([]);
     const isTypingRef    = useRef(false);
     const micRef         = useRef(null);   // current chat SpeechRecognition
-    const wakeRef        = useRef(null);   // current wake SpeechRecognition
-    const wakeAlive      = useRef(false);
     const isOpenRef      = useRef(false);
-    const openByWake     = useRef(false);
     const sendRef        = useRef(null);   // always-current pointer to handleSend
     const permGranted    = useRef(false);  // has mic permission been explicitly granted?
 
@@ -160,9 +157,8 @@ export function SenseiWidget() {
                 }
                 if (status.state === 'granted') {
                     permGranted.current = true;
-                    if (!wakeRef.current) startWake();
                 }
-            } catch (_) { /* older browsers may not support this, continue anyway */ }
+            } catch (err) { /* older browsers may not support this, continue anyway */ }
         }
 
         // ── Start SpeechRecognition directly (it handles its own permission prompt) ──
@@ -240,107 +236,8 @@ export function SenseiWidget() {
         }
     }, [stopMic]);
 
-    // ══════════════════════════════════════════════════════════════════════════
-    //  WAKE WORD  ("Hey Pochita" / "Pochita")
-    // ══════════════════════════════════════════════════════════════════════════
-    const stopWake = useCallback(() => {
-        wakeAlive.current = false;
-        if (wakeRef.current) {
-            try { wakeRef.current.abort(); } catch (_) {}
-            wakeRef.current = null;
-        }
-    }, []);
-
-    const startWake = useCallback(() => {
-        if (!getVoiceSupport()) return;
-        stopWake();
-        const SR = getSRClass();
-        if (!SR) return;
-        const r = new SR();
-        r.lang           = 'en-US';
-        r.continuous     = true;
-        r.interimResults = false;
-
-        r.onresult = (evt) => {
-            for (let i = evt.resultIndex; i < evt.results.length; i++) {
-                if (!evt.results[i].isFinal) continue;
-                const said = evt.results[i][0].transcript.toLowerCase().trim();
-                console.log('[Wake] 👂', said);
-                // Matches "pochita", "pochito", "hay pochita", etc.
-                if (said.includes('pochit')) {
-                    openByWake.current = true;
-                    setIsOpen(true);
-                }
-            }
-        };
-
-        r.onend = () => {
-            if (wakeAlive.current && !isOpenRef.current) {
-                setTimeout(() => {
-                    if (wakeAlive.current && !isOpenRef.current && wakeRef.current) {
-                        try { wakeRef.current.start(); } catch (_) {}
-                    }
-                }, 300);
-            }
-        };
-
-        r.onerror = (evt) => {
-            console.log('[Wake] error:', evt.error);
-            // If Chrome completely blocks us, we pause for a bit but don't kill wakeAlive.
-            // We want it to try reviving later (e.g. if the user later clicks the mic).
-            if (evt.error === 'not-allowed') {
-                setTimeout(() => {
-                    if (wakeAlive.current && !isOpenRef.current && wakeRef.current) {
-                         try { wakeRef.current.start(); } catch (_) {}
-                    }
-                }, 5000); // Retry after 5s silently
-            }
-        };
-
-        wakeAlive.current = true;
-        try { r.start(); } catch (_) {}
-        wakeRef.current = r;
-    }, [stopWake]);
-
-    /* Orchestrate wake vs open — start wake word automatically on load */
-    useEffect(() => {
-        if (!getVoiceSupport()) return;
-        if (isOpen) {
-            stopWake();
-        } else {
-            startWake();
-        }
-    }, [isOpen, startWake, stopWake]);
-
-    /* Global user gesture unlock for Chrome's microphone policy */
-    const gestureUnlock = useRef(false);
-    useEffect(() => {
-        const unlockVoice = () => {
-            if (gestureUnlock.current || isOpen) return;
-            gestureUnlock.current = true;
-            console.log('[Wake] User gesture detected, waking up background listener...');
-            startWake();
-        };
-        // Any click on the page counts as a gesture
-        document.addEventListener('click', unlockVoice, { once: true });
-        return () => document.removeEventListener('click', unlockVoice);
-    }, [isOpen, startWake]);
-
-    /* Auto-start mic on wake-word open */
-    const prevOpen = useRef(false);
-    useEffect(() => {
-        const justOpened = isOpen && !prevOpen.current;
-        prevOpen.current = isOpen;
-        if (justOpened && openByWake.current && !showDisclaimer && getVoiceSupport()) {
-            openByWake.current = false;
-            const t = setTimeout(() => startMic(), 900);
-            return () => clearTimeout(t);
-        }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isOpen, showDisclaimer]);
-
     /* Cleanup */
-    useEffect(() => () => { stopWake(); stopMic(); }, [stopWake, stopMic]);
+    useEffect(() => () => { stopMic(); }, [stopMic]);
 
     // ══════════════════════════════════════════════════════════════════════════
     //  INIT / DISCLAIMER
@@ -391,12 +288,6 @@ export function SenseiWidget() {
 
             {/* ── FAB ─────────────────────────────────────────────── */}
             <div className={`sensei-fab-wrapper ${isOpen ? 'hidden' : ''}`}>
-                {getVoiceSupport() && (
-                    <div className="wake-word-pill">
-                        <span className="wake-pulse" />
-                        <span>Say "Hey Pochita"</span>
-                    </div>
-                )}
                 <button
                     id="pochita-open-btn"
                     className="sensei-fab"
