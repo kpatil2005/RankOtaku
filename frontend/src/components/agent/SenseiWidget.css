@@ -503,10 +503,17 @@
         position: fixed;
         bottom: 0;
         right: 0;
+        left: 0;
         width: 100vw;
-        height: 75vh;
-        max-height: 75vh;
+        height: 80vh;
+        max-height: 80vh;
         border-radius: 20px 20px 0 0;
+        border: none;
+        border-top: 1px solid rgba(255, 107, 214, 0.2);
+    }
+    
+    .sensei-chat-window::before {
+        display: none;
     }
 
     .sensei-window-header {
@@ -526,6 +533,7 @@
 
     .widget-input-area {
         padding: 18px;
+        padding-bottom: max(18px, env(safe-area-inset-bottom));
         gap: 10px;
     }
 
@@ -603,10 +611,16 @@
         bottom: 0;
         width: 100vw;
         height: 100vh;
+        height: 100dvh;
         max-height: 100vh;
+        max-height: 100dvh;
         border-radius: 0;
         border: none;
         transform-origin: center;
+    }
+    
+    .sensei-chat-window::before {
+        display: none;
     }
 
     .sensei-chat-window.open {
@@ -618,7 +632,7 @@
         position: sticky;
         top: 0;
         z-index: 10;
-        background: linear-gradient(135deg, rgba(10, 10, 10, 0.98) 0%, rgba(0, 0, 0, 0.98) 100%);
+        background: linear-gradient(135deg, rgba(10, 0, 10, 0.98) 0%, rgba(0, 0, 0, 0.98) 100%);
     }
 
     .close-btn {
@@ -630,7 +644,9 @@
     .sensei-chat-log {
         padding: 16px;
         gap: 12px;
-        height: calc(100vh - 140px);
+        flex: 1;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
     }
 
     .widget-msg-bubble {
@@ -646,10 +662,11 @@
 
     .widget-input-area {
         padding: 16px;
+        padding-bottom: max(16px, env(safe-area-inset-bottom));
         gap: 10px;
         position: sticky;
         bottom: 0;
-        background: linear-gradient(to top, rgba(0, 0, 0, 0.98) 0%, rgba(10, 10, 10, 0.95) 100%);
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.98) 0%, rgba(10, 0, 10, 0.95) 100%);
     }
 
     .widget-input-area input {
@@ -668,13 +685,30 @@
 }
 
 /* Landscape mobile */
-@media screen and (max-width: 768px) and (orientation: landscape) {
+@media screen and (max-width: 896px) and (orientation: landscape) {
     .sensei-chat-window {
-        height: 90vh;
-        max-height: 90vh;
+        height: 95vh;
+        max-height: 95vh;
     }
 
     .sensei-chat-log {
         padding: 12px;
+    }
+    
+    .widget-input-area {
+        padding: 12px 16px;
+    }
+}
+
+/* Very small devices */
+@media screen and (max-width: 360px) {
+    .sensei-fab {
+        width: 65px;
+        height: 65px;
+    }
+    
+    .widget-msg-bubble {
+        font-size: 0.88rem;
+        padding: 10px 14px;
     }
 }
