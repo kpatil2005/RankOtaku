@@ -18,10 +18,9 @@
     transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-/* The Speech Bubble Tooltip */
 .sensei-tooltip {
     position: absolute;
-    right: 110%; /* Place it to the left of Pochita */
+    right: 110%;
     background: rgba(15, 15, 15, 0.9);
     backdrop-filter: blur(10px);
     border: 1px solid #ff6b35;
@@ -61,7 +60,6 @@
     50% { transform: translateY(-5px); }
 }
 
-/* The Glowing Orb Button */
 .sensei-fab {
     width: 120px; 
     height: 120px;
@@ -78,7 +76,6 @@
     width: 100%;
     height: 100%;
     object-fit: contain;
-    /* Create a solid 2px white outline tracing the PNG, plus a soft orange outer glow */
     filter: drop-shadow(2px 0 0 #fff) drop-shadow(0 2px 0 #fff) drop-shadow(-2px 0 0 #fff) drop-shadow(0 -2px 0 #fff) drop-shadow(0 4px 15px rgba(255, 107, 53, 0.5));
 }
 
@@ -86,7 +83,6 @@
     transform: scale(1.15) translateY(-5px) rotate(5deg);
 }
 
-/* The Popup Chat Window */
 .sensei-chat-window {
     position: absolute;
     bottom: 0;
@@ -102,8 +98,6 @@
     flex-direction: column;
     overflow: hidden;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9), 0 0 1px rgba(255, 255, 255, 0.1) inset;
-    
-    /* Animation */
     transform-origin: bottom right;
     transform: scale(0.5);
     opacity: 0;
@@ -118,34 +112,14 @@
 }
 
 .sensei-window-header {
-    padding: 16px 24px;
+    padding: 14px 20px;
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     display: flex;
     justify-content: flex-end;
     align-items: center;
     backdrop-filter: blur(10px);
-}
-
-.header-left {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.header-pochito {
-    width: 38px;
-    height: 38px;
-    object-fit: contain;
-    filter: drop-shadow(0 2px 8px rgba(255, 215, 0, 0.6));
-}
-
-.header-left span {
-    color: #ffd700;
-    font-weight: 600;
-    font-size: 1.1rem;
-    letter-spacing: 0.5px;
-    text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+    flex-shrink: 0;
 }
 
 .close-btn {
@@ -171,45 +145,46 @@
     transform: scale(1.05);
 }
 
-/* Disclaimer Screen */
 .disclaimer-container {
     flex: 1;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 30px 20px;
+    padding: 20px 16px;
     background: linear-gradient(135deg, #000 0%, #0a0a0a 100%);
     overflow-y: auto;
+    min-height: 0;
 }
 
 .disclaimer-content {
     text-align: center;
-    max-width: 350px;
+    max-width: 320px;
     width: 100%;
     animation: fadeInUp 0.5s ease;
+    padding: 10px;
 }
 
 .disclaimer-avatar {
-    width: 80px;
-    height: 80px;
+    width: 65px;
+    height: 65px;
     object-fit: contain;
-    margin-bottom: 16px;
+    margin-bottom: 10px;
     filter: drop-shadow(0 4px 15px rgba(255, 215, 0, 0.4));
 }
 
 .disclaimer-content h3 {
     color: #ffd700;
-    font-size: 1.2rem;
-    margin-bottom: 16px;
+    font-size: 1.05rem;
+    margin-bottom: 10px;
     font-weight: 700;
     text-shadow: 0 2px 10px rgba(255, 215, 0, 0.3);
 }
 
 .disclaimer-content p {
     color: rgba(255, 255, 255, 0.85);
-    font-size: 0.9rem;
-    line-height: 1.6;
-    margin-bottom: 12px;
+    font-size: 0.82rem;
+    line-height: 1.5;
+    margin-bottom: 8px;
 }
 
 .disclaimer-content p strong {
@@ -218,19 +193,19 @@
 }
 
 .disclaimer-btn {
-    margin-top: 20px;
-    padding: 12px 28px;
+    margin-top: 14px;
+    padding: 10px 22px;
     background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
     color: #000;
     border: none;
     border-radius: 30px;
-    font-size: 0.95rem;
+    font-size: 0.88rem;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
     width: 100%;
-    max-width: 250px;
+    max-width: 240px;
 }
 
 .disclaimer-btn:hover {
@@ -249,18 +224,19 @@
     }
 }
 
-/* Chat Log */
 .sensei-chat-log {
     flex: 1;
-    padding: 24px;
+    padding: 16px;
     overflow-y: auto;
+    overflow-x: hidden;
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    gap: 12px;
     background: #000;
+    min-height: 0;
+    -webkit-overflow-scrolling: touch;
 }
 
-/* Custom Scrollbar */
 .sensei-chat-log::-webkit-scrollbar {
     width: 6px;
 }
@@ -292,12 +268,13 @@
 }
 
 .widget-msg-bubble {
-    max-width: 80%;
-    padding: 14px 18px;
+    max-width: 85%;
+    padding: 12px 16px;
     border-radius: 20px;
-    font-size: 0.95rem;
-    line-height: 1.65;
+    font-size: 0.9rem;
+    line-height: 1.6;
     word-wrap: break-word;
+    word-break: break-word;
     letter-spacing: 0.2px;
     transition: all 0.2s ease;
 }
@@ -307,7 +284,6 @@
     color: #000;
     border: none;
     border-radius: 20px 20px 4px 20px;
-    line-height: 1.65;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15), 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
@@ -325,15 +301,14 @@
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 16px;
     text-align: center;
-    font-size: 0.85rem;
+    font-size: 0.82rem;
     font-style: italic;
     backdrop-filter: blur(10px);
 }
 
-/* Markdown Specific inside widget */
 .widget-msg-bubble p { 
-    margin: 0 0 14px 0; 
-    line-height: 1.7;
+    margin: 0 0 12px 0; 
+    line-height: 1.6;
     color: #000;
 }
 .widget-msg-bubble p:last-child { margin: 0; }
@@ -342,18 +317,18 @@
     font-weight: 700;
 }
 .widget-msg-bubble ul, .widget-msg-bubble ol { 
-    margin: 14px 0; 
-    padding-left: 26px; 
-    line-height: 1.8;
+    margin: 12px 0; 
+    padding-left: 24px; 
+    line-height: 1.7;
 }
 .widget-msg-bubble li { 
-    margin-bottom: 10px; 
+    margin-bottom: 8px; 
 }
 .widget-msg-bubble img { 
-    max-width: 200px; 
-    max-height: 300px; 
+    max-width: 180px; 
+    max-height: 250px; 
     border-radius: 8px; 
-    margin: 12px 0;
+    margin: 10px 0;
     object-fit: cover;
     display: block;
 }
@@ -361,33 +336,32 @@
 .widget-msg-bubble h2,
 .widget-msg-bubble h3 {
     color: #000;
-    margin: 18px 0 10px 0;
+    margin: 16px 0 8px 0;
     font-weight: 700;
     line-height: 1.4;
 }
-.widget-msg-bubble h1 { font-size: 1.25rem; }
-.widget-msg-bubble h2 { font-size: 1.15rem; }
-.widget-msg-bubble h3 { font-size: 1.05rem; }
+.widget-msg-bubble h1 { font-size: 1.2rem; }
+.widget-msg-bubble h2 { font-size: 1.1rem; }
+.widget-msg-bubble h3 { font-size: 1rem; }
 .widget-msg-bubble code {
     background: rgba(0, 0, 0, 0.1);
     padding: 2px 6px;
     border-radius: 4px;
-    font-size: 0.85rem;
+    font-size: 0.82rem;
     color: #000;
 }
 .widget-msg-bubble pre {
     background: rgba(0, 0, 0, 0.1);
-    padding: 12px;
+    padding: 10px;
     border-radius: 8px;
     overflow-x: auto;
-    margin: 12px 0;
+    margin: 10px 0;
 }
 .widget-msg-bubble pre code {
     background: none;
     padding: 0;
 }
 
-/* Typing animation */
 .typing {
     background: transparent !important;
     border: none !important;
@@ -396,32 +370,22 @@
 }
 
 .typing-gif {
-    width: 120px;
-    height: 120px;
+    width: 90px;
+    height: 90px;
     object-fit: contain;
     display: block;
     transform: scaleX(-1);
 }
 
-.typing span {
-    display: inline-block;
-    animation: bounce 1.4s infinite ease-in-out both;
-    font-size: 20px;
-    line-height: 10px;
-    color: #666;
-}
-.typing span:nth-child(1) { animation-delay: -0.32s; }
-.typing span:nth-child(2) { animation-delay: -0.16s; }
-
-/* Input Area */
 .widget-input-area {
-    padding: 20px 24px;
+    padding: 14px 16px;
     background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, rgba(10, 10, 10, 0.6) 100%);
     border-top: 1px solid rgba(255, 255, 255, 0.08);
     display: flex;
-    gap: 12px;
+    gap: 10px;
     align-items: center;
     backdrop-filter: blur(10px);
+    flex-shrink: 0;
 }
 
 .widget-input-area input {
@@ -429,11 +393,12 @@
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
     color: #fff;
-    padding: 14px 20px;
+    padding: 11px 16px;
     border-radius: 28px;
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     outline: none;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    min-width: 0;
 }
 
 .widget-input-area input::placeholder {
@@ -450,8 +415,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 48px;
-    height: 48px;
+    width: 42px;
+    height: 42px;
+    flex-shrink: 0;
     background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
     color: #000;
     border: none;
@@ -462,7 +428,7 @@
 }
 
 .widget-input-area button i {
-    font-size: 20px;
+    font-size: 18px;
 }
 
 .widget-input-area button:hover:not(:disabled) {
@@ -479,20 +445,9 @@
 }
 
 @media screen and (max-width: 768px) {
-    .sensei-widget-container {
-        bottom: 0;
-        right: 0;
-    }
-
-    .sensei-fab-wrapper {
-        position: fixed;
-        bottom: 24px;
-        right: 24px;
-    }
-
     .sensei-fab {
-        width: 80px;
-        height: 80px;
+        width: 75px;
+        height: 75px;
     }
 
     .sensei-tooltip {
@@ -502,53 +457,17 @@
     .sensei-chat-window {
         position: fixed;
         bottom: 0;
-        right: 0;
         left: 0;
+        right: 0;
         width: 100vw;
-        height: 80vh;
-        max-height: 80vh;
+        height: 75vh;
+        max-height: 75vh;
         border-radius: 20px 20px 0 0;
-        border: none;
-        border-top: 1px solid rgba(255, 107, 214, 0.2);
-    }
-    
-    .sensei-chat-window::before {
-        display: none;
     }
 
-    .sensei-window-header {
-        padding: 14px 18px;
-    }
-
-    .sensei-chat-log {
-        padding: 18px;
-        gap: 12px;
-    }
-
-    .widget-msg-bubble {
-        max-width: 85%;
-        padding: 12px 16px;
-        font-size: 0.92rem;
-    }
-
-    .widget-input-area {
-        padding: 18px;
-        padding-bottom: max(18px, env(safe-area-inset-bottom));
-        gap: 10px;
-    }
-
-    .widget-input-area input {
-        padding: 12px 18px;
-        font-size: 0.92rem;
-    }
-
-    .widget-input-area button {
-        width: 46px;
-        height: 46px;
-    }
-
-    .widget-input-area button i {
-        font-size: 19px;
+    .typing-gif {
+        width: 75px;
+        height: 75px;
     }
 }
 
@@ -562,45 +481,35 @@
 
     .sensei-fab-wrapper {
         position: fixed;
-        bottom: 20px;
-        right: 20px;
+        bottom: 16px;
+        right: 16px;
     }
 
     .sensei-fab {
-        width: 70px;
-        height: 70px;
+        width: 65px;
+        height: 65px;
     }
 
     .disclaimer-container {
-        padding: 20px 16px;
-    }
-
-    .disclaimer-content {
-        max-width: 100%;
+        padding: 16px 12px;
     }
 
     .disclaimer-avatar {
-        width: 70px;
-        height: 70px;
-        margin-bottom: 12px;
+        width: 55px;
+        height: 55px;
     }
 
     .disclaimer-content h3 {
-        font-size: 1.1rem;
-        margin-bottom: 12px;
+        font-size: 0.95rem;
     }
 
     .disclaimer-content p {
-        font-size: 0.85rem;
-        line-height: 1.5;
-        margin-bottom: 10px;
+        font-size: 0.75rem;
     }
 
     .disclaimer-btn {
-        margin-top: 16px;
-        padding: 11px 24px;
-        font-size: 0.9rem;
-        max-width: 100%;
+        padding: 9px 18px;
+        font-size: 0.8rem;
     }
 
     .sensei-chat-window {
@@ -618,97 +527,91 @@
         border: none;
         transform-origin: center;
     }
-    
-    .sensei-chat-window::before {
-        display: none;
-    }
-
-    .sensei-chat-window.open {
-        transform: scale(1);
-    }
 
     .sensei-window-header {
-        padding: 16px;
-        position: sticky;
-        top: 0;
-        z-index: 10;
-        background: linear-gradient(135deg, rgba(10, 0, 10, 0.98) 0%, rgba(0, 0, 0, 0.98) 100%);
+        padding: 12px 14px;
     }
 
     .close-btn {
-        width: 36px;
-        height: 36px;
-        font-size: 22px;
-    }
-
-    .sensei-chat-log {
-        padding: 16px;
-        gap: 12px;
-        flex: 1;
-        overflow-y: auto;
-        -webkit-overflow-scrolling: touch;
-    }
-
-    .widget-msg-bubble {
-        max-width: 90%;
-        padding: 12px 16px;
-        font-size: 0.9rem;
-    }
-
-    .widget-msg-bubble img {
-        max-width: 180px;
-        max-height: 240px;
-    }
-
-    .widget-input-area {
-        padding: 16px;
-        padding-bottom: max(16px, env(safe-area-inset-bottom));
-        gap: 10px;
-        position: sticky;
-        bottom: 0;
-        background: linear-gradient(to top, rgba(0, 0, 0, 0.98) 0%, rgba(10, 0, 10, 0.95) 100%);
-    }
-
-    .widget-input-area input {
-        padding: 12px 16px;
-        font-size: 0.9rem;
-    }
-
-    .widget-input-area button {
-        width: 44px;
-        height: 44px;
-    }
-
-    .widget-input-area button i {
-        font-size: 18px;
-    }
-}
-
-/* Landscape mobile */
-@media screen and (max-width: 896px) and (orientation: landscape) {
-    .sensei-chat-window {
-        height: 95vh;
-        max-height: 95vh;
+        width: 32px;
+        height: 32px;
+        font-size: 20px;
     }
 
     .sensei-chat-log {
         padding: 12px;
+        gap: 10px;
     }
-    
-    .widget-input-area {
-        padding: 12px 16px;
-    }
-}
 
-/* Very small devices */
-@media screen and (max-width: 360px) {
-    .sensei-fab {
+    .widget-msg-bubble {
+        max-width: 90%;
+        padding: 10px 14px;
+        font-size: 0.85rem;
+    }
+
+    .widget-msg-bubble img {
+        max-width: 140px;
+        max-height: 180px;
+    }
+
+    .typing-gif {
         width: 65px;
         height: 65px;
     }
-    
+
+    .widget-input-area {
+        padding: 10px 12px;
+        padding-bottom: max(10px, env(safe-area-inset-bottom));
+    }
+
+    .widget-input-area input {
+        padding: 9px 14px;
+        font-size: 0.85rem;
+    }
+
+    .widget-input-area button {
+        width: 38px;
+        height: 38px;
+    }
+
+    .widget-input-area button i {
+        font-size: 16px;
+    }
+}
+
+@media screen and (max-width: 375px) {
+    .sensei-fab {
+        width: 60px;
+        height: 60px;
+    }
+
+    .disclaimer-avatar {
+        width: 50px;
+        height: 50px;
+    }
+
+    .disclaimer-content h3 {
+        font-size: 0.9rem;
+    }
+
+    .disclaimer-content p {
+        font-size: 0.72rem;
+    }
+
     .widget-msg-bubble {
-        font-size: 0.88rem;
-        padding: 10px 14px;
+        font-size: 0.82rem;
+        padding: 9px 12px;
+    }
+
+    .typing-gif {
+        width: 60px;
+        height: 60px;
+    }
+}
+
+@media screen and (max-width: 896px) and (orientation: landscape) {
+    .sensei-chat-window {
+        height: 90vh;
+        max-height: 90vh;
     }
 }
