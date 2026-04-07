@@ -44,7 +44,7 @@ End the greeting by asking them what you can assist them with today. Keep it und
 `;
 
         const completion = await groq.chat.completions.create({
-            model: "llama-3.1-8b-instant",
+            model: "llama-3.3-70b-versatile",
             messages: [{ role: "system", content: greetingPrompt }],
             temperature: 0.9,
             max_tokens: 150,
@@ -265,7 +265,7 @@ CRITICAL RULES:
 
         // 5. Connect to Groq API with stronger tool enforcement
         const completion = await groq.chat.completions.create({
-            model: "llama-3.1-8b-instant",
+            model: "llama-3.3-70b-versatile",
             messages: finalMessages,
             tools: tools,
             tool_choice: "auto",
@@ -273,10 +273,36 @@ CRITICAL RULES:
             max_tokens: 300,
         });
 
-        const responseMessage = completion.choices[0].message;
+        let responseMessage = completion.choices[0].message;
         
         // Debug log to see what we're getting
         console.log('Response message:', JSON.stringify(responseMessage, null, 2));
+
+        // Groq Fallback: If model leaked <tool_name>{args}</tool_name> natively in content instead of tool_calls array
+        if (!responseMessage.tool_calls && responseMessage.content) {
+            // First check <function=name>args</function>
+            let regex = /<function=(\w+)>(.*?)<\/function>/is;
+            let match = responseMessage.content.match(regex);
+            
+            // If not found, check generic XML like <navigate_to_anime_page>{"anime_name": "Naruto"}</navigate_to_anime_page>
+            if (!match) {
+                const xmlRegex = /<([a-zA-Z0-9_]+)>(\{.*?\})<\/\1>/is;
+                match = responseMessage.content.match(xmlRegex);
+            }
+
+            if (match) {
+                console.log("Triggered fallback XML tool parser for:", match[1]);
+                responseMessage.tool_calls = [{
+                    id: "call_fallback_" + Math.random().toString(36).substring(2, 9),
+                    type: "function",
+                    function: {
+                        name: match[1],
+                        arguments: match[2]
+                    }
+                }];
+                responseMessage.content = ""; // Clear string
+            }
+        }
 
         // 6. Handle Tool Calls
         if (responseMessage.tool_calls) {
@@ -426,7 +452,7 @@ CRITICAL RULES:
 
             // Call Groq AGAIN so Pochita can formulate a natural response based on the tool result
             const secondResponse = await groq.chat.completions.create({
-                model: "llama-3.1-8b-instant",
+                model: "llama-3.3-70b-versatile",
                 messages: finalMessages,
                 temperature: 0.7,
                 max_tokens: 250,
