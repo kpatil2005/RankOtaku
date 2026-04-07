@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import axios from 'axios';
+import { api } from '../../services/api';
 import ReactMarkdown from 'react-markdown';
 import { useNavigate } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
@@ -13,6 +13,7 @@ export function SenseiWidget() {
     const [input, setInput] = useState("");
     const [messages, setMessages] = useState([]);
     const [isTyping, setIsTyping] = useState(false);
+    const [showDisclaimer, setShowDisclaimer] = useState(false);
     const messagesEndRef = useRef(null);
 
     const scrollToBottom = () => {
@@ -28,31 +29,53 @@ export function SenseiWidget() {
     // Initialize conversation when opened for the FIRST time
     useEffect(() => {
         if (isOpen && messages.length === 0) {
-            const initSensei = async () => {
-                setIsTyping(true);
-                try {
-                    const token = localStorage.getItem('token');
-                    if (!token) {
-                        setMessages([{ role: 'assistant', content: 'You must log in to speak with the Sensei.' }]);
-                        setIsTyping(false);
-                        return;
-                    }
-                    
-                    const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/agent/init`, {
-                        headers: { Authorization: `Bearer ${token}` }
-                    });
-                    
-                    setMessages([{ role: 'assistant', content: res.data.message }]);
-                } catch (error) {
-                    console.error("Sensei init error:", error);
-                    setMessages([{ role: 'assistant', content: 'My connection to the psychic plane is severed.' }]);
-                } finally {
-                    setIsTyping(false);
-                }
-            };
-            initSensei();
+            // Check if user has seen the disclaimer before
+            const hasSeenDisclaimer = localStorage.getItem('pochita_disclaimer_seen');
+            
+            if (!hasSeenDisclaimer) {
+                setShowDisclaimer(true);
+                return;
+            }
+            
+            initializeChat();
         }
-    }, [isOpen]); // only trigger when opened
+    }, [isOpen]);
+
+    const initializeChat = async () => {
+        setIsTyping(true);
+        try {
+            const token = localStorage.getItem('token');
+            
+            if (!token) {
+                // Show a friendly greeting for non-logged-in users
+                setMessages([{ 
+                    role: 'assistant', 
+                    content: 'Hello! I\'m Pochita, your anime assistant. I can recommend anime and answer your questions. For personalized features like managing your anime list, please log in! 🎌\n\nWhat kind of anime are you interested in?' 
+                }]);
+                setIsTyping(false);
+                return;
+            }
+            
+            const res = await api.get('/api/agent/init');
+            
+            setMessages([{ role: 'assistant', content: res.data.message }]);
+        } catch (error) {
+            console.error("Sensei init error:", error);
+            // Friendly fallback message
+            setMessages([{ 
+                role: 'assistant', 
+                content: 'Hello! I\'m Pochita, your anime assistant. I can help you discover great anime! What are you looking for today?' 
+            }]);
+        } finally {
+            setIsTyping(false);
+        }
+    };
+
+    const handleDisclaimerNext = () => {
+        localStorage.setItem('pochita_disclaimer_seen', 'true');
+        setShowDisclaimer(false);
+        initializeChat();
+    };
 
     const sendMessage = async (e) => {
         e.preventDefault();
@@ -65,12 +88,20 @@ export function SenseiWidget() {
 
         try {
             const token = localStorage.getItem('token');
-            if(!token) throw new Error("No Token");
             
-            const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/agent/chat`, {
+            if (!token) {
+                setMessages([...newHistory, { 
+                    role: 'assistant', 
+                    content: 'Please log in to use this feature. I can still help with general anime recommendations!' 
+                }]);
+                setIsTyping(false);
+                return;
+            }
+            
+            const res = await api.post('/api/agent/chat', {
                 message: input,
                 chatHistory: messages.slice(-4)
-            }, { headers: { Authorization: `Bearer ${token}` }});
+            });
             
             const reply = res.data.reply;
             
@@ -113,27 +144,34 @@ export function SenseiWidget() {
 
             // If Pochita automated a list task, force React Query to instantly re-fetch the user's anime list
             if (res.data.listModified) {
+                // Invalidate queries to refresh data without page reload
                 queryClient.invalidateQueries({ queryKey: QUERY_KEYS.ANIME_LIST });
-                // Also invalidate user profile data to refresh bio changes
                 queryClient.invalidateQueries({ queryKey: ['user-profile'] });
                 queryClient.invalidateQueries({ queryKey: ['current-user'] });
                 
-                // Force a page reload to show bio changes immediately
-                setTimeout(() => {
-                    window.location.reload();
-                }, 1000);
-                
-                // Add a system message to confirm the update
+                // Add a success message
                 setTimeout(() => {
                     setMessages(prev => [...prev, { 
                         role: 'system', 
-                        content: '✅ *Profile updated! Refreshing page...*' 
+                        content: '✅ *Changes saved successfully!*' 
                     }]);
                 }, 500);
             }
         } catch (e) {
             console.error(e);
-            setMessages([...newHistory, { role: 'assistant', content: '*(Sighs)* Your weak spiritual energy broke my connection. Please log in.' }]);
+            
+            // Handle different error types
+            let errorMsg = 'Sorry, I encountered an error. Please try again.';
+            
+            if (e.response?.status === 429) {
+                errorMsg = 'I\'m currently experiencing high demand. Please try again in a few minutes. 🙏';
+            } else if (e.response?.status === 401) {
+                errorMsg = 'Please log in to use this feature. I can still help with general anime recommendations!';
+            } else if (e.response?.data?.reply) {
+                errorMsg = e.response.data.reply;
+            }
+            
+            setMessages([...newHistory, { role: 'assistant', content: errorMsg }]);
         } finally {
             setIsTyping(false);
         }
@@ -147,7 +185,7 @@ export function SenseiWidget() {
                     className="sensei-fab"
                     onClick={() => { setIsOpen(true); }}
                 >
-                    <img src="/pochito.png" alt="Pochita" className="pochito-avatar" />
+                    <img src="/pochito.gif" alt="Pochita" className="pochito-avatar" />
                 </button>
             </div>
 
@@ -157,7 +195,27 @@ export function SenseiWidget() {
                     <button className="close-btn" onClick={() => setIsOpen(false)}>×</button>
                 </div>
                 
-                <div className="sensei-chat-log window-scrollbar">
+                {showDisclaimer ? (
+                    <div className="disclaimer-container">
+                        <div className="disclaimer-content">
+                            <img src="/pochito.gif" alt="Pochita" className="disclaimer-avatar" />
+                            <h3>⚠️ Beta Assistant</h3>
+                            <p>
+                                Hi! I'm Pochita, your anime assistant. I'm still learning and in <strong>beginner level</strong>, 
+                                so I might make mistakes sometimes.
+                            </p>
+                            <p>
+                                Please read our conversation carefully and let me know if I misunderstand something. 
+                                I'll do my best to help you!
+                            </p>
+                            <button className="disclaimer-btn" onClick={handleDisclaimerNext}>
+                                Got it! Let's chat 🎌
+                            </button>
+                        </div>
+                    </div>
+                ) : (
+                    <>
+                        <div className="sensei-chat-log window-scrollbar">
                     {messages.map((msg, i) => (
                         <div key={i} className={`widget-msg-wrapper ${msg.role}`}>
                             <div className="widget-msg-bubble">
@@ -172,25 +230,27 @@ export function SenseiWidget() {
                     {isTyping && (
                         <div className="widget-msg-wrapper assistant">
                             <div className="widget-msg-bubble typing">
-                                <span>.</span><span>.</span><span>.</span>
+                                <img src="/pochitotyping.gif" alt="Typing..." className="typing-gif" />
                             </div>
                         </div>
                     )}
                     <div ref={messagesEndRef} />
-                </div>
+                        </div>
 
-                <form className="widget-input-area" onSubmit={sendMessage}>
-                    <input 
-                        type="text"
-                        value={input} 
-                        onChange={e => setInput(e.target.value)} 
-                        placeholder="Ask Sensei..."
-                        autoFocus={isOpen}
-                    />
-                    <button type="submit" disabled={isTyping || !input.trim()}>
-                        <i className='bx bx-send'></i>
-                    </button>
-                </form>
+                        <form className="widget-input-area" onSubmit={sendMessage}>
+                            <input 
+                                type="text"
+                                value={input} 
+                                onChange={e => setInput(e.target.value)} 
+                                placeholder="Ask Sensei..."
+                                autoFocus={isOpen}
+                            />
+                            <button type="submit" disabled={isTyping || !input.trim()}>
+                                <i className='bx bx-send'></i>
+                            </button>
+                        </form>
+                    </>
+                )}
             </div>
         </div>
     );

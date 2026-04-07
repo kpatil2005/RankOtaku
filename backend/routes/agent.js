@@ -57,7 +57,7 @@ End the greeting by asking them what you can assist them with today. Keep it und
 });
 
 // POST route for actual chat
-router.post('/chat', authenticateToken, async (req, res) => {
+router.post('/chat', async (req, res) => {
     try {
         const { message, chatHistory } = req.body;
         
@@ -65,23 +65,33 @@ router.post('/chat', authenticateToken, async (req, res) => {
             return res.status(400).json({ error: 'Message is required' });
         }
 
-        // 1. Fetch user context from MongoDB
-        const user = await User.findById(req.user.userId);
-        if (!user) {
-            return res.status(404).json({ error: 'User not found' });
+        // Check if user is authenticated
+        const authHeader = req.headers.authorization;
+        let token = authHeader && authHeader.split(' ')[1];
+        if (!token) token = req.cookies?.token;
+        
+        let user = null;
+        let isAuthenticated = false;
+        
+        if (token) {
+            try {
+                const decoded = require('jsonwebtoken').verify(token, process.env.JWT_SECRET || 'your-secret-key');
+                user = await User.findById(decoded.userId);
+                isAuthenticated = !!user;
+            } catch (err) {
+                console.log('Token verification failed:', err.message);
+            }
         }
         
         // 2. Process Data for RAG
-        const watchedTitles = user.animeList && user.animeList.length > 0 
+        const watchedTitles = user?.animeList && user.animeList.length > 0 
             ? user.animeList.map(a => a.title).join(', ') 
             : 'None yet';
             
-        // We calculate recent quiz performance if the schema supports it.
-        // Assuming user schema has quizzesTaken or similar stats
-        const quizzesTaken = user.quizzesTaken || 0;
+        const quizzesTaken = user?.quizzesTaken || 0;
 
         // 3. The Master System Prompt
-        const systemPrompt = `
+        const systemPrompt = isAuthenticated ? `
 You are "Pochita", a highly competent and helpful anime assistant for RankOtaku. 
 You act friendly, respectful, and serious about helping the user manage their anime list and finding accurate information.
 
@@ -94,33 +104,56 @@ You act friendly, respectful, and serious about helping the user manage their an
 CRITICAL RULES:
 1. Speak normally, clearly, and concisely. DO NOT bark, do NOT use "Woof!", and do NOT use excessive ALL CAPS or exclamation points.
 2. Provide direct, helpful answers.
-3. Keep your responses short (2-3 sentences max) unless providing a synopsis.
+3. Keep your responses short (2-3 sentences max) unless providing detailed recommendations.
 4. Format your output in strict Markdown (use bolding for anime titles).
-5. Be intelligent about tool usage: isolate the exact anime title from the user's text.
-6. NEVER output raw function syntax like <function/tool_name> or </function>. ONLY use the proper tool calling mechanism provided by the system. If you need to use a tool, call it properly through the tools interface.
-7. NAVIGATION INTENT: ONLY use navigate_to_anime_page when users EXPLICITLY say "redirect to", "go to", "take me to", "show me the page", "navigate to", "open the page", "visit the page" followed by an anime name. DO NOT use navigation for questions like "is X in my list", "do I have X", "tell me about X". Navigation is ONLY for explicit redirect requests.
-7. BIO SUGGESTIONS AND UPDATES:
+5. TOOL USAGE IS MANDATORY: When user asks to add/remove anime, check list, navigate, or update bio, you MUST call the appropriate tool. NEVER write function names or JSON in your response.
+6. NEVER EVER write text like 'add_anime_to_list', 'search_anime_info', or any function names in your response. These are internal tools that you must CALL, not write about.
+7. When recommending anime, provide 3-5 suggestions with brief descriptions.
+8. NAVIGATION: ALWAYS use navigate_to_anime_page tool when users say "redirect to", "go to", "take me to", "show me the page", "navigate to", "open the page", "visit the page" followed by an anime name. NEVER just respond with text - ALWAYS call the tool.
+9. BIO SUGGESTIONS AND UPDATES:
    - When user asks "suggest me a cool bio", generate 2-3 creative anime-themed bio suggestions and present them.
    - When user says "add this to my bio: [text]" or "set my bio to: [text]", FIRST show them the bio and ask "Should I save this as your bio?". Wait for confirmation (yes/ok/sure), then use update_user_bio tool.
    - When they confirm with "yes", "ok", "sure", "do it", use the update_user_bio tool with the bio text they provided earlier.
-8. IMAGE AND POSTER REQUESTS:
+10. IMAGE AND POSTER REQUESTS:
    - When user asks for "image", "poster", "picture", "show me X anime", use search_anime_info tool.
    - After getting the image URL, display it using Markdown image syntax: ![Anime Title](image_url)
    - Always show the image along with basic info like score and synopsis.
-9. TOOL EXECUTION: When you need to use a tool, use the proper function calling mechanism. NEVER write out function syntax as text.
+11. TOOL EXECUTION: When you need to use a tool, use the proper function calling mechanism. NEVER write out function syntax as text.
+` : `
+You are "Pochita", a friendly and helpful anime assistant for RankOtaku.
+You provide anime recommendations, information, and general anime discussions.
+
+IMPORTANT: The user is NOT logged in. You can:
+- Recommend anime based on their preferences
+- Provide general anime information and discussions
+- Answer questions about anime
+
+You CANNOT:
+- Add/remove anime from their list
+- Update their profile
+- Access their personal data
+
+If they ask for features requiring login, politely tell them to log in first.
+
+CRITICAL RULES:
+1. Speak normally, clearly, and concisely.
+2. Provide direct, helpful answers.
+3. Keep your responses short (2-3 sentences max) unless providing detailed recommendations.
+4. Format your output in strict Markdown (use bolding for anime titles).
+5. When recommending anime, provide 3-5 suggestions with brief descriptions.
 `;
 
-        // 4. Define Agentic Tools
-        const tools = [
+        // 4. Define Agentic Tools (only if authenticated)
+        const tools = isAuthenticated ? [
             {
                 type: "function",
                 function: {
                     name: "add_anime_to_list",
-                    description: "Add an anime to the user's watch list.",
+                    description: "Add an anime to the user's watch list. Use when user says 'add X to my list' or 'add X'.",
                     parameters: {
                         type: "object",
                         properties: {
-                            anime_name: { type: "string", description: "The EXACT official name of the anime. Remove conversational words like 'add', 'wrong', 'the', etc." }
+                            anime_name: { type: "string", description: "The anime title only. Example: 'Naruto', 'Death Note', 'One Piece'. Remove words like 'add', 'to', 'my', 'list'." }
                         },
                         required: ["anime_name"]
                     }
@@ -130,11 +163,11 @@ CRITICAL RULES:
                 type: "function",
                 function: {
                     name: "remove_anime_from_list",
-                    description: "Remove or delete an anime from the user's watch list.",
+                    description: "Remove an anime from the user's watch list. Use when user says 'remove X' or 'delete X from my list'.",
                     parameters: {
                         type: "object",
                         properties: {
-                            anime_name: { type: "string", description: "The EXACT anime title to search for in their list to delete. Remove conversational adjectives." }
+                            anime_name: { type: "string", description: "The anime title only. Example: 'Naruto', 'Death Note'. Remove words like 'remove', 'delete', 'from', 'my', 'list'." }
                         },
                         required: ["anime_name"]
                     }
@@ -186,11 +219,11 @@ CRITICAL RULES:
                 type: "function",
                 function: {
                     name: "navigate_to_anime_page",
-                    description: "ONLY use when user EXPLICITLY requests navigation with phrases: 'redirect to', 'go to', 'take me to', 'show me the page', 'navigate to', 'open the page', 'visit the page'. DO NOT use for questions like 'is X in my list' or 'tell me about X'.",
+                    description: "Navigate user to an anime page. MUST use this tool when user says 'redirect to', 'go to', 'take me to', 'show me the page', 'navigate to', 'open', 'visit' followed by anime name. DO NOT just respond with text.",
                     parameters: {
                         type: "object",
                         properties: {
-                            anime_name: { type: "string", description: "The EXACT official name of the anime to navigate to. Remove conversational words like 'go to', 'show me', 'redirect', 'page', 'that', etc." }
+                            anime_name: { type: "string", description: "The anime name to navigate to. Extract ONLY the anime title, remove words like 'go to', 'redirect', 'page', etc." }
                         },
                         required: ["anime_name"]
                     }
@@ -207,6 +240,21 @@ CRITICAL RULES:
                     }
                 }
             }
+        ] : [
+            {
+                type: "function",
+                function: {
+                    name: "search_anime_info",
+                    description: "Search for factual info (synopsis, score, image/poster, etc) about an anime from the database.",
+                    parameters: {
+                        type: "object",
+                        properties: {
+                            anime_name: { type: "string", description: "The EXACT official name of the anime." }
+                        },
+                        required: ["anime_name"]
+                    }
+                }
+            }
         ];
 
         let finalMessages = [
@@ -215,14 +263,14 @@ CRITICAL RULES:
             { role: "user", content: message }
         ];
 
-        // 5. Connect to Groq API
+        // 5. Connect to Groq API with stronger tool enforcement
         const completion = await groq.chat.completions.create({
-            model: "llama-3.3-70b-versatile",
+            model: "llama-3.1-8b-instant",
             messages: finalMessages,
             tools: tools,
             tool_choice: "auto",
-            temperature: 0.7,
-            max_tokens: 500,
+            temperature: 0.5,
+            max_tokens: 300,
         });
 
         const responseMessage = completion.choices[0].message;
@@ -247,6 +295,9 @@ CRITICAL RULES:
 
                 try {
                     if (toolCall.function.name === 'add_anime_to_list') {
+                        if (!isAuthenticated) {
+                            resultMessage = "Please log in to add anime to your list.";
+                        } else {
                         const jikanRes = await axios.get(`https://api.jikan.moe/v4/anime?q=${encodeURIComponent(args.anime_name || '')}&limit=1`);
                         const animeData = jikanRes.data.data[0];
                         if (animeData) {
@@ -266,8 +317,12 @@ CRITICAL RULES:
                         } else {
                             resultMessage = `Could not find anime matching '${args.anime_name}'.`;
                         }
+                        }
                     } 
                     else if (toolCall.function.name === 'remove_anime_from_list') {
+                        if (!isAuthenticated) {
+                            resultMessage = "Please log in to remove anime from your list.";
+                        } else {
                         const initLen = user.animeList.length;
                         user.animeList = user.animeList.filter(a => !a.title.toLowerCase().includes((args.anime_name || '').toLowerCase()));
                         if (user.animeList.length < initLen) {
@@ -276,6 +331,7 @@ CRITICAL RULES:
                             didModifyList = true;
                         } else {
                             resultMessage = `I couldn't find '${args.anime_name}' in your list to remove.`;
+                        }
                         }
                     }
                     else if (toolCall.function.name === 'search_anime_info') {
@@ -289,12 +345,19 @@ CRITICAL RULES:
                         }
                     }
                     else if (toolCall.function.name === 'update_user_bio') {
+                        if (!isAuthenticated) {
+                            resultMessage = "Please log in to update your bio.";
+                        } else {
                         user.bio = args.new_bio;
                         await user.save();
                         resultMessage = `Successfully updated the user's profile biography to: "${args.new_bio}"`;
-                        didModifyList = true; // reusing this flag to trigger frontend refresh!
+                        didModifyList = true;
+                        }
                     }
                     else if (toolCall.function.name === 'get_leaderboard_rank') {
+                        if (!isAuthenticated) {
+                            resultMessage = "Please log in to check your leaderboard rank.";
+                        } else {
                         const User = require('../models/User'); // ensure it's loaded
                         const allUsers = await User.find().sort({ otakuPoints: -1 }).select('_id username otakuPoints');
                         const rankIndex = allUsers.findIndex(u => u._id.toString() === req.user.userId);
@@ -302,6 +365,7 @@ CRITICAL RULES:
                             resultMessage = `The user is currently Rank #${rankIndex + 1} on the global leaderboard with ${user.otakuPoints} points!`;
                         } else {
                             resultMessage = "Could not find the user on the leaderboard.";
+                        }
                         }
                     }
                     else if (toolCall.function.name === 'navigate_to_anime_page') {
@@ -322,12 +386,16 @@ CRITICAL RULES:
                         }
                     }
                     else if (toolCall.function.name === 'check_anime_in_list') {
+                        if (!isAuthenticated) {
+                            resultMessage = "Please log in to check your anime list.";
+                        } else {
                         const animeName = (args.anime_name || '').toLowerCase();
                         const found = user.animeList.find(a => a.title.toLowerCase().includes(animeName));
                         if (found) {
                             resultMessage = `Yes, **${found.title}** is in the user's list with status: ${found.status}.`;
                         } else {
                             resultMessage = `No, **${args.anime_name}** is not in the user's list.`;
+                        }
                         }
                     }
                 } catch (e) {
@@ -358,10 +426,10 @@ CRITICAL RULES:
 
             // Call Groq AGAIN so Pochita can formulate a natural response based on the tool result
             const secondResponse = await groq.chat.completions.create({
-                model: "llama-3.3-70b-versatile",
+                model: "llama-3.1-8b-instant",
                 messages: finalMessages,
                 temperature: 0.7,
-                max_tokens: 400,
+                max_tokens: 250,
             });
 
             const finalReply = secondResponse.choices[0]?.message?.content || "I have completed the task.";
@@ -372,9 +440,14 @@ CRITICAL RULES:
         const reply = responseMessage.content || "I have completed the task.";
         
         // Check if the response contains raw function call syntax (error case)
-        if (reply.includes('<function/') || reply.includes('</function>')) {
+        if (reply.includes('add_anime_to_list') || reply.includes('remove_anime_from_list') || 
+            reply.includes('search_anime_info') || reply.includes('navigate_to_anime_page') ||
+            reply.includes('<function') || reply.includes('</function>')) {
+            
+            console.error('AI returned raw function syntax instead of calling tool:', reply);
+            
             return res.json({ 
-                reply: "I apologize, but I encountered an error processing your request. Could you please rephrase what you'd like me to do?",
+                reply: "I apologize, I'm having trouble processing that request. Please try rephrasing it, for example: 'Add Naruto to my list' or 'Remove Death Note from my list'.",
                 listModified: false 
             });
         }
@@ -382,7 +455,19 @@ CRITICAL RULES:
         res.json({ reply: reply, listModified: false });
     } catch (error) {
         console.error('Sensei API Error:', error);
-        res.status(500).json({ error: error.message });
+        
+        // Handle rate limit errors specifically
+        if (error.status === 429) {
+            return res.status(429).json({ 
+                error: 'Rate limit reached',
+                reply: 'I\'m currently experiencing high demand. Please try again in a few minutes. 🙏'
+            });
+        }
+        
+        res.status(500).json({ 
+            error: error.message,
+            reply: 'Sorry, I encountered an error. Please try again later.'
+        });
     }
 });
 
