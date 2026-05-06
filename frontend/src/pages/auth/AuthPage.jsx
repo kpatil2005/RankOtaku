@@ -185,7 +185,7 @@ const AuthPage = () => {
         }
 
         if (!turnstileToken) {
-            setError('Please complete the CAPTCHA verification');
+            setError('Please wait for security verification to complete...');
             return;
         }
         
@@ -198,10 +198,16 @@ const AuthPage = () => {
                 navigate(from, { replace: true });
             } else {
                 setError(result.error || 'Login failed');
+                if (window.turnstile) {
+                    window.turnstile.reset();
+                }
                 setTurnstileToken('');
             }
         } catch (err) {
             setError(err.message || 'Login failed');
+            if (window.turnstile) {
+                window.turnstile.reset();
+            }
             setTurnstileToken('');
         } finally {
             setLoading(false);
@@ -225,7 +231,7 @@ const AuthPage = () => {
         }
 
         if (!turnstileToken) {
-            setError('Please complete the CAPTCHA verification');
+            setError('Please wait for security verification to complete...');
             return;
         }
         
@@ -238,10 +244,16 @@ const AuthPage = () => {
                 navigate(from, { replace: true });
             } else {
                 setError(result.error || 'Signup failed');
+                if (window.turnstile) {
+                    window.turnstile.reset();
+                }
                 setTurnstileToken('');
             }
         } catch (err) {
             setError(err.message || 'Signup failed');
+            if (window.turnstile) {
+                window.turnstile.reset();
+            }
             setTurnstileToken('');
         } finally {
             setLoading(false);
@@ -306,8 +318,8 @@ const AuthPage = () => {
                             onVerify={(token) => setTurnstileToken(token)}
                             onExpire={() => setTurnstileToken('')}
                         />
-                        <button type="submit" className="btn" disabled={loading || !isLoginValid}>
-                            {loading ? 'Logging in...' : 'Login'}
+                        <button type="submit" className="btn" disabled={loading || !isLoginValid || !turnstileToken}>
+                            {loading ? 'Logging in...' : turnstileToken ? 'Login' : 'Verifying Security...'}
                         </button>
                         <div className="social-login">
                             <GoogleLogin />
@@ -408,8 +420,8 @@ const AuthPage = () => {
                             onVerify={(token) => setTurnstileToken(token)}
                             onExpire={() => setTurnstileToken('')}
                         />
-                        <button type="submit" className="btn" disabled={loading || !isSignupValid}>
-                            {loading ? 'Registering...' : 'Register'}
+                        <button type="submit" className="btn" disabled={loading || !isSignupValid || !turnstileToken}>
+                            {loading ? 'Registering...' : turnstileToken ? 'Register' : 'Verifying Security...'}
                         </button>
                         <div className="social-login">
                             <GoogleLogin />

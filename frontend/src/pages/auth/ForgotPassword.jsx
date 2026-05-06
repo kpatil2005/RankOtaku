@@ -16,7 +16,7 @@ const ForgotPassword = () => {
         e.preventDefault();
 
         if (!turnstileToken) {
-            setError('Please complete the CAPTCHA verification');
+            setError('Please wait for security verification to complete...');
             return;
         }
 
@@ -31,9 +31,15 @@ const ForgotPassword = () => {
             });
             setMessage('If an account exists with this email, a password reset link has been sent. Please check your inbox and spam folder.');
             setEmail('');
+            if (window.turnstile) {
+                window.turnstile.reset();
+            }
             setTurnstileToken('');
         } catch (err) {
             setError(err.response?.data?.error || 'Failed to send reset email');
+            if (window.turnstile) {
+                window.turnstile.reset();
+            }
             setTurnstileToken('');
         } finally {
             setLoading(false);
@@ -66,8 +72,8 @@ const ForgotPassword = () => {
                         onExpire={() => setTurnstileToken('')}
                     />
                     
-                    <button type="submit" className="btn" disabled={loading}>
-                        {loading ? 'SENDING...' : 'SEND RESET LINK'}
+                    <button type="submit" className="btn" disabled={loading || !turnstileToken}>
+                        {loading ? 'SENDING...' : turnstileToken ? 'SEND RESET LINK' : 'VERIFYING SECURITY...'}
                     </button>
                 </form>
                 

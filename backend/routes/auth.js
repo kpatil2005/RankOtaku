@@ -11,6 +11,10 @@ const { sendPasswordResetEmail } = require('../utils/emailService');
 
 // Verify Cloudflare Turnstile token
 const verifyTurnstile = async (token) => {
+    if (!token) {
+        return false;
+    }
+    
     try {
         const response = await axios.post(
             'https://challenges.cloudflare.com/turnstile/v0/siteverify',
@@ -84,7 +88,7 @@ router.post('/signup', signupValidation, async (req, res) => {
         // Verify Turnstile token
         const isValidCaptcha = await verifyTurnstile(turnstileToken);
         if (!isValidCaptcha) {
-            return res.status(400).json({ error: 'CAPTCHA verification failed' });
+            return res.status(400).json({ error: 'Security verification failed. Please try again.' });
         }
         
         const existingUser = await User.findOne({ $or: [{ email }, { username }] });
@@ -129,7 +133,7 @@ router.post('/login', authLimiter, loginValidation, async (req, res) => {
         // Verify Turnstile token
         const isValidCaptcha = await verifyTurnstile(turnstileToken);
         if (!isValidCaptcha) {
-            return res.status(400).json({ error: 'CAPTCHA verification failed' });
+            return res.status(400).json({ error: 'Security verification failed. Please try again.' });
         }
         
         const user = await User.findOne({ email });
@@ -426,7 +430,7 @@ router.post('/forgot-password', [
         // Verify Turnstile token
         const isValidCaptcha = await verifyTurnstile(turnstileToken);
         if (!isValidCaptcha) {
-            return res.status(400).json({ error: 'CAPTCHA verification failed' });
+            return res.status(400).json({ error: 'Security verification failed. Please try again.' });
         }
 
         console.log('Password reset requested for:', email);
