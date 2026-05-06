@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import Turnstile from '../../components/Turnstile';
 import './ForgotPassword.css';
 
 const ForgotPassword = () => {
@@ -8,20 +9,32 @@ const ForgotPassword = () => {
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState('');
     const [error, setError] = useState('');
+    const [turnstileToken, setTurnstileToken] = useState('');
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        if (!turnstileToken) {
+            setError('Please complete the CAPTCHA verification');
+            return;
+        }
+
         setLoading(true);
         setError('');
         setMessage('');
 
         try {
-            const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/forgot-password`, { email });
+            const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/forgot-password`, { 
+                email,
+                turnstileToken 
+            });
             setMessage('If an account exists with this email, a password reset link has been sent. Please check your inbox and spam folder.');
             setEmail('');
+            setTurnstileToken('');
         } catch (err) {
             setError(err.response?.data?.error || 'Failed to send reset email');
+            setTurnstileToken('');
         } finally {
             setLoading(false);
         }
@@ -47,6 +60,11 @@ const ForgotPassword = () => {
                         />
                         <i className='bx bxs-envelope'></i>
                     </div>
+                    
+                    <Turnstile 
+                        onVerify={(token) => setTurnstileToken(token)}
+                        onExpire={() => setTurnstileToken('')}
+                    />
                     
                     <button type="submit" className="btn" disabled={loading}>
                         {loading ? 'SENDING...' : 'SEND RESET LINK'}

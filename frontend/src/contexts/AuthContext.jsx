@@ -52,12 +52,12 @@ export const AuthProvider = ({ children }) => {
         verifyToken()
     }, [])
 
-    const login = async (email, password) => {
+    const login = async (email, password, turnstileToken) => {
         try {
             const response = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/login`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password })
+                body: JSON.stringify({ email, password, turnstileToken })
             })
 
             const data = await response.json()
@@ -75,12 +75,12 @@ export const AuthProvider = ({ children }) => {
         }
     }
 
-    const signup = async (username, email, password) => {
+    const signup = async (username, email, password, turnstileToken) => {
         try {
             const response = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/signup`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username, email, password })
+                body: JSON.stringify({ username, email, password, turnstileToken })
             })
 
             const data = await response.json()

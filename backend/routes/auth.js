@@ -9,6 +9,23 @@ const { body, validationResult } = require('express-validator');
 const User = require('../models/User');
 const { sendPasswordResetEmail } = require('../utils/emailService');
 
+// Verify Cloudflare Turnstile token
+const verifyTurnstile = async (token) => {
+    try {
+        const response = await axios.post(
+            'https://challenges.cloudflare.com/turnstile/v0/siteverify',
+            {
+                secret: process.env.TURNSTILE_SECRET_KEY,
+                response: token
+            }
+        );
+        return response.data.success;
+    } catch (error) {
+        console.error('Turnstile verification error:', error.message);
+        return false;
+    }
+};
+
 // Authentication middleware
 const authenticateToken = (req, res, next) => {
     // Check Authorization header first (for localStorage)
@@ -62,7 +79,13 @@ router.post('/signup', signupValidation, async (req, res) => {
             return res.status(400).json({ error: 'Invalid input data', details: errors.array() });
         }
 
-        const { username, email, password } = req.body;
+        const { username, email, password, turnstileToken } = req.body;
+
+        // Verify Turnstile token
+        const isValidCaptcha = await verifyTurnstile(turnstileToken);
+        if (!isValidCaptcha) {
+            return res.status(400).json({ error: 'CAPTCHA verification failed' });
+        }
         
         const existingUser = await User.findOne({ $or: [{ email }, { username }] });
         if (existingUser) {
@@ -101,7 +124,13 @@ router.post('/login', authLimiter, loginValidation, async (req, res) => {
             return res.status(400).json({ error: 'Invalid input data', details: errors.array() });
         }
 
-        const { email, password } = req.body;
+        const { email, password, turnstileToken } = req.body;
+
+        // Verify Turnstile token
+        const isValidCaptcha = await verifyTurnstile(turnstileToken);
+        if (!isValidCaptcha) {
+            return res.status(400).json({ error: 'CAPTCHA verification failed' });
+        }
         
         const user = await User.findOne({ email });
         if (!user) {
@@ -392,7 +421,14 @@ router.post('/forgot-password', [
             return res.status(400).json({ error: 'Invalid email address' });
         }
 
-        const { email } = req.body;
+        const { email, turnstileToken } = req.body;
+
+        // Verify Turnstile token
+        const isValidCaptcha = await verifyTurnstile(turnstileToken);
+        if (!isValidCaptcha) {
+            return res.status(400).json({ error: 'CAPTCHA verification failed' });
+        }
+
         console.log('Password reset requested for:', email);
         
         const user = await User.findOne({ email });

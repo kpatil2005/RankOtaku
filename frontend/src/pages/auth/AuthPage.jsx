@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate, useSearchParams, useLocation } from 'react-router-dom';
 import GoogleLogin from '../../components/GoogleLogin';
+import Turnstile from '../../components/Turnstile';
 import './AuthPage.css';
 
 // Debounce utility
@@ -38,6 +39,7 @@ const AuthPage = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [touched, setTouched] = useState({});
+    const [turnstileToken, setTurnstileToken] = useState('');
     
     const { login, signup } = useAuth();
     const navigate = useNavigate();
@@ -181,19 +183,26 @@ const AuthPage = () => {
             setTouched({ email: true, password: true });
             return;
         }
+
+        if (!turnstileToken) {
+            setError('Please complete the CAPTCHA verification');
+            return;
+        }
         
         setLoading(true);
         setError('');
         
         try {
-            const result = await login(formData.email, formData.password);
+            const result = await login(formData.email, formData.password, turnstileToken);
             if (result.success) {
                 navigate(from, { replace: true });
             } else {
                 setError(result.error || 'Login failed');
+                setTurnstileToken('');
             }
         } catch (err) {
             setError(err.message || 'Login failed');
+            setTurnstileToken('');
         } finally {
             setLoading(false);
         }
@@ -214,19 +223,26 @@ const AuthPage = () => {
             setTouched({ username: true, email: true, password: true, confirmPassword: true });
             return;
         }
+
+        if (!turnstileToken) {
+            setError('Please complete the CAPTCHA verification');
+            return;
+        }
         
         setLoading(true);
         setError('');
         
         try {
-            const result = await signup(formData.username, formData.email, formData.password);
+            const result = await signup(formData.username, formData.email, formData.password, turnstileToken);
             if (result.success) {
                 navigate(from, { replace: true });
             } else {
                 setError(result.error || 'Signup failed');
+                setTurnstileToken('');
             }
         } catch (err) {
             setError(err.message || 'Signup failed');
+            setTurnstileToken('');
         } finally {
             setLoading(false);
         }
@@ -286,6 +302,10 @@ const AuthPage = () => {
                                 <span className="validation-error">{validationErrors.password}</span>
                             )}
                         </div>
+                        <Turnstile 
+                            onVerify={(token) => setTurnstileToken(token)}
+                            onExpire={() => setTurnstileToken('')}
+                        />
                         <button type="submit" className="btn" disabled={loading || !isLoginValid}>
                             {loading ? 'Logging in...' : 'Login'}
                         </button>
@@ -384,6 +404,10 @@ const AuthPage = () => {
                                 <span className="validation-error">{validationErrors.confirmPassword}</span>
                             )}
                         </div>
+                        <Turnstile 
+                            onVerify={(token) => setTurnstileToken(token)}
+                            onExpire={() => setTurnstileToken('')}
+                        />
                         <button type="submit" className="btn" disabled={loading || !isSignupValid}>
                             {loading ? 'Registering...' : 'Register'}
                         </button>
