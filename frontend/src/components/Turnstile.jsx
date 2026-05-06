@@ -6,6 +6,17 @@ const Turnstile = ({ onVerify, onError, onExpire }) => {
     const scriptLoadedRef = useRef(false);
 
     useEffect(() => {
+        const siteKey = import.meta.env.VITE_TURNSTILE_SITE_KEY;
+        
+        // Debug: Check if site key is loaded
+        if (!siteKey) {
+            console.error('VITE_TURNSTILE_SITE_KEY is not defined in environment variables');
+            if (onError) onError();
+            return;
+        }
+
+        console.log('Turnstile site key loaded:', siteKey.substring(0, 10) + '...');
+
         // Check if script already exists
         const existingScript = document.querySelector('script[src*="turnstile"]');
         
@@ -13,7 +24,7 @@ const Turnstile = ({ onVerify, onError, onExpire }) => {
             // Script already loaded, just render widget
             if (window.turnstile && containerRef.current && !widgetIdRef.current) {
                 widgetIdRef.current = window.turnstile.render(containerRef.current, {
-                    sitekey: import.meta.env.VITE_TURNSTILE_SITE_KEY,
+                    sitekey: siteKey,
                     callback: (token) => {
                         onVerify(token);
                     },
@@ -39,7 +50,7 @@ const Turnstile = ({ onVerify, onError, onExpire }) => {
             scriptLoadedRef.current = true;
             if (window.turnstile && containerRef.current && !widgetIdRef.current) {
                 widgetIdRef.current = window.turnstile.render(containerRef.current, {
-                    sitekey: import.meta.env.VITE_TURNSTILE_SITE_KEY,
+                    sitekey: siteKey,
                     callback: (token) => {
                         onVerify(token);
                     },
