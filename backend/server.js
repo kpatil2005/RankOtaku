@@ -14,6 +14,7 @@ const activityRoutes = require("./routes/activity")
 const sitemapRoutes = require("./routes/sitemap")
 const agentRoutes = require("./routes/agent")
 const NodeCache = require("node-cache")
+const AnimeData = require("./models/AnimeData")
 
 // Request queue to respect Jikan rate limits (3 req/sec, 60 req/min)
 class JikanQueue {
@@ -21,7 +22,7 @@ class JikanQueue {
         this.queue = [];
         this.processing = false;
         this.lastRequest = 0;
-        this.minDelay = 350; // 350ms between requests = ~2.8 req/sec (safe margin)
+        this.minDelay = 1000; // 1 second between requests = 1 req/sec (very safe)
     }
 
     async add(fn) {
@@ -322,7 +323,282 @@ app.get("/api/jikan/anime/:id/pictures", async (req, res) => {
     }
 });
 
+// Cached: Anime episodes by ID with MongoDB caching (1 week)
+app.get("/api/jikan/anime/:id/episodes", async (req, res) => {
+    try {
+        const { id } = req.params;
+        const oneWeekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+        
+        // Check MongoDB cache first
+        let animeData = await AnimeData.findOne({ 
+            mal_id: parseInt(id),
+            lastUpdated: { $gte: oneWeekAgo }
+        });
+        
+        if (animeData && animeData.episodes.length > 0) {
+            console.log(`✅ Serving episodes for anime ${id} from MongoDB cache`);
+            return res.json({ data: animeData.episodes });
+        }
+        
+        // Cache miss or expired - fetch from Jikan API
+        console.log(`🌐 Fetching episodes for anime ${id} from Jikan API...`);
+        const response = await jikanQueue.add(() => 
+            axios.get(`https://api.jikan.moe/v4/anime/${id}/episodes`)
+        );
+        
+        // Update or create in MongoDB
+        await AnimeData.findOneAndUpdate(
+            { mal_id: parseInt(id) },
+            { 
+                mal_id: parseInt(id),
+                episodes: response.data.data,
+                lastUpdated: new Date()
+            },
+            { upsert: true, returnDocument: 'after' }
+        );
+        
+        res.json(response.data);
+    } catch (error) {
+        console.error('Error fetching episodes:', error.response?.status, error.response?.data);
+        if (error.response?.status === 429) {
+            return res.status(429).json({ error: 'Rate limited. Please try again later.' });
+        }
+        res.status(500).json({ error: 'Failed to fetch episodes' });
+    }
+});
 
+// Cached: Anime relations by ID with MongoDB caching (1 week)
+app.get("/api/jikan/anime/:id/relations", async (req, res) => {
+    try {
+        const { id } = req.params;
+        const oneWeekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+        
+        // Check MongoDB cache first
+        let animeData = await AnimeData.findOne({ 
+            mal_id: parseInt(id),
+            lastUpdated: { $gte: oneWeekAgo }
+        });
+        
+        if (animeData && animeData.seasons && animeData.seasons.length > 0) {
+            console.log(`✅ Serving relations for anime ${id} from MongoDB cache`);
+            return res.json({ data: animeData.seasons });
+        }
+        
+        // Cache miss or expired - fetch from Jikan API
+        console.log(`🌐 Fetching relations for anime ${id} from Jikan API...`);
+        const response = await jikanQueue.add(() => 
+            axios.get(`https://api.jikan.moe/v4/anime/${id}/relations`)
+        );
+        
+        // Update or create in MongoDB
+        await AnimeData.findOneAndUpdate(
+            { mal_id: parseInt(id) },
+            { 
+                mal_id: parseInt(id),
+                seasons: response.data.data || [],
+                lastUpdated: new Date()
+            },
+            { upsert: true, returnDocument: 'after' }
+        );
+        
+        res.json(response.data);
+    } catch (error) {
+        console.error('Error fetching relations:', error.response?.status, error.response?.data);
+        if (error.response?.status === 429) {
+            return res.status(429).json({ error: 'Rate limited. Please try again later.' });
+        }
+        // Return empty data instead of error to prevent frontend crashes
+        res.json({ data: [] });
+    }
+});
+
+
+
+// Bulk store popular anime data (for admin use)
+app.post("/api/bulk-store-anime", async (req, res) => {
+    try {
+        const { animeIds } = req.body; // Array of anime IDs
+        
+        if (!animeIds || !Array.isArray(animeIds)) {
+            return res.status(400).json({ error: 'animeIds array is required' });
+        }
+        
+        const results = [];
+        const oneWeekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+        
+        for (const animeId of animeIds) {
+            try {
+                // Check if already cached
+                const existing = await AnimeData.findOne({ 
+                    mal_id: parseInt(animeId),
+                    lastUpdated: { $gte: oneWeekAgo }
+                });
+                
+                if (existing) {
+                    results.push({ animeId, status: 'already_cached', title: existing.title });
+                    continue;
+                }
+                
+                // Fetch anime details first to get title
+                const animeResponse = await jikanQueue.add(() => 
+                    axios.get(`https://api.jikan.moe/v4/anime/${animeId}`)
+                );
+                
+                // Fetch episodes and relations
+                const [episodesResponse, relationsResponse] = await Promise.all([
+                    jikanQueue.add(() => axios.get(`https://api.jikan.moe/v4/anime/${animeId}/episodes`)),
+                    jikanQueue.add(() => axios.get(`https://api.jikan.moe/v4/anime/${animeId}/relations`))
+                ]);
+                
+                // Store in MongoDB
+                await AnimeData.findOneAndUpdate(
+                    { mal_id: parseInt(animeId) },
+                    {
+                        mal_id: parseInt(animeId),
+                        title: animeResponse.data.data.title,
+                        episodes: episodesResponse.data.data || [],
+                        seasons: relationsResponse.data.data || [],
+                        lastUpdated: new Date()
+                    },
+                    { upsert: true, returnDocument: 'after' }
+                );
+                
+                results.push({ 
+                    animeId, 
+                    status: 'stored', 
+                    title: animeResponse.data.data.title,
+                    episodesCount: episodesResponse.data.data?.length || 0,
+                    seasonsCount: relationsResponse.data.data?.length || 0
+                });
+                
+                // Add delay to respect rate limits
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                
+            } catch (error) {
+                results.push({ 
+                    animeId, 
+                    status: 'error', 
+                    error: error.message 
+                });
+            }
+        }
+        
+        res.json({
+            message: `Processed ${animeIds.length} anime`,
+            results: results,
+            summary: {
+                total: animeIds.length,
+                stored: results.filter(r => r.status === 'stored').length,
+                cached: results.filter(r => r.status === 'already_cached').length,
+                errors: results.filter(r => r.status === 'error').length
+            }
+        });
+        
+    } catch (error) {
+        console.error('Error in bulk store:', error);
+        res.status(500).json({ error: 'Failed to bulk store anime data' });
+    }
+});
+
+// Store anime data when user visits anime page
+app.post("/api/store-anime-data/:id", async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { title } = req.body;
+        
+        // Check if data already exists and is recent
+        const oneWeekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+        const existingData = await AnimeData.findOne({ 
+            mal_id: parseInt(id),
+            lastUpdated: { $gte: oneWeekAgo }
+        });
+        
+        if (existingData) {
+            return res.json({ 
+                message: 'Data already cached and recent',
+                cached: true,
+                lastUpdated: existingData.lastUpdated
+            });
+        }
+        
+        console.log(`🎬 Storing anime data for ${title} (ID: ${id})`);
+        
+        // Fetch episodes and relations in parallel
+        const [episodesResponse, relationsResponse] = await Promise.all([
+            jikanQueue.add(() => axios.get(`https://api.jikan.moe/v4/anime/${id}/episodes`)),
+            jikanQueue.add(() => axios.get(`https://api.jikan.moe/v4/anime/${id}/relations`))
+        ]);
+        
+        // Store in MongoDB
+        const animeData = await AnimeData.findOneAndUpdate(
+            { mal_id: parseInt(id) },
+            {
+                mal_id: parseInt(id),
+                title: title,
+                episodes: episodesResponse.data.data || [],
+                seasons: relationsResponse.data.data || [],
+                lastUpdated: new Date()
+            },
+            { upsert: true, returnDocument: 'after' }
+        );
+        
+        res.json({
+            message: 'Anime data stored successfully',
+            cached: false,
+            episodesCount: animeData.episodes.length,
+            seasonsCount: animeData.seasons.length,
+            lastUpdated: animeData.lastUpdated
+        });
+        
+    } catch (error) {
+        console.error('Error storing anime data:', error);
+        if (error.response?.status === 429) {
+            return res.status(429).json({ error: 'Rate limited. Data will be cached on next request.' });
+        }
+        res.status(500).json({ error: 'Failed to store anime data' });
+    }
+});
+
+// Get anime cache statistics
+app.get("/api/anime-cache-stats", async (req, res) => {
+    try {
+        const totalCached = await AnimeData.countDocuments();
+        const oneWeekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+        const recentCached = await AnimeData.countDocuments({
+            lastUpdated: { $gte: oneWeekAgo }
+        });
+        const oldCached = totalCached - recentCached;
+        
+        res.json({
+            total: totalCached,
+            recent: recentCached,
+            old: oldCached,
+            cacheHitRate: totalCached > 0 ? ((recentCached / totalCached) * 100).toFixed(2) + '%' : '0%'
+        });
+    } catch (error) {
+        console.error('Error getting cache stats:', error);
+        res.status(500).json({ error: 'Failed to get cache stats' });
+    }
+});
+
+// Cleanup old anime data (older than 1 week)
+app.get("/api/cleanup-anime-cache", async (req, res) => {
+    try {
+        const oneWeekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+        
+        const result = await AnimeData.deleteMany({
+            lastUpdated: { $lt: oneWeekAgo }
+        });
+        
+        res.json({
+            message: `Cleaned up ${result.deletedCount} old anime cache entries`,
+            deletedCount: result.deletedCount
+        });
+    } catch (error) {
+        console.error('Error cleaning up anime cache:', error);
+        res.status(500).json({ error: 'Failed to cleanup cache' });
+    }
+});
 
 app.use("/api", requireDB, quizRoutes)
 app.use("/api/auth", requireDB, authRoutes)

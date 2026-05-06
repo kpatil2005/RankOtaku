@@ -12,13 +12,28 @@ export const useMyAnimeList = () => {
   return useQuery({
     queryKey: QUERY_KEYS.ANIME_LIST,
     queryFn: async () => {
-      const response = await animeListAPI.getMyList();
-      return response.data.animeList || [];
+      try {
+        const response = await animeListAPI.getMyList();
+        return response.data.animeList || [];
+      } catch (error) {
+        // Return empty array for unauthenticated users instead of throwing
+        if (error.response?.status === 401) {
+          return [];
+        }
+        throw error;
+      }
     },
     staleTime: 30 * 1000, // 30 seconds
     gcTime: 2 * 60 * 1000, // 2 minutes
     refetchOnMount: true,
     refetchOnWindowFocus: true,
+    retry: (failureCount, error) => {
+      // Don't retry on 401 errors
+      if (error.response?.status === 401) {
+        return false;
+      }
+      return failureCount < 3;
+    },
   });
 };
 
