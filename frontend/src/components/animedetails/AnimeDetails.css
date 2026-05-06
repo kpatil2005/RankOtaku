@@ -82,18 +82,101 @@
 }
 
 .anime-hero-content {
-    display: flex;
-    gap: 60px;
-    max-width: 1400px;
+    display: grid;
+    grid-template-columns: auto 450px;
+    gap: 40px;
+    max-width: 1600px;
     margin: auto;
     width: 100%;
     position: relative;
     z-index: 3;
     padding: 0 40px;
-    align-items: flex-end;
+    align-items: flex-start;
     flex: 1;
     padding-bottom: 80px;
+    padding-top: 40px;
     box-sizing: border-box;
+}
+
+.hero-main-content {
+    display: flex;
+    gap: 60px;
+    align-items: flex-end;
+}
+
+/* Anime Title Styles */
+.anime-title {
+    font-weight: bold;
+    font-size: 3.5rem;
+    color: #ffffff;
+    font-family: 'Poppins', sans-serif;
+    background: none;
+    background-clip: unset;
+    -webkit-background-clip: unset;
+    -webkit-text-fill-color: #ffffff;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8);
+    margin: 0 0 16px 0;
+    line-height: 1.1;
+}
+
+/* About Section Desktop Styles */
+.about-section-desktop {
+    background: transparent;
+    backdrop-filter: none;
+    border-radius: 0;
+    padding: 0;
+    border: none;
+    box-shadow: none;
+    max-height: none;
+    overflow-y: visible;
+    align-self: flex-start;
+    position: sticky;
+    top: 120px;
+}
+
+.about-title {
+    color: #ffd700;
+    font-size: 22px;
+    font-weight: bold;
+    margin: 0 0 20px 0;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.about-synopsis {
+    color: #fff;
+    font-size: 15px;
+    line-height: 1.7;
+    margin: 0 0 25px 0;
+    text-align: justify;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
+    font-weight: 400;
+}
+
+.about-info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px 20px;
+    font-size: 14px;
+}
+
+.about-info-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.about-studio {
+    grid-column: span 2;
+}
+
+.about-label {
+    color: #ffd700;
+    font-weight: bold;
+    margin-bottom: 4px;
+}
+
+.about-value {
+    color: #fff;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
 }
 
 .anime-poster-container {
@@ -152,13 +235,14 @@
     margin: 0;
     font-weight: 800;
     line-height: 1.1;
-    background: linear-gradient(135deg, #fff 0%, #ffd700 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    text-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
-    font-family: 'Bangers', cursive;
-    letter-spacing: 2px;
+    color: #ffffff !important;
+    font-family: 'Poppins', sans-serif !important;
+    background: none !important;
+    -webkit-background-clip: unset !important;
+    -webkit-text-fill-color: #ffffff !important;
+    background-clip: unset !important;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8) !important;
+    letter-spacing: 1px;
 }
 
 .anime-meta {
@@ -1312,6 +1396,34 @@
         display: none;
     }
 
+    /* Hide desktop about section on mobile */
+    .about-section-desktop {
+        display: none;
+    }
+
+    /* Hero section mobile layout */
+    .anime-hero-content {
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+        padding: 0 20px;
+        text-align: center;
+        align-items: center;
+        padding-bottom: 40px;
+    }
+
+    .hero-main-content {
+        flex-direction: column;
+        gap: 30px;
+        align-items: center;
+    }
+
+    .anime-title {
+        font-size: 36px;
+        margin-bottom: 16px;
+        text-align: center;
+    }
+
     /* Show mobile about section only on mobile */
     .mobile-about-section {
         display: block;
@@ -1519,7 +1631,7 @@
         height: 280px;
     }
 
-    .anime-hero-info h1 {
+    .anime-title {
         font-size: 28px;
         line-height: 1.2;
     }

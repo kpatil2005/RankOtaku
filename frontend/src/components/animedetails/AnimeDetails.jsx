@@ -349,125 +349,81 @@ export function AnimeDetails() {
                 <div className='anime-hero' style={{ backgroundImage: `url(${anime.images.jpg.large_image_url})` }}>
                     <Header />
                     <div className='anime-hero-content'>
-                        <img src={anime.images.jpg.large_image_url} alt={anime.title} className='anime-poster' />
-                        <div className='anime-hero-info'>
-                            <h1 style={{ 
-                                fontWeight: 'bold',
-                                fontSize: '4rem',
-                                color: '#ffffff',
-                                fontFamily: 'Arial, sans-serif',
-                                background: 'none',
-                                backgroundClip: 'unset',
-                                WebkitBackgroundClip: 'unset',
-                                WebkitTextFillColor: '#ffffff',
-                                textShadow: 'none'
-                            }}>{anime.title}</h1>
-                            <div className='anime-meta'>
-                                <span className='meta-badge'>{anime.type}</span>
-                                <span className='meta-badge'>{anime.status}</span>
-                                <span className='meta-badge'>{anime.episodes} Episodes</span>
-                            </div>
-                            <div className='anime-stats'>
-                                <div className='stat'>
-                                    <span className='stat-value'>⭐ {anime.score}</span>
-                                    <span className='stat-label'>Score</span>
+                        <div className='hero-main-content'>
+                            <img src={anime.images.jpg.large_image_url} alt={anime.title} className='anime-poster' />
+                            <div className='anime-hero-info'>
+                                <h1 className='anime-title'>{anime.title}</h1>
+                                <div className='anime-meta'>
+                                    <span className='meta-badge'>{anime.type}</span>
+                                    <span className='meta-badge'>{anime.status}</span>
+                                    <span className='meta-badge'>{anime.episodes} Episodes</span>
                                 </div>
-                                <div className='stat'>
-                                    <span className='stat-value'>#{anime.rank}</span>
-                                    <span className='stat-label'>Rank</span>
+                                <div className='anime-stats'>
+                                    <div className='stat'>
+                                        <span className='stat-value'>⭐ {anime.score}</span>
+                                        <span className='stat-label'>Score</span>
+                                    </div>
+                                    <div className='stat'>
+                                        <span className='stat-value'>#{anime.rank}</span>
+                                        <span className='stat-label'>Rank</span>
+                                    </div>
+                                    <div className='stat'>
+                                        <span className='stat-value'>#{anime.popularity}</span>
+                                        <span className='stat-label'>Popularity</span>
+                                    </div>
                                 </div>
-                                <div className='stat'>
-                                    <span className='stat-value'>#{anime.popularity}</span>
-                                    <span className='stat-label'>Popularity</span>
+                                <div className='anime-genres'>
+                                    {anime.genres.map((g, i) => (
+                                        <span key={i} className='genre-tag'>{g.name}</span>
+                                    ))}
                                 </div>
-                            </div>
-                            <div className='anime-genres'>
-                                {anime.genres.map((g, i) => (
-                                    <span key={i} className='genre-tag'>{g.name}</span>
-                                ))}
-                            </div>
-                            <div className='anime-actions'>
-                                <button className='btn-primary-large' onClick={handleStartQuizClick} disabled={loading}>
-                                    {loading ? 'Generating Quiz...' : 'Start Quiz'}
-                                </button>
-                                <button
-                                    className='btn-secondary-large'
-                                    onClick={handleAddToList}
-                                    disabled={isAuthenticated && (isInList || addToListMutation.isPending)}
-                                >
-                                    {!isAuthenticated ? 'Login to Add to List' :
-                                        isInList ? '✓ In My List' :
-                                            addToListMutation.isPending ? 'Adding...' : 'Add to My List'}
-                                </button>
+                                <div className='anime-actions'>
+                                    <button className='btn-primary-large' onClick={handleStartQuizClick} disabled={loading}>
+                                        {loading ? 'Generating Quiz...' : 'Start Quiz'}
+                                    </button>
+                                    <button
+                                        className='btn-secondary-large'
+                                        onClick={handleAddToList}
+                                        disabled={isAuthenticated && (isInList || addToListMutation.isPending)}
+                                    >
+                                        {!isAuthenticated ? 'Login to Add to List' :
+                                            isInList ? '✓ In My List' :
+                                                addToListMutation.isPending ? 'Adding...' : 'Add to My List'}
+                                    </button>
+                                </div>
                             </div>
                         </div>
                         
                         {/* About Section - Right Side */}
-                        <div className="about-section" style={{
-                            position: 'absolute',
-                            right: '-50px',
-                            top: '120px',
-                            width: '400px',
-                            color: '#fff',
-                            padding: '0',
-                            zIndex: 10
-                        }}>
-                            <h3 style={{
-                                color: '#ffd700',
-                                fontSize: '22px',
-                                fontWeight: 'bold',
-                                margin: '0 0 20px 0',
-                                textShadow: '2px 2px 4px rgba(0, 0, 0, 0.8)'
-                            }}>
-                                About {anime.title}
-                            </h3>
-                            
-                            <p style={{
-                                color: '#fff',
-                                fontSize: '15px',
-                                lineHeight: '1.7',
-                                margin: '0 0 25px 0',
-                                textAlign: 'justify',
-                                textShadow: '1px 1px 3px rgba(0, 0, 0, 0.8)',
-                                fontWeight: '400'
-                            }}>
-                                {anime.synopsis}
-                            </p>
+                        <div className="about-section-desktop">
+                            <h3 className='about-title'>About {anime.title}</h3>
+                            <p className='about-synopsis'>{anime.synopsis}</p>
                             
                             {/* Quick Info */}
-                            <div style={{
-                                display: 'grid',
-                                gridTemplateColumns: '1fr 1fr',
-                                gap: '12px 20px',
-                                fontSize: '14px'
-                            }}>
-                                <div style={{ display: 'flex', flexDirection: 'column' }}>
-                                    <span style={{ color: '#ffd700', fontWeight: 'bold', marginBottom: '4px' }}>Type:</span>
-                                    <span style={{ color: '#fff', textShadow: '1px 1px 2px rgba(0, 0, 0, 0.8)' }}>{anime.type}</span>
+                            <div className='about-info-grid'>
+                                <div className='about-info-item'>
+                                    <span className='about-label'>Type:</span>
+                                    <span className='about-value'>{anime.type}</span>
                                 </div>
                                 
-                                <div style={{ display: 'flex', flexDirection: 'column' }}>
-                                    <span style={{ color: '#ffd700', fontWeight: 'bold', marginBottom: '4px' }}>Episodes:</span>
-                                    <span style={{ color: '#fff', textShadow: '1px 1px 2px rgba(0, 0, 0, 0.8)' }}>{anime.episodes}</span>
+                                <div className='about-info-item'>
+                                    <span className='about-label'>Episodes:</span>
+                                    <span className='about-value'>{anime.episodes}</span>
                                 </div>
                                 
-                                <div style={{ display: 'flex', flexDirection: 'column' }}>
-                                    <span style={{ color: '#ffd700', fontWeight: 'bold', marginBottom: '4px' }}>Status:</span>
-                                    <span style={{ color: '#fff', textShadow: '1px 1px 2px rgba(0, 0, 0, 0.8)' }}>{anime.status}</span>
+                                <div className='about-info-item'>
+                                    <span className='about-label'>Status:</span>
+                                    <span className='about-value'>{anime.status}</span>
                                 </div>
                                 
-                                <div style={{ display: 'flex', flexDirection: 'column' }}>
-                                    <span style={{ color: '#ffd700', fontWeight: 'bold', marginBottom: '4px' }}>Aired:</span>
-                                    <span style={{ color: '#fff', textShadow: '1px 1px 2px rgba(0, 0, 0, 0.8)' }}>
-                                        {anime.aired?.string?.replace(' to ', ' to\n')}
-                                    </span>
+                                <div className='about-info-item'>
+                                    <span className='about-label'>Aired:</span>
+                                    <span className='about-value'>{anime.aired?.string || 'N/A'}</span>
                                 </div>
                                 
-                                <div style={{ display: 'flex', flexDirection: 'column', gridColumn: 'span 2' }}>
-                                    <span style={{ color: '#ffd700', fontWeight: 'bold', marginBottom: '4px' }}>Studio:</span>
-                                    <span style={{ color: '#fff', textShadow: '1px 1px 2px rgba(0, 0, 0, 0.8)' }}>
-                                        {anime.studios?.map(s => s.name).join(', ') || 'N/A'}
-                                    </span>
+                                <div className='about-info-item about-studio'>
+                                    <span className='about-label'>Studio:</span>
+                                    <span className='about-value'>{anime.studios?.map(s => s.name).join(', ') || 'N/A'}</span>
                                 </div>
                             </div>
                         </div>
