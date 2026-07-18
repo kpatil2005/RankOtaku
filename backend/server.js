@@ -25,9 +25,26 @@ class JikanQueue {
         this.minDelay = 1000; // 1 second between requests = 1 req/sec (very safe)
     }
 
-    async add(fn) {
+    async add(fn, retries = 3) {
         return new Promise((resolve, reject) => {
-            this.queue.push({ fn, resolve, reject });
+            const wrappedFn = async () => {
+                for (let attempt = 1; attempt <= retries; attempt++) {
+                    try {
+                        return await fn();
+                    } catch (err) {
+                        const isNetworkErr = !err.response;
+                        const isRateLimit = err.response?.status === 429;
+                        if (attempt < retries && (isNetworkErr || isRateLimit)) {
+                            const delay = isRateLimit ? 3000 : 1000 * attempt;
+                            console.log(`Jikan retry ${attempt}/${retries} after ${delay}ms...`);
+                            await new Promise(r => setTimeout(r, delay));
+                        } else {
+                            throw err;
+                        }
+                    }
+                }
+            };
+            this.queue.push({ fn: wrappedFn, resolve, reject });
             this.process();
         });
     }
@@ -47,15 +64,10 @@ class JikanQueue {
         
         this.lastRequest = Date.now();
         
-        try {
-            const result = await fn();
-            resolve(result);
-        } catch (error) {
-            reject(error);
-        }
-        
-        this.processing = false;
-        this.process(); // Process next in queue
+        fn().then(resolve).catch(reject).finally(() => {
+            this.processing = false;
+            this.process();
+        });
     }
 }
 
@@ -179,7 +191,7 @@ app.get("/home", async (req, res) => {
         // Cache miss — fetch from Jikan API with queue
         console.log("🌐 Fetching top anime from Jikan API...")
         const response = await jikanQueue.add(() => 
-            axios.get("https://api.jikan.moe/v4/top/anime")
+            axios.get("https://api.jikan.moe/v4/top/anime", { timeout: 15000 })
         );
 
         // Store in cache for 1 hour
@@ -187,11 +199,12 @@ app.get("/home", async (req, res) => {
 
         res.json(response.data)
     } catch (error) {
-        console.error('Error fetching anime:', error.response?.status, error.response?.data)
-        if (error.response?.status === 429) {
+        const status = error.response?.status;
+        console.error('Error fetching anime:', status ?? error.code ?? error.message)
+        if (status === 429) {
             return res.status(429).json({ error: 'Rate limited. Please try again later.' })
         }
-        res.status(500).json({ error: 'Failed to fetch anime data' })
+        res.status(500).json({ error: 'Failed to fetch anime data', detail: error.code || error.message })
     }
 })
 
@@ -202,7 +215,7 @@ app.get("/api/jikan/seasons/now", async (req, res) => {
         if (cached) return res.json(cached);
 
         const response = await jikanQueue.add(() => 
-            axios.get("https://api.jikan.moe/v4/seasons/now?limit=10")
+            axios.get("https://api.jikan.moe/v4/seasons/now?limit=10", { timeout: 15000 })
         );
         animeCache.set("seasons_now", response.data);
         res.json(response.data);
@@ -220,7 +233,7 @@ app.get("/api/jikan/top/movies", async (req, res) => {
         if (cached) return res.json(cached);
 
         const response = await jikanQueue.add(() => 
-            axios.get("https://api.jikan.moe/v4/top/anime?type=movie&limit=10")
+            axios.get("https://api.jikan.moe/v4/top/anime?type=movie&limit=10", { timeout: 15000 })
         );
         animeCache.set("top_movies", response.data);
         res.json(response.data);
@@ -238,7 +251,7 @@ app.get("/api/jikan/top/popularity", async (req, res) => {
         if (cached) return res.json(cached);
 
         const response = await jikanQueue.add(() => 
-            axios.get("https://api.jikan.moe/v4/top/anime?filter=bypopularity&limit=10")
+            axios.get("https://api.jikan.moe/v4/top/anime?filter=bypopularity&limit=10", { timeout: 15000 })
         );
         animeCache.set("top_popularity", response.data);
         res.json(response.data);
