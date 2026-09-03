@@ -1,6 +1,6 @@
 import React from 'react'
-import axios from 'axios';
 import { Anime } from './Anime';
+import { searchAnime } from '../../services/anilist';
 
 // Move constants outside component (never change)
 const CATEGORIES = [
@@ -33,38 +33,30 @@ export function Search({ onCategoryChange, onSearchStateChange }) {
     // Global search function with useCallback
     const performGlobalSearch = React.useCallback(async (query, filter = 'all', signal) => {
         if (!query.trim()) {
-            setSearchState(prev => ({
-                ...prev,
-                results: [],
-                isSearching: false
-            }));
+            setSearchState(prev => ({ ...prev, results: [], isSearching: false }));
             return;
         }
 
         setSearchState(prev => ({ ...prev, isSearching: true }));
 
         try {
-            let url = `https://api.jikan.moe/v4/anime?q=${encodeURIComponent(query)}&limit=20`;
+            const formatMap = { tv: 'tv', movie: 'movie' };
+            const statusMap = { airing: 'airing' };
 
-            // Add filter parameters
-            if (filter === 'tv') url += '&type=tv';
-            if (filter === 'movie') url += '&type=movie';
-            if (filter === 'airing') url += '&status=airing';
-
-            const response = await axios.get(url, { signal });
-            setSearchState(prev => ({
-                ...prev,
-                results: response.data.data || [],
-                isSearching: false
-            }));
+            const results = await searchAnime(
+                query,
+                {
+                    format: formatMap[filter],
+                    status: statusMap[filter],
+                    perPage: 20,
+                },
+                signal
+            );
+            setSearchState(prev => ({ ...prev, results, isSearching: false }));
         } catch (error) {
-            if (error.name !== 'AbortError') {
+            if (error?.name !== 'AbortError' && error?.message !== 'The user aborted a request.') {
                 console.error('Search error:', error);
-                setSearchState(prev => ({
-                    ...prev,
-                    results: [],
-                    isSearching: false
-                }));
+                setSearchState(prev => ({ ...prev, results: [], isSearching: false }));
             }
         }
     }, []);

@@ -1,29 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React from 'react';
 import './ProductionStaff.css';
 
-export const ProductionStaff = ({ anime }) => {
-  const [staff, setStaff] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchStaff = async () => {
-      try {
-        const API = import.meta.env.VITE_API_URL;
-        const response = await axios.get(`${API}/api/jikan/anime/${anime.mal_id}/staff`);
-        setStaff(response.data.data);
-        setLoading(false);
-      } catch (error) {
-        console.error('Error fetching staff:', error);
-        setLoading(false);
-      }
-    };
-
-    if (anime?.mal_id) {
-      fetchStaff();
-    }
-  }, [anime?.mal_id]);
-
+/**
+ * ProductionStaff now receives staff data as a prop from AnimeDetails
+ * (already fetched via AniList getAnimeDetails). No additional API calls needed.
+ */
+export const ProductionStaff = ({ anime, staff = [] }) => {
   const getStaffByPosition = (position) => {
     return staff.filter(member =>
       member.positions.some(pos => pos.toLowerCase().includes(position.toLowerCase()))
@@ -37,21 +19,20 @@ export const ProductionStaff = ({ anime }) => {
     { title: 'Character Design', key: 'character design' }
   ];
 
-  if (loading) {
-    return (
-      <div className="production-staff">
-        <h2 className="section-title">Staff & Production</h2>
-        <div className="staff-loading">Loading staff information...</div>
-      </div>
-    );
-  }
+  // Show section only if there's something to display
+  const hasStaff = staff.length > 0;
+  const hasStudios = anime?.studios && anime.studios.length > 0;
+  const hasProducers = anime?.producers && anime.producers.length > 0;
+  const hasSource = !!anime?.source;
+
+  if (!hasStaff && !hasStudios && !hasProducers && !hasSource) return null;
 
   return (
     <div className="production-staff">
       <h2 className="section-title">Staff & Production</h2>
 
       {/* Studios */}
-      {anime.studios && anime.studios.length > 0 && (
+      {hasStudios && (
         <div className="studios-section">
           <h3>Studios</h3>
           <div className="studios-list">
@@ -63,53 +44,55 @@ export const ProductionStaff = ({ anime }) => {
       )}
 
       {/* Staff Grid */}
-      <div className="staff-grid">
-        {keyPositions.map(position => {
-          const staffMembers = getStaffByPosition(position.key);
-          if (staffMembers.length === 0) return null;
+      {hasStaff && (
+        <div className="staff-grid">
+          {keyPositions.map(position => {
+            const staffMembers = getStaffByPosition(position.key);
+            if (staffMembers.length === 0) return null;
 
-          return (
-            <div key={position.key} className="staff-category">
-              <h4>{position.title}</h4>
-              <div className="staff-list">
-                {staffMembers.slice(0, 3).map((member, index) => (
-                  <div key={index} className="staff-member">
-                    <div className="staff-photo">
-                      {member.person.images?.jpg?.image_url ? (
-                        <img
-                          src={member.person.images.jpg.image_url}
-                          alt={member.person.name}
-                          onError={(e) => {
-                            e.target.style.display = 'none';
-                            e.target.nextSibling.style.display = 'flex';
-                          }}
-                        />
-                      ) : null}
-                      <div className="staff-avatar-fallback">
-                        {member.person.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
+            return (
+              <div key={position.key} className="staff-category">
+                <h4>{position.title}</h4>
+                <div className="staff-list">
+                  {staffMembers.slice(0, 3).map((member, index) => (
+                    <div key={index} className="staff-member">
+                      <div className="staff-photo">
+                        {member.person.images?.jpg?.image_url ? (
+                          <img
+                            src={member.person.images.jpg.image_url}
+                            alt={member.person.name}
+                            onError={(e) => {
+                              e.target.style.display = 'none';
+                              e.target.nextSibling.style.display = 'flex';
+                            }}
+                          />
+                        ) : null}
+                        <div className="staff-avatar-fallback">
+                          {member.person.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
+                        </div>
+                      </div>
+                      <div className="staff-details">
+                        <span className="staff-name">{member.person.name}</span>
+                        <span className="staff-role">{member.positions[0]}</span>
                       </div>
                     </div>
-                    <div className="staff-details">
-                      <span className="staff-name">{member.person.name}</span>
-                      <span className="staff-role">{member.positions[0]}</span>
-                    </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
-            </div>
-          );
-        })}
-      </div>
+            );
+          })}
+        </div>
+      )}
 
       {/* Production Info */}
       <div className="production-info">
-        {anime.source && (
+        {hasSource && (
           <div className="info-item">
             <span className="info-label">Source</span>
             <span className="info-value">{anime.source}</span>
           </div>
         )}
-        {anime.producers && anime.producers.length > 0 && (
+        {hasProducers && (
           <div className="info-item">
             <span className="info-label">Producers</span>
             <span className="info-value">

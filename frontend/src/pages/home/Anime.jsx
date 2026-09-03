@@ -3,31 +3,26 @@ import './Anime.css'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
 import { quizCache } from '../../utils/quizCache'
-
-const slugify = (title, id) => {
-    return title
-        .toLowerCase()
-        .replace(/[^a-z0-9\s-]/g, '')
-        .replace(/\s+/g, '-')
-        + '-' + id;
-};
+import { buildSlug } from '../../services/anilist'
 
 // Move AnimeCard outside component for proper memoization
 const AnimeCard = React.memo(({ a, index, generateQuiz }) => {
+    // Support both AniList (id) and legacy (mal_id) shapes
+    const animeId = a.anilistId ?? a.id ?? a.mal_id;
+    const coverImg = a.images?.webp?.large_image_url || a.images?.jpg?.large_image_url;
+    const thumbImg = a.images?.webp?.image_url || a.images?.jpg?.image_url || coverImg;
+
     return (
         <Link
-            to={`/anime/${slugify(a.title, a.mal_id)}`}
-            key={`${a.mal_id}-${index}`}
+            to={`/anime/${buildSlug(a)}`}
+            key={`${animeId}-${index}`}
             style={{ textDecoration: 'none' }}
             onClick={() => generateQuiz(a.title)}
         >
             <div className='anime-card'>
                 <img
-                    src={a.images?.webp?.large_image_url || a.images?.jpg?.large_image_url}
-                    srcSet={`
-                        ${a.images?.webp?.image_url || a.images?.jpg?.image_url} 200w,
-                        ${a.images?.webp?.large_image_url || a.images?.jpg?.large_image_url} 600w
-                    `}
+                    src={coverImg}
+                    srcSet={`${thumbImg} 200w, ${coverImg} 600w`}
                     sizes="(max-width: 768px) 120px, 150px"
                     alt={a.title || 'Anime'}
                     loading={index === 0 ? "eager" : "lazy"}
@@ -40,10 +35,10 @@ const AnimeCard = React.memo(({ a, index, generateQuiz }) => {
                 />
                 <div className='anime-info'>
                     <h2>{a.title}</h2>
-                    <p className='anime-rank'>Rank #{a.rank}</p>
-                    <p>⭐ Score: {a.score}</p>
-                    <p>👥 Members: {a.members?.toLocaleString()}</p>
-                    <p>❤️ Favorites: {a.favorites?.toLocaleString()}</p>
+                    {a.rank && <p className='anime-rank'>Rank #{a.rank}</p>}
+                    <p>⭐ Score: {a.score ?? 'N/A'}</p>
+                    <p>👥 Members: {a.members?.toLocaleString() ?? 'N/A'}</p>
+                    <p>❤️ Favorites: {(a.favorites ?? a.favourites)?.toLocaleString() ?? 'N/A'}</p>
                 </div>
             </div>
         </Link>
@@ -74,7 +69,7 @@ export function Anime({ anime, title = "Top Anime Battles", category = null, onL
     React.useEffect(() => {
         if (!isFirstSection || animeList.length === 0) return;
 
-        const firstImage = animeList[0]?.images?.webp?.large_image_url 
+        const firstImage = animeList[0]?.images?.webp?.large_image_url
             || animeList[0]?.images?.jpg?.large_image_url;
         if (!firstImage) return;
 
@@ -156,7 +151,7 @@ export function Anime({ anime, title = "Top Anime Battles", category = null, onL
                     <div className={scrollClassName}>
                         {firstAnime && (
                             <AnimeCard 
-                                key={`${firstAnime.mal_id}-0`}
+                                key={`${firstAnime.anilistId ?? firstAnime.id ?? firstAnime.mal_id}-0`}
                                 a={firstAnime} 
                                 index={0} 
                                 generateQuiz={generateQuiz} 
@@ -164,7 +159,7 @@ export function Anime({ anime, title = "Top Anime Battles", category = null, onL
                         )}
                         {restAnime?.map((a, index) => (
                             <AnimeCard 
-                                key={`${a.mal_id}-${index + 1}`}
+                                key={`${a.anilistId ?? a.id ?? a.mal_id}-${index + 1}`}
                                 a={a} 
                                 index={index + 1} 
                                 generateQuiz={generateQuiz} 
@@ -205,7 +200,7 @@ export function Anime({ anime, title = "Top Anime Battles", category = null, onL
                             <div className='anime-scroll-track'>
                                 {firstAnime && (
                                     <AnimeCard 
-                                        key={`${firstAnime.mal_id}-0`}
+                                        key={`${firstAnime.anilistId ?? firstAnime.id ?? firstAnime.mal_id}-0`}
                                         a={firstAnime} 
                                         index={0} 
                                         generateQuiz={generateQuiz} 
@@ -213,7 +208,7 @@ export function Anime({ anime, title = "Top Anime Battles", category = null, onL
                                 )}
                                 {restAnime?.map((a, index) => (
                                     <AnimeCard 
-                                        key={`${a.mal_id}-${index + 1}`}
+                                        key={`${a.anilistId ?? a.id ?? a.mal_id}-${index + 1}`}
                                         a={a} 
                                         index={index + 1} 
                                         generateQuiz={generateQuiz} 

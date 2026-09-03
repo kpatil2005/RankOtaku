@@ -132,6 +132,7 @@ export const useRemoveFromList = () => {
 };
 
 // Hook for checking if anime is in list (for button states)
+// animeId is now the AniList ID (stored via handleAddToList in AnimeDetails)
 export const useIsAnimeInList = (animeId) => {
   const { data: animeList = [] } = useMyAnimeList();
   return animeList.some(anime => anime.animeId === animeId);

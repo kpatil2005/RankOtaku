@@ -38,34 +38,25 @@ router.get("/sitemap.xml", async (req, res) => {
             <changefreq>weekly</changefreq>
         </url>`);
 
-        // 🔥 Fetch top anime from Jikan API (multiple pages for more URLs)
-        const pages = Array.from({length: 10}, (_, i) => i + 1); // Fetch 250 anime (25 per page)
-        
-        for (const page of pages) {
-            try {
-                const response = await axios.get(`https://api.jikan.moe/v4/top/anime?page=${page}&limit=25`);
-                const animeList = response.data.data;
+        // Fetch top anime from AniList GraphQL for sitemap URLs
+        try {
+            const anilistRes = await axios.post('https://graphql.anilist.co', {
+                query: `query { Page(perPage: 50) { media(type: ANIME, sort: SCORE_DESC, isAdult: false) { id title { romaji english } } } }`
+            }, { headers: { 'Content-Type': 'application/json' }, timeout: 15000 });
 
-                animeList.forEach(anime => {
-                    const slug = anime.title
-                        .toLowerCase()
-                        .replace(/[^a-z0-9\s-]/g, '')
-                        .replace(/\s+/g, '-')
-                        + '-' + anime.mal_id;
-
-                    urls.push(`
+            const animeList = anilistRes.data?.data?.Page?.media ?? [];
+            animeList.forEach(anime => {
+                const title = anime.title?.english || anime.title?.romaji || '';
+                const slug = title.toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-') + '-' + anime.id;
+                urls.push(`
         <url>
             <loc>${baseUrl}/anime/${slug}</loc>
             <priority>0.7</priority>
             <changefreq>weekly</changefreq>
         </url>`);
-                });
-
-                // Delay to respect API rate limits
-                await new Promise(resolve => setTimeout(resolve, 1000));
-            } catch (error) {
-                console.error(`Error fetching page ${page}:`, error.message);
-            }
+            });
+        } catch (error) {
+            console.error('Error fetching anime for sitemap:', error.message);
         }
 
         const sitemap = `<?xml version="1.0" encoding="UTF-8"?>

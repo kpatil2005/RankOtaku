@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import { getTopAnime, buildSlug } from '../services/anilist';
 import './FeaturedCarousel.css';
 
 export const FeaturedCarousel = () => {
@@ -12,9 +12,8 @@ export const FeaturedCarousel = () => {
     useEffect(() => {
         const fetchFeatured = async () => {
             try {
-                const API = import.meta.env.VITE_API_URL;
-                const response = await axios.get(`${API}/home`);
-                setFeatured(response.data.data.slice(0, 5));
+                const data = await getTopAnime(5);
+                setFeatured(data.slice(0, 5));
                 setLoading(false);
             } catch (error) {
                 console.error('Error fetching featured anime:', error);
@@ -36,12 +35,7 @@ export const FeaturedCarousel = () => {
     }, [featured.length]);
 
     const handleStartQuiz = (anime) => {
-        const slug = anime.title
-            .toLowerCase()
-            .replace(/[^a-z0-9\s-]/g, '')
-            .replace(/\s+/g, '-')
-            + '-' + anime.mal_id;
-        navigate(`/anime/${slug}`);
+        navigate(`/anime/${buildSlug(anime)}`);
     };
 
     const goToSlide = (index) => {
@@ -58,7 +52,7 @@ export const FeaturedCarousel = () => {
                 <div
                     className="featured-background"
                     style={{
-                        backgroundImage: `url(${currentAnime.images.jpg.large_image_url})`
+                        backgroundImage: `url(${currentAnime.bannerImage || currentAnime.images.jpg.large_image_url})`
                     }}
                 />
                 <div className="featured-overlay" />

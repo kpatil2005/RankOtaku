@@ -32,7 +32,7 @@ export function Footer() {
                 <div className="footer-info">
                     <div className="copyright">
                         <p>&copy; 2024 RankOtaku. All rights reserved.</p>
-                        <p className="api-credit">Powered by Jikan API</p>
+                        <p className="api-credit">Powered by AniList GraphQL API</p>
                     </div>
 
                     <div className="developer-info">

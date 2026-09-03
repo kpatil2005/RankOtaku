@@ -8,6 +8,54 @@ const groq = new Groq({
     apiKey: process.env.GROQ_API_KEY
 });
 
+// ─── AniList GraphQL helper (replaces all direct Jikan calls) ──────
+const ANILIST_URL = 'https://graphql.anilist.co';
+
+async function anilistSearch(name) {
+    const query = `
+        query ($search: String) {
+            Media(search: $search, type: ANIME, isAdult: false) {
+                id idMal
+                title { romaji english }
+                coverImage { extraLarge large }
+                averageScore episodes
+                description(asHtml: false)
+            }
+        }
+    `;
+    try {
+        const res = await axios.post(ANILIST_URL, {
+            query,
+            variables: { search: name }
+        }, { headers: { 'Content-Type': 'application/json' }, timeout: 10000 });
+
+        const m = res.data?.data?.Media;
+        if (!m) return null;
+
+        const title = m.title?.english || m.title?.romaji || name;
+        const img = m.coverImage?.extraLarge || m.coverImage?.large || '';
+        const score = m.averageScore ? (m.averageScore / 10).toFixed(1) : 'N/A';
+        const slug = title.toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-') + '-' + m.id;
+
+        return {
+            id: m.id,
+            mal_id: m.idMal ?? m.id,
+            title,
+            slug,
+            images: {
+                webp: { large_image_url: img },
+                jpg: { large_image_url: img }
+            },
+            score: parseFloat(score),
+            episodes: m.episodes,
+            synopsis: m.description?.replace(/<[^>]+>/g, '').substring(0, 300) ?? ''
+        };
+    } catch (err) {
+        console.error('AniList search error:', err.message);
+        return null;
+    }
+}
+
 // Authentication middleware
 const authenticateToken = (req, res, next) => {
     const authHeader = req.headers.authorization;
@@ -324,16 +372,15 @@ CRITICAL RULES:
                         if (!isAuthenticated) {
                             resultMessage = "Please log in to add anime to your list.";
                         } else {
-                        const jikanRes = await axios.get(`https://api.jikan.moe/v4/anime?q=${encodeURIComponent(args.anime_name || '')}&limit=1`);
-                        const animeData = jikanRes.data.data[0];
+                        const animeData = await anilistSearch(args.anime_name || '');
                         if (animeData) {
-                            if (user.animeList.some(a => a.animeId === animeData.mal_id)) {
+                            if (user.animeList.some(a => a.animeId === animeData.id)) {
                                 resultMessage = `The anime '${animeData.title}' is already in their list.`;
                             } else {
                                 user.animeList.push({
-                                    animeId: animeData.mal_id,
+                                    animeId: animeData.id,
                                     title: animeData.title,
-                                    image: animeData.images.webp.large_image_url || animeData.images.jpg.large_image_url,
+                                    image: animeData.images.jpg.large_image_url,
                                     status: 'Watching'
                                 });
                                 await user.save();
@@ -361,11 +408,10 @@ CRITICAL RULES:
                         }
                     }
                     else if (toolCall.function.name === 'search_anime_info') {
-                        const jikanRes = await axios.get(`https://api.jikan.moe/v4/anime?q=${encodeURIComponent(args.anime_name || '')}&limit=1`);
-                        const animeData = jikanRes.data.data[0];
+                        const animeData = await anilistSearch(args.anime_name || '');
                         if (animeData) {
-                            const imgUrl = animeData.images.webp.large_image_url || animeData.images.jpg.large_image_url;
-                            resultMessage = `Here is the database info for ${animeData.title}:\nImage URL: ${imgUrl}\nScore: ${animeData.score}/10\nEpisodes: ${animeData.episodes}\nSynopsis: ${animeData.synopsis.substring(0, 300)}...`;
+                            const imgUrl = animeData.images.jpg.large_image_url;
+                            resultMessage = `Here is the database info for ${animeData.title}:\nImage URL: ${imgUrl}\nScore: ${animeData.score}/10\nEpisodes: ${animeData.episodes}\nSynopsis: ${animeData.synopsis}...`;
                         } else {
                             resultMessage = `Could not find any info for '${args.anime_name}'.`;
                         }
@@ -395,18 +441,10 @@ CRITICAL RULES:
                         }
                     }
                     else if (toolCall.function.name === 'navigate_to_anime_page') {
-                        const jikanRes = await axios.get(`https://api.jikan.moe/v4/anime?q=${encodeURIComponent(args.anime_name || '')}&limit=1`);
-                        const animeData = jikanRes.data.data[0];
+                        const animeData = await anilistSearch(args.anime_name || '');
                         if (animeData) {
-                            const slug = animeData.title
-                                .toLowerCase()
-                                .replace(/[^a-z0-9\s-]/g, '')
-                                .replace(/\s+/g, '-')
-                                + '-' + animeData.mal_id;
-                            // Return ONLY the navigation command, nothing else
-                            resultMessage = `NAVIGATE:/anime/${slug}|${animeData.title}`;
-                            // Set a flag to return navigation immediately
-                            req.shouldNavigate = { url: `/anime/${slug}`, title: animeData.title };
+                            resultMessage = `NAVIGATE:/anime/${animeData.slug}|${animeData.title}`;
+                            req.shouldNavigate = { url: `/anime/${animeData.slug}`, title: animeData.title };
                         } else {
                             resultMessage = `Could not find anime matching '${args.anime_name}' to navigate to.`;
                         }
@@ -426,7 +464,7 @@ CRITICAL RULES:
                     }
                 } catch (e) {
                     console.error('Agent Tool Process Error:', e.message);
-                    resultMessage = "There was an internal server error. Jikan API might be rate limiting us. Tell the user exactly this so they know.";
+                    resultMessage = "There was an internal server error processing that request. Please try again.";
                 }
 
                 finalMessages.push({

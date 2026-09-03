@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { jikanAPI } from '../services/api';
+import React, { useState } from 'react';
+import { getAnimeDetails } from '../services/anilist';
 
 const Episodes = ({ animeId }) => {
   const [episodes, setEpisodes] = useState([]);
@@ -9,16 +9,16 @@ const Episodes = ({ animeId }) => {
   const fetchEpisodes = async (e) => {
     e.preventDefault();
     e.stopPropagation();
-    
+
     if (episodes.length > 0) {
       setShowEpisodes(!showEpisodes);
       return;
     }
-    
+
     setLoading(true);
     try {
-      const response = await jikanAPI.getAnimeEpisodes(animeId);
-      setEpisodes(response.data.data);
+      const data = await getAnimeDetails(animeId);
+      setEpisodes(data?.episodes ?? []);
       setShowEpisodes(true);
     } catch (error) {
       console.error('Error fetching episodes:', error);

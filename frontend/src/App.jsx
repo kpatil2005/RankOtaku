@@ -1,4 +1,3 @@
-import axios from "axios"
 import { useEffect, useState } from "react"
 import { Homepage } from "./pages/home/Homepage"
 import { AnimeDetails } from "./components/animedetails/AnimeDetails"
@@ -21,6 +20,7 @@ import { CharacterQuiz } from "./components/characterquiz/CharacterQuiz"
 import { ErrorBoundary } from "./components/ErrorBoundary"
 import { NotFound } from "./pages/error/NotFound"
 import { NetworkError } from "./pages/error/NetworkError"
+import { getTopAnime } from "./services/anilist"
 
 function App() {
   const location = useLocation();
@@ -28,18 +28,14 @@ function App() {
   const [networkError, setNetworkError] = useState(false)
 
   useEffect(() => {
-    axios.get(`${import.meta.env.VITE_API_URL}/home`)
-      .then(res => {
-        setAnime(res.data.data)
+    getTopAnime(25)
+      .then(data => {
+        setAnime(data)
         setNetworkError(false)
       })
       .catch(err => {
         console.error("Error fetching anime:", err)
-        // Only show network error if there's truly no response (network down)
-        if (!err.response) {
-          setNetworkError(true)
-        }
-        // For rate limits or other errors, just use empty data
+        setNetworkError(true)
       })
   }, [])
 

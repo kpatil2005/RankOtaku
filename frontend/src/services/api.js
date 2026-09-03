@@ -49,17 +49,7 @@ api.interceptors.response.use(
   }
 );
 
-// Jikan API (MyAnimeList) - Direct calls
-export const jikanAPI = {
-  getAnimeEpisodes: (animeId) => 
-    axios.get(`https://api.jikan.moe/v4/anime/${animeId}/episodes`),
-  getAnimeDetails: (animeId) => 
-    axios.get(`https://api.jikan.moe/v4/anime/${animeId}`),
-  getAnimeStreaming: (animeId) => 
-    axios.get(`https://api.jikan.moe/v4/anime/${animeId}/streaming`),
-  getAnimeRelations: (animeId) => 
-    axios.get(`https://api.jikan.moe/v4/anime/${animeId}/relations`),
-};
+// Jikan API helpers removed — anime data now comes from AniList GraphQL (src/services/anilist.js)
 
 // API endpoints
 export const animeListAPI = {

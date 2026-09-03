@@ -7,9 +7,9 @@ import { SEOHead } from '../../components/SEO/SEOHead';
 import { SEOContent } from '../../components/SEO/SEOContent';
 import { AnimeGridSkeleton } from '../../components/LoadingSkeleton';
 import './Homepage.css';
-import axios from 'axios';
 import { Strip } from './Strip';
 import { Search } from './Search';
+import { getTrendingAnime, getAiringAnime, getTopMovies } from '../../services/anilist';
 
 // Lazy load Anime component to reduce initial JS
 const Anime = React.lazy(() => import('./Anime').then(module => ({ default: module.Anime })));
@@ -57,17 +57,12 @@ export function Homepage({ anime }) {
 
     setIsLoading(true);
 
-    const API = import.meta.env.VITE_API_URL;
     Promise.all([
-      axios.get(`${API}/api/jikan/top/popularity`),
-      axios.get(`${API}/api/jikan/seasons/now`),
-      axios.get(`${API}/api/jikan/top/movies`)
+      getTrendingAnime(25),
+      getAiringAnime(25),
+      getTopMovies(25),
     ]).then(([trending, airing, movies]) => {
-      const data = {
-        trending: trending.data.data,
-        airing: airing.data.data,
-        movies: movies.data.data
-      };
+      const data = { trending, airing, movies };
 
       setCategories(data);
       setIsLoading(false);
@@ -97,41 +92,22 @@ export function Homepage({ anime }) {
     setIsLoadingMore(true);
     try {
       const newCount = displayCounts[category] + 10;
-      let response;
+      const nextPage = Math.ceil(newCount / 25) + 1;
 
-      // Fetch more data from API based on category
       if (category === 'top') {
-        response = await axios.get(`https://api.jikan.moe/v4/top/anime?filter=bypopularity&page=${Math.ceil(newCount / 25)}&limit=25`);
-        // Keep existing anime and add new ones
-        setCategories(prev => ({
-          ...prev,
-          // For top, we'll handle this separately in the state
-        }));
+        // top rated is passed via `anime` prop from App.jsx — already loaded
       } else if (category === 'trending') {
-        response = await axios.get(`https://api.jikan.moe/v4/seasons/now?page=${Math.ceil(newCount / 25)}&limit=25`);
-        setCategories(prev => ({
-          ...prev,
-          trending: [...prev.trending, ...response.data.data]
-        }));
+        const more = await getTrendingAnime(newCount);
+        setCategories(prev => ({ ...prev, trending: more }));
       } else if (category === 'airing') {
-        response = await axios.get(`https://api.jikan.moe/v4/seasons/now?page=${Math.ceil(newCount / 25)}&limit=25`);
-        setCategories(prev => ({
-          ...prev,
-          airing: [...prev.airing, ...response.data.data]
-        }));
+        const more = await getAiringAnime(newCount);
+        setCategories(prev => ({ ...prev, airing: more }));
       } else if (category === 'movies') {
-        response = await axios.get(`https://api.jikan.moe/v4/top/anime?type=movie&page=${Math.ceil(newCount / 25)}&limit=25`);
-        setCategories(prev => ({
-          ...prev,
-          movies: [...prev.movies, ...response.data.data]
-        }));
+        const more = await getTopMovies(newCount);
+        setCategories(prev => ({ ...prev, movies: more }));
       }
 
-      // Update display count
-      setDisplayCounts(prev => ({
-        ...prev,
-        [category]: newCount
-      }));
+      setDisplayCounts(prev => ({ ...prev, [category]: newCount }));
     } catch (error) {
       console.error(`Error loading more ${category} anime:`, error);
     } finally {

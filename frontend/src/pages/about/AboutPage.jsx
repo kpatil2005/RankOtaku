@@ -113,21 +113,21 @@ export function AboutPage() {
                             <span className="tech-badge">Express.js</span>
                             <span className="tech-badge">MongoDB</span>
                             <span className="tech-badge">Groq AI</span>
-                            <span className="tech-badge">Jikan API</span>
+                            <span className="tech-badge">AniList API</span>
                             <span className="tech-badge">Vite</span>
                         </div>
 
                         <div className="acknowledgments-box">
                             <div className="ack-header">
                                 <span className="ack-icon">🙏</span>
-                                <h3>Special Thanks to Jikan API</h3>
+                                <h3>Special Thanks to AniList</h3>
                             </div>
                             <p>
-                                A massive and heartfelt thank you to the open-source <strong>Jikan API</strong> project.
-                                RankOtaku wouldn't exist without it. By providing exceptionally fast, reliable, and comprehensive access to the MyAnimeList database, Jikan serves as the core foundational backbone of our entire anime catalog.
+                                A massive thank you to <strong>AniList</strong> for providing a free, fast, and comprehensive GraphQL API for anime data.
+                                RankOtaku is powered by AniList's open API, which gives us access to rich anime metadata, characters, staff, and more without rate-limit frustrations.
                             </p>
                             <p>
-                                We are deeply grateful to the Jikan developers and the MyAnimeList community for their tireless work in making the world's anime data accessible to developers everywhere.
+                                We are deeply grateful to the AniList team and community for making their data freely accessible to developers everywhere.
                             </p>
                         </div>
                     </section>
