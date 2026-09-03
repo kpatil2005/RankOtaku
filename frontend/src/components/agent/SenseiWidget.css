@@ -597,6 +597,12 @@
 @media screen and (max-width: 480px) {
     .sensei-widget-container {
         bottom: 0; right: 0; left: 0; top: 0;
+        pointer-events: none; /* prevent full-screen container from blocking taps */
+    }
+
+    .sensei-fab-wrapper,
+    .sensei-chat-window.open {
+        pointer-events: auto; /* re-enable touch only on the actual interactive parts */
     }
 
     .sensei-fab-wrapper {
